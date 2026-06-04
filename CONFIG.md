@@ -30,3 +30,8 @@ ng new angular-20-template --routing --style=scss --skip-tests --ssr=false --zon
 
 Esse conjunto de opções prioriza um template moderno, leve e pronto para SPA com roteamento, SCSS e configuração mínima para começar rápido.
 
+## Bootstrap
+
+```sh
+ng add @ng-bootstrap/ng-bootstrap
+```

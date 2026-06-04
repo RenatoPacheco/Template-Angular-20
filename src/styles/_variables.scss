@@ -1,0 +1,39 @@
+// Remover arredondamentos
+
+$border-radius: 0 !default;
+$border-radius-sm: 0 !default;
+$border-radius-lg: 0 !default;
+$border-radius-xl: 0 !default;
+$border-radius-xxl: 0 !default;
+
+$btn-border-radius: 0 !default;
+$btn-border-radius-sm: 0 !default;
+$btn-border-radius-lg: 0 !default;
+
+$input-border-radius: 0 !default;
+$input-border-radius-sm: 0 !default;
+$input-border-radius-lg: 0 !default;
+
+$form-select-border-radius: 0;
+
+$card-border-radius: 0 !default;
+
+$modal-content-border-radius: 0 !default;
+
+$dropdown-border-radius: 0 !default;
+
+// Remover sombras quando camos entram em foco
+
+$input-focus-box-shadow: none !default;
+$btn-focus-box-shadow: none !default;
+$form-select-focus-box-shadow: none !default;
+
+// Ajuste de cores
+
+$primary: #23578B !default;
+$secondary: #5F6B77 !default;
+
+$success: #2E7D32 !default;
+$info: #0288D1 !default;
+$warning: #F9A825 !default;
+$danger: #C62828 !default;

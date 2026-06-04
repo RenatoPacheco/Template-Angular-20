@@ -1,0 +1,15 @@
+.guide-section {
+	margin-bottom: 1.5rem;
+	padding: 1.25rem;
+	border: 1px solid var(--bs-border-color);
+	border-radius: 1rem;
+	background: var(--bs-body-bg);
+	box-shadow: var(--bs-box-shadow-sm);
+}
+
+@media (min-width: 992px) {
+	.guide-section {
+		margin-bottom: 2rem;
+		padding: 1.5rem;
+	}
+}

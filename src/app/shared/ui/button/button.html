@@ -1,0 +1,7 @@
+<div #ref><ng-content></ng-content></div>
+@if(!ref.hasChildNodes()){
+  <i [class]="iconComputed()">&nbsp;</i>
+  <span 
+    [class]="textComputed()"
+    [innerHTML]="textComputed()"></span>
+}

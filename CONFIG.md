@@ -38,7 +38,7 @@ ng add @ng-bootstrap/ng-bootstrap
 
 ### Aplicando stylePreprocessorOptions
 
-A configuracao foi aplicada em `angular.json`, no caminho:
+A configuração foi aplicada em `angular.json`, no caminho:
 
 - `projects.angular-20-template.architect.build.options.stylePreprocessorOptions`
 
@@ -54,15 +54,15 @@ Trecho aplicado:
 }
 ```
 
-Motivo da aplicacao:
+Motivo da aplicação:
 
 - O Sass marcou `@import` como deprecated e passa a emitir alertas no build.
-- Dependencias de estilo (incluindo ecossistema Bootstrap) podem acionar esse aviso, mesmo quando seu SCSS principal esta correto.
+- Dependências de estilo (incluindo ecossistema Bootstrap) podem acionar esse aviso, mesmo quando seu SCSS principal está correto.
 - Com `silenceDeprecations: ["import"]`, o build fica mais limpo, sem poluir o terminal com alertas conhecidos.
 
 Importante:
 
-- Isso nao corrige a causa raiz; apenas silencia o aviso.
-- A correcao definitiva e migrar imports legados para `@use`/`@forward` quando possivel.
-- Essa configuracao foi definida em `build.options`; se quiser o mesmo comportamento em testes (`ng test`), replique tambem em `projects.angular-20-template.architect.test.options.stylePreprocessorOptions`.
+- Isso não corrige a causa raiz; apenas silencia o aviso.
+- A correção definitiva é migrar imports legados para `@use`/`@forward` quando possível.
+- Essa configuração foi definida em `build.options`; se quiser o mesmo comportamento em testes (`ng test`), replique também em `projects.angular-20-template.architect.test.options.stylePreprocessorOptions`.
 

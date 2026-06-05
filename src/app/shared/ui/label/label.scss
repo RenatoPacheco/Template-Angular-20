@@ -1,0 +1,24 @@
+:host {
+    width: 100%;
+    margin-bottom: 0.25rem;
+    margin-top: 0.25rem;
+    &.is-invalid {
+        color: var(--bs-form-invalid-border-color);
+    }
+    &.is-valid {
+        color: var(--bs-form-valid-border-color);
+    }
+}
+.text {
+    padding-left: 0.25rem;
+}
+.help {
+    padding-left: 0.25rem;
+    cursor: help;
+    color: var(--bs-primary);
+}
+.error {
+    padding-left: 0.25rem;
+    cursor: help;
+    color: var(--bs-form-invalid-border-color);
+}

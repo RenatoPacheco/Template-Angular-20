@@ -1,1 +1,10 @@
-<p>label works!</p>
+@if (haHelperComputed()){
+<i (click)="onHelper()" role="help" title="informações de ajuda" class="help fa fa-question-circle">&nbsp;</i>
+}
+@if(hasErrorComputed()){
+<i (click)="onError()" role="alert" title="informações sobre o erro" class="error fa fa-exclamation-circle">&nbsp;</i>    
+}
+<span class="text" #ref><ng-content></ng-content></span>
+@if(!ref.hasChildNodes()){
+<span class="text" [innerHTML]="textComputed()"></span>
+}

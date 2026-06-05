@@ -4,30 +4,14 @@ import { InputVariant, transformBoolean } from '@app/shared/utils';
 
 type ButtonSize = 'sm' | 'md' | 'lg';
 
+type ButtonType = 'button' | 'submit' | 'reset';
+
 type ButtonAction = 
-| 'edit' 
-| 'delete' 
-| 'view' 
-| 'save' 
-| 'cancel' 
-| 'submit' 
-| 'reset' 
-| 'download' 
-| 'upload' 
-| 'search' 
-| 'filter' 
-| 'sort' 
-| 'refresh' 
-| 'add' 
-| 'remove' 
-| 'approve' 
-| 'reject'
-| 'archive'
-| 'unarchive' 
-| 'enable'
-| 'disable'
-| 'lock' 
-| 'unlock';
+| 'edit' | 'delete' | 'view' | 'save' | 'cancel' 
+| 'submit' | 'reset' | 'download' | 'upload' 
+| 'search' | 'filter' | 'sort' | 'refresh' | 'add' 
+| 'remove' | 'approve' | 'reject' | 'archive'
+| 'unarchive' | 'enable' | 'disable' | 'lock' | 'unlock';
 
 type ButtonTheme = InputVariant|ButtonAction;
 
@@ -39,6 +23,7 @@ type ButtonTheme = InputVariant|ButtonAction;
   host: {
     '[title]': 'titleComputed()',
     '[class]': 'classComputed()',
+    '[type]': 'typeComputed()',
     '[disabled]': 'disabledComputed()'
   }
 })
@@ -46,6 +31,17 @@ export class Button {
 
   private element = inject(ElementRef);
   private renderer = inject(Renderer2);
+
+  private _type = signal<ButtonType>('button');
+  @Input()
+  public set type(value: ButtonType) {
+    if (value !== this.type) {
+      this._type.set(value);
+    }
+  }
+  public get type(): ButtonType {
+    return untracked(() => this._type());
+  }
 
   private _text = signal('');
   @Input()
@@ -123,6 +119,10 @@ export class Button {
   public get size(): ButtonSize {
     return untracked(() => this._size());
   }
+
+  protected typeComputed = computed(() => {
+    return this._type();
+  });
 
   protected disabledComputed = computed(() => {
     return this._disabled();

@@ -2,6 +2,7 @@ import { Component, computed, effect, ElementRef, inject, Input, Renderer2, sign
 
 import { Label } from '../label/label';
 import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
+import { Button } from '../button/button';
 
 type InputType = 'text' | 'password' | 'email' | 'number' | 'search' | 'tel' | 'url';
 type InputSize = 'sm' | 'md' | 'lg';
@@ -9,7 +10,7 @@ type InputSize = 'sm' | 'md' | 'lg';
 @Component({
   standalone: true,
   selector: 'app-form-input',
-  imports: [ Label, FormsModule ],
+  imports: [ Label, FormsModule, Button ],
   templateUrl: './form-input.html',
   styleUrl: './form-input.scss',
   host: {
@@ -42,17 +43,17 @@ export class FormInput implements ControlValueAccessor {
   private onChange: (value: string) => void = () => {};
   private onTouched: () => void = () => {}
 
-  writeValue(value: string): void {
+  public writeValue(value: string): void {
     if (value !== this.value) {
     this._value.set(value);
     }
   }
 
-  registerOnChange(fn: (value: string) => void): void {
+  public registerOnChange(fn: (value: string) => void): void {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: () => void): void {
+  public registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 
@@ -97,6 +98,17 @@ export class FormInput implements ControlValueAccessor {
   }
   public get class(): string {
     return untracked(() => this._class());
+  }
+
+  private _placeholder = signal('');
+  @Input()
+  public set placeholder(value: string) {
+    if (value !== this.placeholder) {
+      this._placeholder.set(value);
+    }
+  }
+  public get placeholder(): string {
+    return untracked(() => this._placeholder());
   }
 
   private _size = signal<InputSize>('md');
@@ -174,6 +186,10 @@ export class FormInput implements ControlValueAccessor {
   protected inputClassComputed = computed(() => {
     const sizeVal = this._size();
     return `form-control form-control-${sizeVal}`;
+  });
+
+  protected placeholderComputed = computed(() => {
+    return this._placeholder();
   });
 
 }

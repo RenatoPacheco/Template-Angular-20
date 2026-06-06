@@ -1,0 +1,46 @@
+.form-input-field {
+    position: relative;
+}
+
+.form-input-field {
+    &.clear input,
+    &.hide input {
+        padding-right: 2.5rem;
+    }
+
+    &.clear.show input,
+    &.clear.hide input {
+        padding-right: 5rem;
+    }
+}
+
+.form-input-clear {
+    position: absolute;
+    top: 50%;
+    right: 0.5rem;
+    transform: translateY(-50%);
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.75rem;
+    min-height: 1.75rem;
+    padding: 0;
+    line-height: 1;
+}
+
+.form-input-show,
+.form-input-hide {
+    position: absolute;
+    top: 50%;
+    right: 2.75rem;
+    transform: translateY(-50%);
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.75rem;
+    min-height: 1.75rem;
+    padding: 0;
+    line-height: 1;
+}

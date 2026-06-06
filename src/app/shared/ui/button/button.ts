@@ -13,7 +13,7 @@ type ButtonAction =
 | 'remove' | 'approve' | 'reject' | 'archive'
 | 'unarchive' | 'enable' | 'disable' | 'lock' | 'unlock';
 
-type ButtonTheme = InputVariant|ButtonAction;
+type ButtonTheme = InputVariant|ButtonAction|'link'|'transparent';
 
 @Component({
   standalone: true,
@@ -87,14 +87,14 @@ export class Button {
     return untracked(() => this._loading());
   }
 
-  private _class = signal(false);
-  @Input({ transform: transformBoolean })
-  public set class(value: boolean) {
+  private _class = signal('');
+  @Input()
+  public set class(value: string) {
     if (value !== this.class) {
       this._class.set(value);
     }
   }
-  public get class(): boolean {
+  public get class(): string {
     return untracked(() => this._class());
   }
 
@@ -254,6 +254,8 @@ export class Button {
     enable: 'btn btn-outline-success',
     disable: 'btn btn-outline-danger',
     lock: 'btn btn-outline-secondary',
-    unlock: 'btn btn-outline-secondary'
+    unlock: 'btn btn-outline-secondary',
+    link: 'btn btn-link',
+    transparent: 'btn btn-transparent'
   };
 }

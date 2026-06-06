@@ -1,4 +1,4 @@
-import { Component, computed, EventEmitter, Input, Output, signal, untracked } from '@angular/core';
+import { Component, computed, Input, signal, untracked } from '@angular/core';
 import { transformBoolean } from '@app/shared/utils';
 
 @Component({
@@ -135,7 +135,7 @@ export class Label {
     return this._title();
   });
 
-  protected haHelperComputed = computed(() => {
+  protected hasHelperComputed = computed(() => {
     return this._helper() !== null;
   });
 

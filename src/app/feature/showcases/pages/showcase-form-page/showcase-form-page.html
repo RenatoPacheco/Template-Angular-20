@@ -1,1 +1,31 @@
-<p>showcase-form-page works!</p>
+<div class="container">
+    <h1>Showcase Form Page</h1>    
+    <form [formGroup]="form">
+        <div class="row">            
+            <app-form-input
+                class="col-md-6"
+                type="text"
+                formControlName="inputText"
+                label="Input text">
+            </app-form-input>
+            <app-form-input
+                class="col-md-6"
+                type="password"
+                formControlName="inputPassword"
+                label="Input password">
+            </app-form-input>
+            <app-form-input
+                class="col-md-6"
+                type="email"
+                formControlName="inputEmail"
+                label="Input email">
+            </app-form-input>
+            <app-form-input
+                class="col-md-6"
+                type="search"
+                formControlName="inputSearch"
+                label="Input search">
+            </app-form-input>
+        </div>
+    </form>
+</div>

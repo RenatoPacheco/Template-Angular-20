@@ -1,15 +1,81 @@
-import { Component, computed, Input, signal, untracked } from '@angular/core';
+import { Component, computed, effect, ElementRef, inject, Input, Renderer2, signal, untracked, ViewChild } from '@angular/core';
 
 import { Label } from '../label/label';
+import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
+
+type InputType = 'text' | 'password' | 'email' | 'number' | 'search' | 'tel' | 'url';
+type InputSize = 'sm' | 'md' | 'lg';
 
 @Component({
   standalone: true,
   selector: 'app-form-input',
-  imports: [ Label ],
+  imports: [ Label, FormsModule ],
   templateUrl: './form-input.html',
   styleUrl: './form-input.scss',
+  host: {
+    '[class]': 'classComputed()'
+  }
 })
-export class FormInput {
+export class FormInput implements ControlValueAccessor {
+  
+  constructor() {
+    if (this.ngControl) {
+      this.ngControl.valueAccessor = this;
+    }
+
+    effect(() => {
+      const value = this._value();
+      this.element.nativeElement.value = value;
+      if (this.onChange) this.onChange(value);
+    });
+  }
+
+  private readonly renderer = inject(Renderer2);
+  private readonly host = inject(ElementRef<HTMLDivElement>);
+  private readonly ngControl = inject(NgControl, { self: true, optional: true });
+
+  @ViewChild('input', {static: true})
+  private element!: ElementRef<HTMLInputElement>;
+
+  //region ControlValueAccessor
+
+  private onChange: (value: string) => void = () => {};
+  private onTouched: () => void = () => {}
+
+  writeValue(value: string): void {
+    if (value !== this.value) {
+    this._value.set(value);
+    }
+  }
+
+  registerOnChange(fn: (value: string) => void): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+
+  //endregion
+
+  private readonly _value = signal<string>('');
+  @Input() public get value(): string {
+    return untracked(() => this._value());
+  }
+  public set value(value: string) {
+      this.writeValue(value);
+  }
+
+  private _type = signal<InputType>('text');
+  @Input()
+  public set type(value: InputType) {
+    if (value !== this.type) {
+      this._type.set(value);
+    }
+  }
+  public get type(): InputType {
+    return untracked(() => this._type());
+  }
 
   private _id = signal(`${crypto.randomUUID()}`);
   @Input()
@@ -20,6 +86,28 @@ export class FormInput {
   }
   public get id(): string {
     return untracked(() => this._id());
+  }
+
+  private _class = signal('');
+  @Input()
+  public set class(value: string) {
+    if (value !== this.class) {
+      this._class.set(value);
+    }
+  }
+  public get class(): string {
+    return untracked(() => this._class());
+  }
+
+  private _size = signal<InputSize>('md');
+  @Input()
+  public set size(value: InputSize) {
+    if (value !== this.size) {
+      this._size.set(value);
+    }
+  }
+  public get size(): InputSize {
+    return untracked(() => this._size());
   }
 
   private _helper = signal<(() => void) | null>(null);
@@ -72,6 +160,20 @@ export class FormInput {
 
   protected idComputed = computed(() => {
     return this._id();
+  });
+
+  protected typeComputed = computed(() => {
+    return this._type();
+  });
+
+  protected classComputed = computed(() => {
+    const classVal = this._class();
+    return `${classVal}`;
+  });
+
+  protected inputClassComputed = computed(() => {
+    const sizeVal = this._size();
+    return `form-control form-control-${sizeVal}`;
   });
 
 }

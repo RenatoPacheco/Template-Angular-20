@@ -1,6 +1,12 @@
-<label app-label 
-    [for]="idComputed()"
-    [text]="labelComputed()"
-    [error]="errorComputed()"
-    [helper]="helperComputed()"></label>
-<input type="text" class="form-control" [id]="idComputed()" value="1234..." />
+<div class="input-group mb-3">
+    <label app-label 
+        [for]="idComputed()"
+        [text]="labelComputed()"
+        [error]="errorComputed()"
+        [helper]="helperComputed()"></label>
+    <input #input [(ngModel)]="value"
+        [type]="typeComputed()" 
+        [class]="inputClassComputed()" 
+        [id]="idComputed()" />
+    <ng-content></ng-content>
+</div>

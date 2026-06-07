@@ -5,7 +5,8 @@ import {
   OnDestroy,
   effect,
   inject,
-  input
+  input,
+  numberAttribute
 } from '@angular/core';
 
 import videojs from 'video.js';
@@ -26,15 +27,19 @@ export class Video implements AfterViewInit, OnDestroy {
   public src = input.required<string>();
   public autoplay = input(false);
   public controls = input(true);
+  public playbackRate = input(1, { transform: numberAttribute });
+  public playbackRates = input<number[]>([0.5, 0.75, 1, 1.25, 1.5, 2]);
 
   private readonly elementRef = inject(ElementRef<HTMLVideoElement>);
 
   private player: ReturnType<typeof videojs> | null = null;
+  private currentSource = '';
 
   public ngAfterViewInit(): void {
     this.player = videojs(this.elementRef.nativeElement, {
       autoplay: this.autoplay(),
       controls: this.controls(),
+      playbackRates: this.normalizePlaybackRates(this.playbackRates()),
       responsive: true,
       fluid: true,
       sources: [
@@ -61,9 +66,39 @@ export class Video implements AfterViewInit, OnDestroy {
     }
 
     const src = this.src();
+    const playbackRates = this.normalizePlaybackRates(this.playbackRates());
+    const playbackRate = this.normalizePlaybackRate(this.playbackRate(), playbackRates);
+
     this.player.autoplay(this.autoplay());
     this.player.controls(this.controls());
-    this.player.src({ src, type: this.getMimeType(src) });
+
+    if (src !== this.currentSource) {
+      this.player.src({ src, type: this.getMimeType(src) });
+      this.currentSource = src;
+    }
+
+    this.player.playbackRate(playbackRate);
+  }
+
+  private normalizePlaybackRates(rates: number[]): number[] {
+    const validRates = rates.filter(rate => Number.isFinite(rate) && rate > 0);
+    if (!validRates.length) {
+      return [1];
+    }
+
+    return [...new Set(validRates)].sort((a, b) => a - b);
+  }
+
+  private normalizePlaybackRate(rate: number, availableRates: number[]): number {
+    if (!Number.isFinite(rate) || rate <= 0) {
+      return 1;
+    }
+
+    if (availableRates.includes(rate)) {
+      return rate;
+    }
+
+    return availableRates.includes(1) ? 1 : availableRates[0];
   }
 
   private getMimeType(src: string): string {

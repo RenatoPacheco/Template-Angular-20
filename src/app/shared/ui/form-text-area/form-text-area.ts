@@ -1,24 +1,24 @@
 import { Component, computed, effect, ElementRef, inject, Input, Renderer2, signal, untracked, ViewChild } from '@angular/core';
 
-import { Label } from '../label/label';
 import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
-import { Button } from '../button/button';
-import { transformBoolean } from '@app/shared/utils';
+import { transformBoolean, transformNumber } from '@app/shared/utils';
 
-type InputType = 'text' | 'password' | 'email' | 'number' | 'search' | 'tel' | 'url';
+import { Button } from '../button/button';
+import { Label } from '../label/label';
+
 type InputSize = 'sm' | 'md' | 'lg';
 
 @Component({
   standalone: true,
-  selector: 'app-form-input',
+  selector: 'app-form-text-area',
   imports: [ Label, FormsModule, Button ],
-  templateUrl: './form-input.html',
-  styleUrl: './form-input.scss',
+  templateUrl: './form-text-area.html',
+  styleUrl: './form-text-area.scss',
   host: {
     '[class]': 'classComputed()'
   }
 })
-export class FormInput implements ControlValueAccessor {
+export class FormTextArea implements ControlValueAccessor {
   
   constructor() {
     if (this.ngControl) {
@@ -36,8 +36,8 @@ export class FormInput implements ControlValueAccessor {
   private readonly host = inject(ElementRef<HTMLDivElement>);
   private readonly ngControl = inject(NgControl, { self: true, optional: true });
 
-  @ViewChild('input', {static: true})
-  private element!: ElementRef<HTMLInputElement>;
+  @ViewChild('textarea', {static: true})
+  private element!: ElementRef<HTMLTextAreaElement>;
 
   //region ControlValueAccessor
 
@@ -66,17 +66,6 @@ export class FormInput implements ControlValueAccessor {
   }
   public set value(value: string) {
       this.writeValue(value);
-  }
-
-  private _type = signal<InputType>('text');
-  @Input()
-  public set type(value: InputType) {
-    if (value !== this.type) {
-      this._type.set(value);
-    }
-  }
-  public get type(): InputType {
-    return untracked(() => this._type());
   }
 
   private _id = signal(`${crypto.randomUUID()}`);
@@ -112,20 +101,6 @@ export class FormInput implements ControlValueAccessor {
     return untracked(() => this._placeholder());
   }
 
-  private _controlSecret = signal(false);
-  @Input({ 
-    alias: 'control-secret', 
-    transform: transformBoolean 
-  })
-  public set controlSecret(value: boolean) {
-    if (value !== this.controlSecret) {
-      this._controlSecret.set(value);
-    }
-  }
-  public get controlSecret(): boolean {
-    return untracked(() => this._controlSecret());
-  }
-
   private _size = signal<InputSize>('md');
   @Input()
   public set size(value: InputSize) {
@@ -135,6 +110,17 @@ export class FormInput implements ControlValueAccessor {
   }
   public get size(): InputSize {
     return untracked(() => this._size());
+  }
+
+  public _rows = signal(5);
+  @Input({ transform: transformNumber })
+  public set rows(value: number) {
+    if (value !== this.rows) {
+      this._rows.set(value);
+    }
+  }
+  public get rows(): number {
+    return untracked(() => this._rows());
   }
 
   private _helper = signal<(() => void) | null>(null);
@@ -170,34 +156,6 @@ export class FormInput implements ControlValueAccessor {
     return untracked(() => this._label());
   }
 
-  private _secretHasBeenReversed = signal(false);
-  protected onToggleSecret(): void {
-    var currentValue = this._secretHasBeenReversed();
-    this._secretHasBeenReversed.set(!currentValue);
-  }
-
-  protected showSecretComputed = computed(() => {
-    const typeVal = this._type();
-    const controlSecretVal = this._controlSecret();
-    const secretHasBeenReversedVal = this._secretHasBeenReversed();
-    
-    let result = controlSecretVal && typeVal === 'password' 
-    ? true : false;
-
-    return secretHasBeenReversedVal ? !result : result;
-  });
-
-  protected hideSecretComputed = computed(() => {
-    const typeVal = this._type();
-    const controlSecretVal = this._controlSecret();
-    const secretHasBeenReversedVal = this._secretHasBeenReversed();
-    
-    let result = controlSecretVal && typeVal !== 'password' 
-    ? true : false;
-
-    return secretHasBeenReversedVal ? !result : result;
-  });
-
   protected labelComputed = computed(() => {
     const labelVal = this._label();
     return labelVal ? labelVal : 'Label';
@@ -217,37 +175,22 @@ export class FormInput implements ControlValueAccessor {
     return this._id();
   });
 
-  protected typeComputed = computed(() => {
-    let typeVal = this._type();
-    const isPasswordType = typeVal === 'password';
-    const controlSecretVal = this._controlSecret();
-    const reverseSecretVal = this._secretHasBeenReversed();
-
-    if (controlSecretVal && reverseSecretVal) {
-      typeVal = isPasswordType ? 'text' : 'password';
-    } else {
-      switch (typeVal) {
-        case 'search':
-          typeVal = 'text';
-          break;
-      }
-    }
-
-    return typeVal;
-  });
-
   protected classComputed = computed(() => {
     const classVal = this._class();
     return `${classVal}`;
   });
 
-  protected inputClassComputed = computed(() => {
+  protected textAreaClassComputed = computed(() => {
     const sizeVal = this._size();
     return `form-control form-control-${sizeVal}`;
   });
 
   protected placeholderComputed = computed(() => {
     return this._placeholder();
+  });
+
+  protected rowsComputed = computed(() => {
+    return this._rows();
   });
 
   protected hasValueComputed = computed(() => {

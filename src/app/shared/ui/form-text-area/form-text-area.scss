@@ -1,0 +1,28 @@
+.form-textarea-field {
+    position: relative;
+}
+
+.form-textarea-field {
+    &.action-clear textarea {
+        padding-right: 3rem;
+    }
+
+    &.action-clear button.action-clear {
+        display: inline-flex;
+    }
+
+    & button {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.5rem;
+        transform: none;
+        z-index: 2;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        min-width: 1.75rem;
+        min-height: 1.75rem;
+        padding: 0;
+        line-height: 1;
+    }
+}

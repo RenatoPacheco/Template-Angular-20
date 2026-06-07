@@ -2,11 +2,15 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { FormInput } from '@app/shared/ui';
+import { FormTextArea } from '@app/shared/ui/form-text-area/form-text-area';
 
 @Component({
   standalone: true,
   selector: 'app-showcase-form-page',
-  imports: [FormsModule, ReactiveFormsModule, FormInput],
+  imports: [
+    FormsModule, ReactiveFormsModule, FormInput, 
+    FormTextArea
+  ],
   templateUrl: './showcase-form-page.html',
   styleUrl: './showcase-form-page.scss',
 })
@@ -18,7 +22,8 @@ export class ShowcaseFormPage implements OnInit {
     inputText: this.formBuilder.control<string|null>(null),
     inputPassword: this.formBuilder.control<string|null>(null),
     inputEmail: this.formBuilder.control<string|null>(null),
-    inputSearch: this.formBuilder.control<string|null>(null)
+    inputSearch: this.formBuilder.control<string|null>(null),
+    textArea: this.formBuilder.control<string|null>(null)
   });
 
   ngOnInit(): void {

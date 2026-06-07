@@ -218,7 +218,16 @@ export class FormInput implements ControlValueAccessor {
   });
 
   protected typeComputed = computed(() => {
-    return this._type();
+    let typeVal = this._type();
+    const isPasswordType = typeVal === 'password';
+    const controlSecretVal = this._controlSecret();
+    const reverseSecretVal = this._secretHasBeenReversed();
+
+    if (controlSecretVal && reverseSecretVal) {
+      typeVal = isPasswordType ? 'text' : 'password';
+    }
+
+    return typeVal;
   });
 
   protected classComputed = computed(() => {

@@ -3,44 +3,42 @@
 }
 
 .form-input-field {
-    &.clear input,
-    &.hide input {
+    &.action-clear input,
+    &.action-show input,
+    &.action-hide input {
         padding-right: 2.5rem;
     }
 
-    &.clear.show input,
-    &.clear.hide input {
-        padding-right: 5rem;
+    &.action-clear.action-show,
+    &.action-clear.action-hide {
+        & input {
+            padding-right: 5rem;
+        }
+
+        & button.action-show,
+        & button.action-hide {
+            right: 2.75rem;
+        }
     }
-}
 
-.form-input-clear {
-    position: absolute;
-    top: 50%;
-    right: 0.5rem;
-    transform: translateY(-50%);
-    z-index: 2;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 1.75rem;
-    min-height: 1.75rem;
-    padding: 0;
-    line-height: 1;
-}
+    &.action-show button.action-show,
+    &.action-hide button.action-hide,
+    &.action-clear button.action-clear {
+        display: inline-flex;
+    }
 
-.form-input-show,
-.form-input-hide {
-    position: absolute;
-    top: 50%;
-    right: 2.75rem;
-    transform: translateY(-50%);
-    z-index: 2;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 1.75rem;
-    min-height: 1.75rem;
-    padding: 0;
-    line-height: 1;
+    & button {
+        position: absolute;
+        top: 50%;
+        right: 0.5rem;
+        transform: translateY(-50%);
+        z-index: 2;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        min-width: 1.75rem;
+        min-height: 1.75rem;
+        padding: 0;
+        line-height: 1;
+    }
 }

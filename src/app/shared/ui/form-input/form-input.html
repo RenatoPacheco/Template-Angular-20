@@ -4,28 +4,37 @@
         [text]="labelComputed()"
         [error]="errorComputed()"
         [helper]="helperComputed()"></label>
-    <div class="form-input-field">
+    <div class="form-input-field"
+        [class.action-clear]="hasValueComputed()"
+        [class.action-show]="showSecretComputed()"
+        [class.action-hide]="hideSecretComputed()">
         <input #input [(ngModel)]="value"
             [type]="typeComputed()" 
             [class]="inputClassComputed()" 
             [id]="idComputed()"
             [placeholder]="placeholderComputed()" />
         <button app-button
-            class="form-input-clear"
+            class="action-clear"
+            title="clique para limpar o valor"
             theme="transparent"
-            type="button">
-            x
+            type="button"
+            (click)="clear()">
+            <i class="fa fa-times"></i>
         </button>
         <button app-button
-            class="form-input-show"
+            class="action-hide"
             theme="transparent"
-            type="button">
+            type="button"
+            title="clique para ocular o valor"
+            (click)="onToggleSecret()">
             <i class="fa fa-eye"></i>
         </button>
         <button app-button
-            class="form-input-hide"
+            class="action-show"
             theme="transparent"
-            type="button">
+            type="button"
+            title="clique para mostrar o valor"
+            (click)="onToggleSecret()">
             <i class="fa fa-eye-slash"></i>
         </button>
     </div>

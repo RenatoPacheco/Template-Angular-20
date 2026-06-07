@@ -3,6 +3,7 @@ import { Component, computed, effect, ElementRef, inject, Input, Renderer2, sign
 import { Label } from '../label/label';
 import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
 import { Button } from '../button/button';
+import { transformBoolean } from '@app/shared/utils';
 
 type InputType = 'text' | 'password' | 'email' | 'number' | 'search' | 'tel' | 'url';
 type InputSize = 'sm' | 'md' | 'lg';
@@ -111,6 +112,20 @@ export class FormInput implements ControlValueAccessor {
     return untracked(() => this._placeholder());
   }
 
+  private _controlSecret = signal(false);
+  @Input({ 
+    alias: 'control-secret', 
+    transform: transformBoolean 
+  })
+  public set controlSecret(value: boolean) {
+    if (value !== this.controlSecret) {
+      this._controlSecret.set(value);
+    }
+  }
+  public get controlSecret(): boolean {
+    return untracked(() => this._controlSecret());
+  }
+
   private _size = signal<InputSize>('md');
   @Input()
   public set size(value: InputSize) {
@@ -155,6 +170,34 @@ export class FormInput implements ControlValueAccessor {
     return untracked(() => this._label());
   }
 
+  private _secretHasBeenReversed = signal(false);
+  protected onToggleSecret(): void {
+    var currentValue = this._secretHasBeenReversed();
+    this._secretHasBeenReversed.set(!currentValue);
+  }
+
+  protected showSecretComputed = computed(() => {
+    const typeVal = this._type();
+    const controlSecretVal = this._controlSecret();
+    const secretHasBeenReversedVal = this._secretHasBeenReversed();
+    
+    let result = controlSecretVal && typeVal === 'password' 
+    ? true : false;
+
+    return secretHasBeenReversedVal ? !result : result;
+  });
+
+  protected hideSecretComputed = computed(() => {
+    const typeVal = this._type();
+    const controlSecretVal = this._controlSecret();
+    const secretHasBeenReversedVal = this._secretHasBeenReversed();
+    
+    let result = controlSecretVal && typeVal !== 'password' 
+    ? true : false;
+
+    return secretHasBeenReversedVal ? !result : result;
+  });
+
   protected labelComputed = computed(() => {
     const labelVal = this._label();
     return labelVal ? labelVal : 'Label';
@@ -191,5 +234,20 @@ export class FormInput implements ControlValueAccessor {
   protected placeholderComputed = computed(() => {
     return this._placeholder();
   });
+
+  protected hasValueComputed = computed(() => {
+    const valueVal = this._value();
+    return valueVal ? true : false;
+  });
+
+  protected notHasValueComputed = computed(() => {
+    const valueVal = this._value();
+    return !valueVal;
+  });
+
+  public clear(): void {
+    this.value = '';
+    this.element.nativeElement.focus();
+  };
 
 }

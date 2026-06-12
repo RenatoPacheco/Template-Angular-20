@@ -1,9 +1,10 @@
-import { Component, computed, effect, ElementRef, inject, Input, Renderer2, signal, untracked, ViewChild } from '@angular/core';
+import { Component, computed, DestroyRef, effect, ElementRef, inject, Input, OnInit, Renderer2, signal, untracked, ViewChild } from '@angular/core';
 
 import { Label } from '../label/label';
-import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
+import { ControlValueAccessor, FormsModule, NgControl, PristineChangeEvent, StatusChangeEvent, TouchedChangeEvent, ValueChangeEvent } from '@angular/forms';
 import { Button } from '../button/button';
 import { transformBoolean } from '@app/shared/utils';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 type InputType = 'text' | 'password' | 'email' | 'number' | 'search' | 'tel' | 'url';
 type InputSize = 'sm' | 'md' | 'lg';
@@ -54,6 +55,8 @@ export type InputAutocomplete =
     | 'sex'
     | 'language';
 
+    type InputStatus = 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED';
+
 @Component({
   standalone: true,
   selector: 'app-form-input',
@@ -64,7 +67,7 @@ export type InputAutocomplete =
     '[class]': 'classComputed()'
   }
 })
-export class FormInput implements ControlValueAccessor {
+export class FormInput implements ControlValueAccessor, OnInit  {
   
   constructor() {
     if (this.ngControl) {
@@ -72,6 +75,28 @@ export class FormInput implements ControlValueAccessor {
     }
   }
 
+  ngOnInit(): void {
+    this.ngControl?.control?.events
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe(event  => {
+      switch (true) {
+        case event instanceof ValueChangeEvent:
+          console.log('Valor mudou', event.value);
+          break;
+        case event instanceof StatusChangeEvent:
+          console.log('Status mudou', event.status);
+          break;
+        case event instanceof TouchedChangeEvent:
+          console.log('Touched mudou', event.touched);
+          break;
+        case event instanceof PristineChangeEvent:
+          console.log('Pristine mudou', event.pristine);
+          break;
+      }
+    });
+  }
+
+  private readonly destroyRef = inject(DestroyRef);
   private readonly renderer = inject(Renderer2);
   private readonly host = inject(ElementRef<HTMLDivElement>);
   private readonly ngControl = inject(NgControl, { self: true, optional: true });
@@ -104,14 +129,39 @@ export class FormInput implements ControlValueAccessor {
   }
   
   //endregion
+
+  public isValid = computed(() => {
+    return this._status() == 'VALID';
+  });
+
+  public isInvalid = computed(() => {
+    return this._status() == 'INVALID';
+  });
+
+  public isPending = computed(() => {
+    return this._status() == 'PENDING';
+  });
+
+  public isDisabled = computed(() => {
+    return this._status() == 'DISABLED';
+  });
   
+  private readonly _status = signal<InputStatus>('VALID');
+  private set status(value: InputStatus) {
+    if (value !== this.status) {
+      this._status.set(value);
+    }
+  }
+  public get status(): InputStatus {
+    return untracked(() => this._status());
+  }
 
   private readonly _value = signal<string>('');
   @Input() public get value(): string {
     return untracked(() => this._value());
   }
-  public set value(value: string) {
-      this.writeValue(value);
+  public set value(value: string) {      
+        this.writeValue(value);
   }
 
   private _type = signal<InputType>('text');
@@ -356,10 +406,15 @@ export class FormInput implements ControlValueAccessor {
   });
 
   public clear(): void {
-    this.value = '';
-    this.element.nativeElement.focus();
-    this.ngControl?.control?.markAsPristine();
-    this.ngControl?.control?.markAsUntouched();
+     const control = this.ngControl?.control;
+
+    if (control) {
+      control.setValue('');
+      control.markAsPristine();
+      control.markAsUntouched();
+    } else {
+      this.writeValue('');
+    }
   };
 
 }

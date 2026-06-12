@@ -79,6 +79,7 @@ export class FormInput implements ControlValueAccessor, OnInit  {
     this.ngControl?.control?.events
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe(event  => {
+      console.warn('Disparando evento de controle');
       switch (true) {
         case event instanceof ValueChangeEvent:
           console.log('Valor mudou', event.value);
@@ -97,12 +98,7 @@ export class FormInput implements ControlValueAccessor, OnInit  {
   }
 
   private readonly destroyRef = inject(DestroyRef);
-  private readonly renderer = inject(Renderer2);
-  private readonly host = inject(ElementRef<HTMLDivElement>);
   private readonly ngControl = inject(NgControl, { self: true, optional: true });
-
-  @ViewChild('input', {static: true})
-  private element!: ElementRef<HTMLInputElement>;
 
   //region ControlValueAccessor
 
@@ -110,10 +106,7 @@ export class FormInput implements ControlValueAccessor, OnInit  {
   public onTouched: () => void = () => {}
 
   public writeValue(value: string): void {
-    if (value !== this.value) {
-      this._value.set(value);
-      this.onChange(value);
-    }
+    this._value.set(value);
   }
 
   public registerOnChange(fn: (value: string) => void): void {
@@ -161,7 +154,10 @@ export class FormInput implements ControlValueAccessor, OnInit  {
     return untracked(() => this._value());
   }
   public set value(value: string) {      
-        this.writeValue(value);
+        if (this.value !== value) {
+          this.writeValue(value);
+          this.onChange(value);
+        }
   }
 
   private _type = signal<InputType>('text');
@@ -402,7 +398,7 @@ export class FormInput implements ControlValueAccessor, OnInit  {
 
   protected notHasValueComputed = computed(() => {
     const valueVal = this._value();
-    return !valueVal;
+    return valueVal ? false : true;
   });
 
   public clear(): void {
@@ -413,8 +409,17 @@ export class FormInput implements ControlValueAccessor, OnInit  {
       control.markAsPristine();
       control.markAsUntouched();
     } else {
-      this.writeValue('');
+      this.value = '';
     }
   };
+
+  protected onInput(event: Event): void { 
+    const value = (event.target as HTMLInputElement).value; 
+    this.value = value; 
+  } 
+  
+  protected onBlur(): void { 
+    this.onTouched(); 
+  }
 
 }

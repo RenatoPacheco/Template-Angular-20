@@ -8,8 +8,10 @@
     [class.action-clear]="hasValueComputed()"
     [class.action-show]="showSecretComputed()"
     [class.action-hide]="hideSecretComputed()">
-    <input #input [(ngModel)]="value"
-        (blur)="onTouched()"
+    <input 
+        [value]="valueComputed()"
+        (blur)="onBlur()"
+        (input)="onInput($event)"
         [disabled]="disabledComputed()"
         [readonly]="readonlyComputed()"
         [autocomplete]="autocompleteComputed()"

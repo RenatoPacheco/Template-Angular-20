@@ -7,6 +7,52 @@ import { transformBoolean } from '@app/shared/utils';
 
 type InputType = 'text' | 'password' | 'email' | 'number' | 'search' | 'tel' | 'url';
 type InputSize = 'sm' | 'md' | 'lg';
+export type InputAutocomplete =
+    | 'on'
+    | 'off'
+    | 'name'
+    | 'given-name'
+    | 'additional-name'
+    | 'family-name'
+    | 'nickname'
+    | 'username'
+    | 'new-password'
+    | 'current-password'
+    | 'email'
+    | 'tel'
+    | 'tel-country-code'
+    | 'tel-national'
+    | 'tel-area-code'
+    | 'tel-local'
+    | 'tel-extension'
+    | 'street-address'
+    | 'address-line1'
+    | 'address-line2'
+    | 'address-line3'
+    | 'address-level1'
+    | 'address-level2'
+    | 'address-level3'
+    | 'address-level4'
+    | 'country'
+    | 'country-name'
+    | 'postal-code'
+    | 'organization'
+    | 'organization-title'
+    | 'bday'
+    | 'bday-day'
+    | 'bday-month'
+    | 'bday-year'
+    | 'cc-name'
+    | 'cc-number'
+    | 'cc-exp'
+    | 'cc-exp-month'
+    | 'cc-exp-year'
+    | 'cc-csc'
+    | 'cc-type'
+    | 'url'
+    | 'photo'
+    | 'sex'
+    | 'language';
 
 @Component({
   standalone: true,
@@ -24,12 +70,6 @@ export class FormInput implements ControlValueAccessor {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
-
-    effect(() => {
-      const value = this._value();
-      this.element.nativeElement.value = value;
-      if (this.onChange) this.onChange(value);
-    });
   }
 
   private readonly renderer = inject(Renderer2);
@@ -41,12 +81,13 @@ export class FormInput implements ControlValueAccessor {
 
   //region ControlValueAccessor
 
-  private onChange: (value: string) => void = () => {};
-  private onTouched: () => void = () => {}
+  public onChange: (value: string) => void = () => {};
+  public onTouched: () => void = () => {}
 
   public writeValue(value: string): void {
     if (value !== this.value) {
-    this._value.set(value);
+      this._value.set(value);
+      this.onChange(value);
     }
   }
 
@@ -58,7 +99,12 @@ export class FormInput implements ControlValueAccessor {
     this.onTouched = fn;
   }
 
+  public setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
+  
   //endregion
+  
 
   private readonly _value = signal<string>('');
   @Input() public get value(): string {
@@ -110,6 +156,39 @@ export class FormInput implements ControlValueAccessor {
   }
   public get placeholder(): string {
     return untracked(() => this._placeholder());
+  }
+
+  private _readonly = signal(false);
+  @Input({ transform: transformBoolean })
+  public set readonly(value: boolean) {
+    if (value !== this.readonly) {
+      this._readonly.set(value);
+    }
+  }
+  public get readonly(): boolean {
+    return untracked(() => this._readonly());
+  }
+
+  private _autocomplete = signal<InputAutocomplete>('off');
+  @Input()
+  public set autocomplete(value: InputAutocomplete) {
+    if (value !== this.autocomplete) {
+      this._autocomplete.set(value);
+    }
+  }
+  public get autocomplete(): InputAutocomplete {
+    return untracked(() => this._autocomplete());
+  }
+
+  private _disabled = signal(false);
+  @Input({ transform: transformBoolean })
+  public set disabled(value: boolean) {
+    if (value !== this.disabled) {
+      this._disabled.set(value);
+    }
+  }
+  public get disabled(): boolean {
+    return untracked(() => this._disabled());
   }
 
   private _controlSecret = signal(false);
@@ -250,6 +329,22 @@ export class FormInput implements ControlValueAccessor {
     return this._placeholder();
   });
 
+  protected disabledComputed = computed(() => {
+    return this._disabled();
+  });
+
+  protected readonlyComputed = computed(() => {
+    return this._readonly();
+  });
+
+  protected autocompleteComputed = computed(() => {
+    return this._autocomplete();
+  });
+
+  protected valueComputed = computed(() => {
+    return this._value();
+  });
+
   protected hasValueComputed = computed(() => {
     const valueVal = this._value();
     return valueVal ? true : false;
@@ -263,6 +358,8 @@ export class FormInput implements ControlValueAccessor {
   public clear(): void {
     this.value = '';
     this.element.nativeElement.focus();
+    this.ngControl?.control?.markAsPristine();
+    this.ngControl?.control?.markAsUntouched();
   };
 
 }

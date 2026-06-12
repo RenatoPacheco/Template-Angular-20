@@ -1,2 +1,10 @@
 @import './styles/bootstrap';
 @import 'video.js/dist/video-js.css';
+
+input, textarea {
+  &[readonly], &[readonly]:focus  {
+    background-color: var(--bs-secondary-bg);
+    opacity: 1;
+    cursor: default;
+  }
+}

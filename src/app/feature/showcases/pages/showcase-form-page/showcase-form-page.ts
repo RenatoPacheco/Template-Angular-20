@@ -29,7 +29,12 @@ export class ShowcaseFormPage implements OnInit {
   ngOnInit(): void {
     this.form.get('inputText')?.valueChanges.subscribe(value => {
       console.log('Form value changed:', value);
+      this.form.get('inputText')?.setErrors({
+        required: true
+      });
     });
+
+    //this.form.disable();
   }
 
 }

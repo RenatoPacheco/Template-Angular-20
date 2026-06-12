@@ -9,6 +9,10 @@
         [class.action-show]="showSecretComputed()"
         [class.action-hide]="hideSecretComputed()">
         <input #input [(ngModel)]="value"
+            (blur)="onTouched()"
+            [disabled]="disabledComputed()"
+            [readonly]="readonlyComputed()"
+            [autocomplete]="autocompleteComputed()"
             [type]="typeComputed()" 
             [class]="inputClassComputed()" 
             [id]="idComputed()"

@@ -1,7 +1,15 @@
 <div class="container">
     <h1>Showcase Form Page</h1>    
     <form [formGroup]="form">
-        <div class="row">            
+        <div class="row">
+            <app-form-input
+                class="col-md-6"
+                type="text"
+                label="Input text"
+                control-secret
+                readonly
+                placeholder="Enter text here">
+            </app-form-input>            
             <app-form-input
                 class="col-md-6"
                 type="text"
@@ -14,9 +22,11 @@
                 class="col-md-6"
                 type="password"
                 control-secret
+                readonly
                 formControlName="inputPassword"
                 label="Input password"
-                placeholder="Enter password here">
+                placeholder="Enter password here"
+                autocomplete="current-password">
             </app-form-input>
             <app-form-input
                 class="col-md-6"

@@ -7,6 +7,9 @@
     <div class="form-textarea-field"
         [class.action-clear]="hasValueComputed()">
         <textarea #textarea [(ngModel)]="value"
+            (blur)="onTouched()"
+            [disabled]="disabledComputed()"
+            [readonly]="readonlyComputed()"
             [class]="textAreaClassComputed()" 
             [id]="idComputed()"
             [placeholder]="placeholderComputed()"

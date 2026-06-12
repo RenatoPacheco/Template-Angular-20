@@ -24,12 +24,6 @@ export class FormTextArea implements ControlValueAccessor {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
-
-    effect(() => {
-      const value = this._value();
-      this.element.nativeElement.value = value;
-      if (this.onChange) this.onChange(value);
-    });
   }
 
   private readonly renderer = inject(Renderer2);
@@ -41,12 +35,13 @@ export class FormTextArea implements ControlValueAccessor {
 
   //region ControlValueAccessor
 
-  private onChange: (value: string) => void = () => {};
-  private onTouched: () => void = () => {}
+  public onChange: (value: string) => void = () => {};
+  public onTouched: () => void = () => {}
 
   public writeValue(value: string): void {
     if (value !== this.value) {
-    this._value.set(value);
+      this._value.set(value);
+      this.onChange(value);
     }
   }
 
@@ -56,6 +51,10 @@ export class FormTextArea implements ControlValueAccessor {
 
   public registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
+  }
+
+  public setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
   }
 
   //endregion
@@ -99,6 +98,28 @@ export class FormTextArea implements ControlValueAccessor {
   }
   public get placeholder(): string {
     return untracked(() => this._placeholder());
+  }
+
+  private _readonly = signal(false);
+  @Input({ transform: transformBoolean })
+  public set readonly(value: boolean) {
+    if (value !== this.readonly) {
+      this._readonly.set(value);
+    }
+  }
+  public get readonly(): boolean {
+    return untracked(() => this._readonly());
+  }
+
+  private _disabled = signal(false);
+  @Input({ transform: transformBoolean })
+  public set disabled(value: boolean) {
+    if (value !== this.disabled) {
+      this._disabled.set(value);
+    }
+  }
+  public get disabled(): boolean {
+    return untracked(() => this._disabled());
   }
 
   private _size = signal<InputSize>('md');
@@ -188,6 +209,18 @@ export class FormTextArea implements ControlValueAccessor {
   protected placeholderComputed = computed(() => {
     return this._placeholder();
   });
+  
+  protected disabledComputed = computed(() => {
+    return this._disabled();
+  });
+
+  protected readonlyComputed = computed(() => {
+    return this._readonly();
+  });
+  
+  protected valueComputed = computed(() => {
+    return this._value();
+  });
 
   protected rowsComputed = computed(() => {
     return this._rows();
@@ -206,6 +239,8 @@ export class FormTextArea implements ControlValueAccessor {
   public clear(): void {
     this.value = '';
     this.element.nativeElement.focus();
+    this.ngControl?.control?.markAsPristine();
+    this.ngControl?.control?.markAsUntouched();
   };
 
 }

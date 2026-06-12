@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { FormInput } from '@app/shared/ui';
 import { FormTextArea } from '@app/shared/ui/form-text-area/form-text-area';
@@ -19,22 +19,32 @@ export class ShowcaseFormPage implements OnInit {
   private formBuilder = inject(FormBuilder);
 
   protected form = this.formBuilder.group({
-    inputText: this.formBuilder.control<string|null>(null),
-    inputPassword: this.formBuilder.control<string|null>(null),
-    inputEmail: this.formBuilder.control<string|null>(null),
+    inputText: this.formBuilder.control<string|null>(null,{
+      validators: [
+        Validators.minLength(3),
+        Validators.maxLength(100)
+      ], updateOn: 'blur'
+    }),
+    inputPassword: this.formBuilder.control<string|null>(null,{
+      validators: [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.maxLength(30)
+      ], updateOn: 'blur'
+    }),
+    inputEmail: this.formBuilder.control<string|null>(null,{
+      validators: [
+        Validators.required,
+        Validators.email,
+        Validators.maxLength(300)
+      ], updateOn: 'blur'
+    }),
     inputSearch: this.formBuilder.control<string|null>(null),
     textArea: this.formBuilder.control<string|null>(null)
   });
 
   ngOnInit(): void {
-    this.form.get('inputText')?.valueChanges.subscribe(value => {
-      console.log('Form value changed:', value);
-      this.form.get('inputText')?.setErrors({
-        required: true
-      });
-    });
-
-    //this.form.disable();
+    
   }
 
 }

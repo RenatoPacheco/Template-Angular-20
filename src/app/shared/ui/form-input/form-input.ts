@@ -317,7 +317,7 @@ export class FormInput implements ControlValueAccessor {
 
   protected classComputed = computed(() => {
     const classVal = this._class();
-    return `${classVal}`;
+    return `form-group mb-3 ${classVal}`;
   });
 
   protected inputClassComputed = computed(() => {

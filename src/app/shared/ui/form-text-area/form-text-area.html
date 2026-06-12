@@ -1,28 +1,26 @@
-<div class="mb-3">
-    <label app-label 
-        [for]="idComputed()"
-        [text]="labelComputed()"
-        [error]="errorComputed()"
-        [helper]="helperComputed()"></label>
-    <div class="form-textarea-field"
-        [class.action-clear]="hasValueComputed()">
-        <textarea #textarea [(ngModel)]="value"
-            (blur)="onTouched()"
-            [disabled]="disabledComputed()"
-            [readonly]="readonlyComputed()"
-            [class]="textAreaClassComputed()" 
-            [id]="idComputed()"
-            [placeholder]="placeholderComputed()"
-            [rows]="rowsComputed()">
-        </textarea>
-        <button app-button
-            class="action-clear"
-            title="clique para limpar o valor"
-            theme="transparent"
-            type="button"
-            (click)="clear()">
-            <i class="fa fa-times"></i>
-        </button>
-    </div>
-    <ng-content></ng-content>
+<label app-label 
+    [for]="idComputed()"
+    [text]="labelComputed()"
+    [error]="errorComputed()"
+    [helper]="helperComputed()"></label>
+<div class="form-textarea-field"
+    [class.action-clear]="hasValueComputed()">
+    <textarea #textarea [(ngModel)]="value"
+        (blur)="onTouched()"
+        [disabled]="disabledComputed()"
+        [readonly]="readonlyComputed()"
+        [class]="textAreaClassComputed()" 
+        [id]="idComputed()"
+        [placeholder]="placeholderComputed()"
+        [rows]="rowsComputed()">
+    </textarea>
+    <button app-button
+        class="action-clear"
+        title="clique para limpar o valor"
+        theme="transparent"
+        type="button"
+        (click)="clear()">
+        <i class="fa fa-times"></i>
+    </button>
 </div>
+<ng-content></ng-content>

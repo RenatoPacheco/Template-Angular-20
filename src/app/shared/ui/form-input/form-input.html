@@ -1,46 +1,44 @@
-<div class="mb-3">
-    <label app-label 
-        [for]="idComputed()"
-        [text]="labelComputed()"
-        [error]="errorComputed()"
-        [helper]="helperComputed()"></label>
-    <div class="form-input-field"
-        [class.action-clear]="hasValueComputed()"
-        [class.action-show]="showSecretComputed()"
-        [class.action-hide]="hideSecretComputed()">
-        <input #input [(ngModel)]="value"
-            (blur)="onTouched()"
-            [disabled]="disabledComputed()"
-            [readonly]="readonlyComputed()"
-            [autocomplete]="autocompleteComputed()"
-            [type]="typeComputed()" 
-            [class]="inputClassComputed()" 
-            [id]="idComputed()"
-            [placeholder]="placeholderComputed()" />
-        <button app-button
-            class="action-clear"
-            title="clique para limpar o valor"
-            theme="transparent"
-            type="button"
-            (click)="clear()">
-            <i class="fa fa-times"></i>
-        </button>
-        <button app-button
-            class="action-hide"
-            theme="transparent"
-            type="button"
-            title="clique para ocular o valor"
-            (click)="onToggleSecret()">
-            <i class="fa fa-eye"></i>
-        </button>
-        <button app-button
-            class="action-show"
-            theme="transparent"
-            type="button"
-            title="clique para mostrar o valor"
-            (click)="onToggleSecret()">
-            <i class="fa fa-eye-slash"></i>
-        </button>
-    </div>
-    <ng-content></ng-content>
+<label app-label 
+    [for]="idComputed()"
+    [text]="labelComputed()"
+    [error]="errorComputed()"
+    [helper]="helperComputed()"></label>
+<div class="form-input-field"
+    [class.action-clear]="hasValueComputed()"
+    [class.action-show]="showSecretComputed()"
+    [class.action-hide]="hideSecretComputed()">
+    <input #input [(ngModel)]="value"
+        (blur)="onTouched()"
+        [disabled]="disabledComputed()"
+        [readonly]="readonlyComputed()"
+        [autocomplete]="autocompleteComputed()"
+        [type]="typeComputed()" 
+        [class]="inputClassComputed()" 
+        [id]="idComputed()"
+        [placeholder]="placeholderComputed()" />
+    <button app-button
+        class="action-clear"
+        title="clique para limpar o valor"
+        theme="transparent"
+        type="button"
+        (click)="clear()">
+        <i class="fa fa-times"></i>
+    </button>
+    <button app-button
+        class="action-hide"
+        theme="transparent"
+        type="button"
+        title="clique para ocular o valor"
+        (click)="onToggleSecret()">
+        <i class="fa fa-eye"></i>
+    </button>
+    <button app-button
+        class="action-show"
+        theme="transparent"
+        type="button"
+        title="clique para mostrar o valor"
+        (click)="onToggleSecret()">
+        <i class="fa fa-eye-slash"></i>
+    </button>
 </div>
+<ng-content></ng-content>

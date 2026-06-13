@@ -124,19 +124,19 @@ export class FormInput implements ControlValueAccessor, OnInit  {
   //endregion
 
   public isValid = computed(() => {
-    return this._status() == 'VALID';
+    return this._status() === 'VALID';
   });
 
   public isInvalid = computed(() => {
-    return this._status() == 'INVALID';
+    return this._status() === 'INVALID';
   });
 
   public isPending = computed(() => {
-    return this._status() == 'PENDING';
+    return this._status() === 'PENDING';
   });
 
   public isDisabled = computed(() => {
-    return this._status() == 'DISABLED';
+    return this._status() === 'DISABLED';
   });
   
   private readonly _status = signal<InputStatus>('VALID');

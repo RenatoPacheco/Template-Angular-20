@@ -1,4 +1,4 @@
-import { Component, computed, Input, signal, untracked } from '@angular/core';
+import { Component, computed, EventEmitter, Input, output, Output, signal, untracked } from '@angular/core';
 import { transformBoolean } from '@app/shared/utils';
 
 @Component({
@@ -14,27 +14,8 @@ import { transformBoolean } from '@app/shared/utils';
 })
 export class Label {
 
-  private _helper = signal<(() => void) | null>(null);
-  @Input()
-  public set helper(value: (() => void) | null) {
-    if (value !== this.helper) {
-      this._helper.set(value || null);
-    }
-  }
-  public get helper(): (() => void) | null {
-    return untracked(() => this._helper());
-  }
-
-  private _error = signal<(() => void) | null>(null);
-  @Input()
-  public set error(value: (() => void) | null) {
-    if (value !== this.error) {
-      this._error.set(value || null);
-    }
-  }
-  public get error(): (() => void) | null {
-    return untracked(() => this._error());
-  }
+  public helper = output<void>();
+  public error = output<void>();
 
   private _text = signal('&nbsp;');
   @Input()
@@ -80,32 +61,26 @@ export class Label {
     return untracked(() => this._title());
   }
 
-  public _isValid = signal(false);
-  @Input({ 
-    alias: 'is-valid',
-    transform: transformBoolean 
-  })
-  public set isValid(value: boolean) {
-    if (value !== this.isValid) {
-      this._isValid.set(value);
+  private _enabledError = signal(false);
+  @Input({ transform: transformBoolean })
+  public set enabledError(value: boolean) {
+    if (value !== this._enabledError()) {
+      this._enabledError.set(value);
     }
   }
-  public get isValid(): boolean {
-    return untracked(() => this._isValid());
+  public get enabledError(): boolean {
+    return untracked(() => this._enabledError());
   }
 
-  public _isInvalid = signal(false);
-  @Input({ 
-    alias: 'is-invalid',
-    transform: transformBoolean 
-  })
-  public set isInvalid(value: boolean) {
-    if (value !== this.isInvalid) {
-      this._isInvalid.set(value);
+  private _enabledHelper = signal(false);
+  @Input({ transform: transformBoolean })
+  public set enabledHelper(value: boolean) {
+    if (value !== this._enabledHelper()) {
+      this._enabledHelper.set(value);
     }
   }
-  public get isInvalid(): boolean {
-    return untracked(() => this._isInvalid());
+  public get enabledHelper(): boolean {
+    return untracked(() => this._enabledHelper());
   }
 
   protected textComputed = computed(() => {
@@ -114,16 +89,7 @@ export class Label {
 
   protected classComputed = computed(() => {
     const classVal = this._class();
-    const isInvalidVal = this._isInvalid();
-    const isValidVal = this._isValid();
-
     let result = classVal;
-    if (isInvalidVal) {
-      result += ' is-invalid';
-    } else if (isValidVal) {
-      result += ' is-valid';
-    }
-
     return `form-label ${result}`;
   });
 
@@ -135,27 +101,19 @@ export class Label {
     return this._title();
   });
 
-  protected hasHelperComputed = computed(() => {
-    return this._helper() !== null;
+  protected enabledHelperComputed = computed(() => {
+    return this._enabledHelper();
   });
 
-  protected hasErrorComputed = computed(() => {
-    const isInvalidVal = this._isInvalid();
-    const errorVal = this._error();
-    return errorVal !== null && isInvalidVal;
-   });
-
+  protected enabledErrorComputed = computed(() => {
+    return this._enabledError();
+  });
+  
   protected onHelper(): void {
-    const helperVal = this._helper();
-    if (helperVal) {
-      helperVal();
-    }
+    this.helper.emit();
   }
 
   protected onError(): void {
-    const errorVal = this._error();
-    if (errorVal) {
-      errorVal();
-    }
+    this.error.emit();
   }
 }

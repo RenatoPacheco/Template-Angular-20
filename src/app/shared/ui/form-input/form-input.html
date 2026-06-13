@@ -1,9 +1,7 @@
 <label app-label 
     [for]="idComputed()"
     [text]="labelComputed()"
-    [error]="errorComputed()"
-    [helper]="helperComputed()"
-    [is-invalid]="isInvalid()"></label>
+    [enabledError]="isInvalid()"></label>
 <div class="form-input-field"
     [class.action-clear]="hasValueComputed()"
     [class.action-show]="showSecretComputed()"

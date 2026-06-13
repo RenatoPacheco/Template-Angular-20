@@ -2,25 +2,4 @@
 
 @import 'bootstrap/scss/bootstrap';
 
-input, textarea {
-  &[readonly], &[readonly]:focus  {
-    background-color: var(--bs-secondary-bg);
-    opacity: 1;
-    cursor: default;
-  }
-}
-
-.form-group {
-  &.ng-invalid.ng-touched.ng-dirty {
-      label {
-          color: var(--bs-form-invalid-color);
-      }
-      input, textarea {
-          border-color: var(--bs-form-invalid-border-color);
-          &:focus {
-          border-color: var(--bs-form-invalid-border-color);
-          box-shadow: 0 0 0 .25rem rgba(220, 53, 69, .25);
-          }
-      }
-  }
-}
+@import 'forms';

@@ -1,22 +1,22 @@
 <label app-label 
-    [for]="idComputed()"
-    [text]="labelComputed()"
-    [enabledError]="isInvalid()"></label>
+    [for]="_id()"
+    [text]="_label()"
+    [enabledError]="showErrorComputed()"></label>
 <div class="form-input-field"
     [class.action-clear]="hasValueComputed()"
     [class.action-show]="showSecretComputed()"
     [class.action-hide]="hideSecretComputed()">
     <input 
-        [value]="valueComputed()"
+        [value]="_value()"
         (blur)="onBlur()"
         (input)="onInput($event)"
-        [disabled]="disabledComputed()"
-        [readonly]="readonlyComputed()"
-        [autocomplete]="autocompleteComputed()"
+        [disabled]="_disabled()"
+        [readonly]="_readonly()"
+        [autocomplete]="_autocomplete()"
         [type]="typeComputed()" 
         [class]="inputClassComputed()" 
-        [id]="idComputed()"
-        [placeholder]="placeholderComputed()" />
+        [id]="_id()"
+        [placeholder]="_placeholder()" />
     <button app-button
         class="action-clear"
         title="clique para limpar o valor"
@@ -43,4 +43,4 @@
     </button>
 </div>
 <ng-content></ng-content>
-{{status}} : {{valueComputed()}}
+{{status}} : {{_value()}}

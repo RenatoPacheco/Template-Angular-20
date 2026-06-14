@@ -76,24 +76,11 @@ export class FormInput implements ControlValueAccessor, OnInit  {
   }
 
   ngOnInit(): void {
+    this.statusUpdate();
     this.ngControl?.control?.events
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe(event  => {
-      console.warn('Disparando evento de controle');
-      switch (true) {
-        case event instanceof ValueChangeEvent:
-          console.log('Valor mudou', event.value);
-          break;
-        case event instanceof StatusChangeEvent:
-          console.log('Status mudou', event.status);
-          break;
-        case event instanceof TouchedChangeEvent:
-          console.log('Touched mudou', event.touched);
-          break;
-        case event instanceof PristineChangeEvent:
-          console.log('Pristine mudou', event.pristine);
-          break;
-      }
+      this.statusUpdate();
     });
   }
 
@@ -118,10 +105,45 @@ export class FormInput implements ControlValueAccessor, OnInit  {
   }
 
   public setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
+    if (isDisabled !== this.disabled) {
+      this._disabled.set(isDisabled);
+    }
   }
   
   //endregion
+
+  private statusUpdate():void {
+    const control = this.ngControl?.control;
+    if (control) {
+      if (this.status !== control.status) {
+        this._status.set(control.status);
+      }
+      if (this.pristine !== control.pristine) {
+        this._pristine.set(control.pristine);
+      }
+      if (this.touched !== control.touched) {
+        this._touched.set(control.touched);
+      }
+      if (this.disabled !== control.disabled) {
+        this._disabled.set(control.disabled);
+      }
+    }
+  }
+
+  private readonly _status = signal<InputStatus>('VALID');
+  public get status(): InputStatus {
+    return untracked(() => this._status());
+  }
+
+  protected readonly _pristine = signal(true);
+  public get pristine(): boolean {
+    return untracked(() => this._pristine());
+  }
+
+  protected readonly _touched = signal(false);
+  public get touched(): boolean {
+    return untracked(() => this._touched());
+  }
 
   public isValid = computed(() => {
     return this._status() === 'VALID';
@@ -138,29 +160,26 @@ export class FormInput implements ControlValueAccessor, OnInit  {
   public isDisabled = computed(() => {
     return this._status() === 'DISABLED';
   });
-  
-  private readonly _status = signal<InputStatus>('VALID');
-  private set status(value: InputStatus) {
-    if (value !== this.status) {
-      this._status.set(value);
-    }
-  }
-  public get status(): InputStatus {
-    return untracked(() => this._status());
-  }
 
-  private readonly _value = signal<string>('');
+  protected showErrorComputed = computed(() => {
+    const invalidVal = this._status() === 'INVALID';
+    const touchedVal = this._touched();
+    const dirtyVal = !this._pristine();
+    return invalidVal && touchedVal && dirtyVal;
+  });
+
+  protected readonly _value = signal<string>('');
   @Input() public get value(): string {
     return untracked(() => this._value());
   }
   public set value(value: string) {      
-        if (this.value !== value) {
-          this.writeValue(value);
-          this.onChange(value);
-        }
+    if (this.value !== value) {
+      this.writeValue(value);
+      this.onChange(value);
+    }
   }
 
-  private _type = signal<InputType>('text');
+  protected readonly _type = signal<InputType>('text');
   @Input()
   public set type(value: InputType) {
     if (value !== this.type) {
@@ -171,7 +190,7 @@ export class FormInput implements ControlValueAccessor, OnInit  {
     return untracked(() => this._type());
   }
 
-  private _id = signal(`${crypto.randomUUID()}`);
+  protected readonly _id = signal(`${crypto.randomUUID()}`);
   @Input()
   public set id(value: string) {
     if (value !== this.id) {
@@ -182,7 +201,7 @@ export class FormInput implements ControlValueAccessor, OnInit  {
     return untracked(() => this._id());
   }
 
-  private _class = signal('');
+  protected readonly _class = signal('');
   @Input()
   public set class(value: string) {
     if (value !== this.class) {
@@ -193,7 +212,7 @@ export class FormInput implements ControlValueAccessor, OnInit  {
     return untracked(() => this._class());
   }
 
-  private _placeholder = signal('');
+  protected readonly _placeholder = signal('');
   @Input()
   public set placeholder(value: string) {
     if (value !== this.placeholder) {
@@ -204,7 +223,7 @@ export class FormInput implements ControlValueAccessor, OnInit  {
     return untracked(() => this._placeholder());
   }
 
-  private _readonly = signal(false);
+  protected readonly _readonly = signal(false);
   @Input({ transform: transformBoolean })
   public set readonly(value: boolean) {
     if (value !== this.readonly) {
@@ -215,7 +234,7 @@ export class FormInput implements ControlValueAccessor, OnInit  {
     return untracked(() => this._readonly());
   }
 
-  private _autocomplete = signal<InputAutocomplete>('off');
+  protected readonly _autocomplete = signal<InputAutocomplete>('off');
   @Input()
   public set autocomplete(value: InputAutocomplete) {
     if (value !== this.autocomplete) {
@@ -226,7 +245,7 @@ export class FormInput implements ControlValueAccessor, OnInit  {
     return untracked(() => this._autocomplete());
   }
 
-  private _disabled = signal(false);
+  protected readonly _disabled = signal(false);
   @Input({ transform: transformBoolean })
   public set disabled(value: boolean) {
     if (value !== this.disabled) {
@@ -237,7 +256,7 @@ export class FormInput implements ControlValueAccessor, OnInit  {
     return untracked(() => this._disabled());
   }
 
-  private _controlSecret = signal(false);
+  protected readonly _controlSecret = signal(false);
   @Input({ 
     alias: 'control-secret', 
     transform: transformBoolean 
@@ -251,7 +270,7 @@ export class FormInput implements ControlValueAccessor, OnInit  {
     return untracked(() => this._controlSecret());
   }
 
-  private _size = signal<InputSize>('md');
+  protected readonly _size = signal<InputSize>('md');
   @Input()
   public set size(value: InputSize) {
     if (value !== this.size) {
@@ -262,29 +281,7 @@ export class FormInput implements ControlValueAccessor, OnInit  {
     return untracked(() => this._size());
   }
 
-  private _helper = signal<(() => void) | null>(null);
-  @Input()
-  public set helper(value: (() => void) | null) {
-    if (value !== this.helper) {
-      this._helper.set(value || null);
-    }
-  }
-  public get helper(): (() => void) | null {
-    return untracked(() => this._helper());
-  }
-
-  private _error = signal<(() => void) | null>(null);
-  @Input()
-  public set error(value: (() => void) | null) {
-    if (value !== this.error) {
-      this._error.set(value || null);
-    }
-  }
-  public get error(): (() => void) | null {
-    return untracked(() => this._error());
-  }
-
-  private _label = signal('');
+  protected readonly _label = signal('');
   @Input({ required: true })
   public set label(value: string) {
     if (value !== this.label) {
@@ -295,7 +292,29 @@ export class FormInput implements ControlValueAccessor, OnInit  {
     return untracked(() => this._label());
   }
 
-  private _secretHasBeenReversed = signal(false);
+  protected readonly _enabledError = signal(true);
+  @Input({ transform: transformBoolean })
+  public set enabledError(value: boolean) {
+    if (value !== this._enabledError()) {
+      this._enabledError.set(value);
+    }
+  }
+  public get enabledError(): boolean {
+    return untracked(() => this._enabledError());
+  }
+
+  protected readonly _enabledHelper = signal(false);
+  @Input({ transform: transformBoolean })
+  public set enabledHelper(value: boolean) {
+    if (value !== this._enabledHelper()) {
+      this._enabledHelper.set(value);
+    }
+  }
+  public get enabledHelper(): boolean {
+    return untracked(() => this._enabledHelper());
+  }
+
+  protected readonly _secretHasBeenReversed = signal(false);
   protected onToggleSecret(): void {
     var currentValue = this._secretHasBeenReversed();
     this._secretHasBeenReversed.set(!currentValue);
@@ -321,25 +340,6 @@ export class FormInput implements ControlValueAccessor, OnInit  {
     ? true : false;
 
     return secretHasBeenReversedVal ? !result : result;
-  });
-
-  protected labelComputed = computed(() => {
-    const labelVal = this._label();
-    return labelVal ? labelVal : 'Label';
-  });
-
-  protected errorComputed = computed(() => {
-    const errorVal = this._error();
-    return errorVal ? errorVal : null;
-  });
-
-  protected helperComputed = computed(() => {
-    const helperVal = this._helper();
-    return helperVal ? helperVal : null;
-  });
-
-  protected idComputed = computed(() => {
-    return this._id();
   });
 
   protected typeComputed = computed(() => {
@@ -369,26 +369,6 @@ export class FormInput implements ControlValueAccessor, OnInit  {
   protected inputClassComputed = computed(() => {
     const sizeVal = this._size();
     return `form-control form-control-${sizeVal}`;
-  });
-
-  protected placeholderComputed = computed(() => {
-    return this._placeholder();
-  });
-
-  protected disabledComputed = computed(() => {
-    return this._disabled();
-  });
-
-  protected readonlyComputed = computed(() => {
-    return this._readonly();
-  });
-
-  protected autocompleteComputed = computed(() => {
-    return this._autocomplete();
-  });
-
-  protected valueComputed = computed(() => {
-    return this._value();
   });
 
   protected hasValueComputed = computed(() => {
@@ -421,5 +401,4 @@ export class FormInput implements ControlValueAccessor, OnInit  {
   protected onBlur(): void { 
     this.onTouched(); 
   }
-
 }

@@ -3,6 +3,7 @@ import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angu
 
 import { FormInput } from '@app/shared/ui';
 import { FormTextArea } from '@app/shared/ui/form-text-area/form-text-area';
+import { CustonValidators } from '@app/shared/validators';
 
 @Component({
   standalone: true,
@@ -28,8 +29,7 @@ export class ShowcaseFormPage implements OnInit {
     inputPassword: this.formBuilder.control<string|null>(null,{
       validators: [
         Validators.required,
-        Validators.minLength(8),
-        Validators.maxLength(30)
+        CustonValidators.pasword
       ], updateOn: 'blur'
     }),
     inputEmail: this.formBuilder.control<string|null>(null,{

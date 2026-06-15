@@ -1,10 +1,11 @@
 import { Component, computed, DestroyRef, effect, ElementRef, inject, Input, OnInit, output, Renderer2, signal, untracked, ViewChild } from '@angular/core';
 
 import { Label } from '../label/label';
-import { ControlValueAccessor, FormsModule, NgControl, PristineChangeEvent, StatusChangeEvent, TouchedChangeEvent, ValueChangeEvent } from '@angular/forms';
+import { ControlValueAccessor, FormsModule, NgControl, PristineChangeEvent, StatusChangeEvent, TouchedChangeEvent, ValidationErrors, ValueChangeEvent } from '@angular/forms';
 import { Button } from '../button/button';
 import { transformBoolean } from '@app/shared/utils';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ValidatorService } from '@app/shared/services';
 
 type InputType = 'text' | 'password' | 'email' | 'number' | 'search' | 'tel' | 'url';
 type InputSize = 'sm' | 'md' | 'lg';
@@ -84,12 +85,17 @@ export class FormInput implements ControlValueAccessor, OnInit  {
     });
   }
 
+  private readonly validator = inject(ValidatorService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly ngControl = inject(NgControl, { self: true, optional: true });
 
   
   public helper = output<void>();
-  public error = output<void>();
+  public error = output<{
+    messages: string[],
+    label: string,
+    errors: ValidationErrors | null
+  }>();
 
   //region ControlValueAccessor
 
@@ -409,9 +415,13 @@ export class FormInput implements ControlValueAccessor, OnInit  {
   protected onError(): void {
     const errors = this.ngControl?.control?.errors;
     if (errors) {
-      console.log('Errors:', errors);
+      var messages = this.validator.getMessages(errors, this.label);
+      this.error.emit({
+        messages: messages,
+        label: this.label,
+        errors: errors
+      });
     }
-    this.error.emit();
   }
 
   protected onHelper(): void {

@@ -21,7 +21,17 @@ export function passwordValidator(): ValidatorFn {
     const errors: ValidationErrors = {};
 
     if (password.length < 8) {
-      errors['minLength'] = true;
+      errors['minLength'] = {
+        actualLength: password.length,
+        requiredLength: 8
+      };
+    }
+
+    if (password.length < 30) {
+      errors['maxlength'] = {
+        actualLength: password.length,
+        requiredLength: 30
+      };
     }
 
     if (!/[A-Z]/.test(password)) {

@@ -1,13 +1,14 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 export function compareValidator(
-  compareTo: string
+  compareRef: string,
+  compareLabel: string
 ): ValidatorFn {
 
   return (control: AbstractControl): ValidationErrors | null => {
 
     const value = control.value;
-    const compareToValue = control.parent?.get(compareTo)?.value;
+    const compareToValue = control.parent?.get(compareRef)?.value;
 
     if (!value) {
       return null;
@@ -16,7 +17,8 @@ export function compareValidator(
     if (value !== compareToValue) {
       return { 
         compare: true,
-        compareTo: compareTo
+        compareRef: compareRef,
+        compareLabel: compareLabel
       };
     }
 

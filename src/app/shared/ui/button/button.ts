@@ -22,7 +22,7 @@ type ButtonTheme = InputVariant|ButtonAction|'link'|'transparent';
   styleUrl: './button.scss',
   host: {
     '[title]': 'titleComputed()',
-    '[class]': 'classComputed()',
+    '[class]': 'hostClass()',
     '[type]': 'typeComputed()',
     '[disabled]': 'disabledComputed()'
   }
@@ -128,7 +128,7 @@ export class Button {
     return this._disabled();
   });
 
-  protected classComputed = computed(() => {
+  protected hostClass = computed(() => {
     const classVal = this._class();
     const themeVal = this.themes[this._theme()] || this.themes[''];
     const sizeVal = this.sizes[this._size()] || '';

@@ -1,16 +1,22 @@
 <label app-label 
-    [for]="idComputed()"
-    [text]="labelComputed()"></label>
+    [for]="_id()"
+    [text]="_label()"
+    (error)="onError()"
+    (helper)="onHelper()"
+    [enabled-error]="showErrorComputed()"
+    [enabled-helper]="_enabledHelper()"></label>
 <div class="form-text-area"
     [class.action-clear]="hasValueComputed()">
-    <textarea #textarea [(ngModel)]="value"
-        (blur)="onTouched()"
-        [disabled]="disabledComputed()"
-        [readonly]="readonlyComputed()"
-        [class]="textAreaClassComputed()" 
-        [id]="idComputed()"
-        [placeholder]="placeholderComputed()"
-        [rows]="rowsComputed()">
+    <textarea #element
+        [value]="_value()"
+        (blur)="onBlur()"
+        (input)="onInput($event)"
+        [disabled]="_disabled()"
+        [readonly]="_readonly()"
+        [class]="elementClass()" 
+        [id]="_id()"
+        [rows]="_rows()"
+        [placeholder]="_placeholder()">
     </textarea>
     <button app-button
         class="action-clear"

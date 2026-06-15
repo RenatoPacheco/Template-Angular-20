@@ -1,4 +1,4 @@
-import { Component, computed, Input, OnInit, signal, untracked } from '@angular/core';
+import { Component, computed, Input, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { transformBoolean } from '@app/shared/utils';
@@ -62,10 +62,10 @@ type InputAutocomplete =
   templateUrl: './form-input-text.html',
   styleUrl: './form-input-text.scss',
   host: {
-    '[class]': 'classComputed()'
+    '[class]': 'hostClass()'
   }
 })
-export class FormInput extends FormBase<string> implements OnInit  {
+export class FormInput extends FormBase<string>  {
   
   constructor() {
     super();
@@ -125,14 +125,6 @@ export class FormInput extends FormBase<string> implements OnInit  {
     this.element?.nativeElement.focus()
   }
 
-  protected showErrorComputed = computed(() => {
-    const invalidVal = this._status() === 'INVALID';
-    const touchedVal = this._touched();
-    const dirtyVal = !this._pristine();
-    const enabledVal = this._enabledError();
-    return enabledVal && invalidVal && touchedVal && dirtyVal;
-  });
-
   protected showSecretComputed = computed(() => {
     const typeVal = this._type();
     const controlSecretVal = this._controlSecret();
@@ -174,12 +166,12 @@ export class FormInput extends FormBase<string> implements OnInit  {
     return typeVal;
   });
 
-  protected classComputed = computed(() => {
+  protected hostClass = computed(() => {
     const classVal = this._class();
     return `form-group mb-3 ${classVal}`;
   });
 
-  protected inputClassComputed = computed(() => {
+  protected elementClass = computed(() => {
     const sizeVal = this._size();
     return `form-control form-control-${sizeVal}`;
   });

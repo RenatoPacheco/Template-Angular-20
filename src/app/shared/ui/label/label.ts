@@ -7,7 +7,7 @@ import { transformBoolean } from '@app/shared/utils';
   templateUrl: './label.html',
   styleUrl: './label.scss',
   host: {
-    '[class]': 'classComputed()',
+    '[class]': 'hostClass()',
     '[for]': 'forComputed()',
     '[title]': 'titleComputed()'
   }
@@ -93,7 +93,7 @@ export class Label {
     return this._text();
   });
 
-  protected classComputed = computed(() => {
+  protected hostClass = computed(() => {
     const classVal = this._class();
     let result = classVal;
     return `form-label ${result}`;

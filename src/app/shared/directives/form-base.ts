@@ -225,6 +225,14 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
     return valueVal || valueVal === false ? false : true;
   });
 
+  protected showErrorComputed = computed(() => {
+    const invalidVal = this._status() === 'INVALID';
+    const touchedVal = this._touched();
+    const dirtyVal = !this._pristine();
+    const enabledVal = this._enabledError();
+    return enabledVal && invalidVal && touchedVal && dirtyVal;
+  });
+
   public clear(value: T|null = null): void {
      const control = this.ngControl?.control;
 

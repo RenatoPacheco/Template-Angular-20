@@ -19,7 +19,7 @@ Exemplo mínimo:
 ## Como funciona
 O componente calcula automaticamente:
 
-- classe CSS final (`classComputed`): tema + tamanho + classe extra
+- classe CSS final (`hostClass`): tema + tamanho + classe extra
 - ícone (`iconComputed`): pelo `theme` ou spinner quando `loading=true`
 - texto (`textComputed`): `text` manual ou texto padrão por ação
 - título (`titleComputed`): `title` manual ou título automático
@@ -82,7 +82,7 @@ Valores de ação (`ButtonAction`):
 ### `class`
 - Tipo atual no componente: `boolean` com transform `transformBoolean`
 - Comportamento esperado para classe extra: `string`
-- Observação: a implementação atual concatena `class` como se fosse string no `classComputed`.
+- Observação: a implementação atual concatena `class` como se fosse string no `hostClass`.
 
 ## Mapeamentos internos
 

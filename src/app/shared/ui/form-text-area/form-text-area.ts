@@ -1,12 +1,11 @@
-import { Component, computed, ElementRef, inject, Input, Renderer2, signal, untracked, ViewChild } from '@angular/core';
+import { Component, computed, Input, signal, untracked } from '@angular/core';
 
-import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
-import { transformBoolean, transformNumber } from '@app/shared/utils';
+import { FormsModule } from '@angular/forms';
+import { transformNumber } from '@app/shared/utils';
 
 import { Button } from '../button/button';
 import { Label } from '../label/label';
-
-type InputSize = 'sm' | 'md' | 'lg';
+import { FormBase } from '@app/shared/directives';
 
 @Component({
   standalone: true,
@@ -15,81 +14,16 @@ type InputSize = 'sm' | 'md' | 'lg';
   templateUrl: './form-text-area.html',
   styleUrl: './form-text-area.scss',
   host: {
-    '[class]': 'classComputed()'
+    '[class]': 'hostClass()'
   }
 })
-export class FormTextArea implements ControlValueAccessor {
+export class FormTextArea extends FormBase<string>  {
   
   constructor() {
-    if (this.ngControl) {
-      this.ngControl.valueAccessor = this;
-    }
+    super();
   }
-
-  private readonly renderer = inject(Renderer2);
-  private readonly host = inject(ElementRef<HTMLDivElement>);
-  private readonly ngControl = inject(NgControl, { self: true, optional: true });
-
-  @ViewChild('textarea', {static: true})
-  private element!: ElementRef<HTMLTextAreaElement>;
-
-  //region ControlValueAccessor
-
-  public onChange: (value: string) => void = () => {};
-  public onTouched: () => void = () => {}
-
-  public writeValue(value: string): void {
-    if (value !== this.value) {
-      this._value.set(value);
-      this.onChange(value);
-    }
-  }
-
-  public registerOnChange(fn: (value: string) => void): void {
-    this.onChange = fn;
-  }
-
-  public registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
-  }
-
-  public setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
-  }
-
-  //endregion
-
-  private readonly _value = signal<string>('');
-  @Input() public get value(): string {
-    return untracked(() => this._value());
-  }
-  public set value(value: string) {
-      this.writeValue(value);
-  }
-
-  private _id = signal(`${crypto.randomUUID()}`);
-  @Input()
-  public set id(value: string) {
-    if (value !== this.id) {
-      this._id.set(value);
-    }
-  }
-  public get id(): string {
-    return untracked(() => this._id());
-  }
-
-  private _class = signal('');
-  @Input()
-  public set class(value: string) {
-    if (value !== this.class) {
-      this._class.set(value);
-    }
-  }
-  public get class(): string {
-    return untracked(() => this._class());
-  }
-
-  private _placeholder = signal('');
+  
+  protected readonly _placeholder = signal('');
   @Input()
   public set placeholder(value: string) {
     if (value !== this.placeholder) {
@@ -98,39 +32,6 @@ export class FormTextArea implements ControlValueAccessor {
   }
   public get placeholder(): string {
     return untracked(() => this._placeholder());
-  }
-
-  private _readonly = signal(false);
-  @Input({ transform: transformBoolean })
-  public set readonly(value: boolean) {
-    if (value !== this.readonly) {
-      this._readonly.set(value);
-    }
-  }
-  public get readonly(): boolean {
-    return untracked(() => this._readonly());
-  }
-
-  private _disabled = signal(false);
-  @Input({ transform: transformBoolean })
-  public set disabled(value: boolean) {
-    if (value !== this.disabled) {
-      this._disabled.set(value);
-    }
-  }
-  public get disabled(): boolean {
-    return untracked(() => this._disabled());
-  }
-
-  private _size = signal<InputSize>('md');
-  @Input()
-  public set size(value: InputSize) {
-    if (value !== this.size) {
-      this._size.set(value);
-    }
-  }
-  public get size(): InputSize {
-    return untracked(() => this._size());
   }
 
   public _rows = signal(5);
@@ -143,104 +44,14 @@ export class FormTextArea implements ControlValueAccessor {
   public get rows(): number {
     return untracked(() => this._rows());
   }
-
-  private _helper = signal<(() => void) | null>(null);
-  @Input()
-  public set helper(value: (() => void) | null) {
-    if (value !== this.helper) {
-      this._helper.set(value || null);
-    }
-  }
-  public get helper(): (() => void) | null {
-    return untracked(() => this._helper());
-  }
-
-  private _error = signal<(() => void) | null>(null);
-  @Input()
-  public set error(value: (() => void) | null) {
-    if (value !== this.error) {
-      this._error.set(value || null);
-    }
-  }
-  public get error(): (() => void) | null {
-    return untracked(() => this._error());
-  }
-
-  private _label = signal('');
-  @Input({ required: true })
-  public set label(value: string) {
-    if (value !== this.label) {
-      this._label.set(value);
-    }
-  }
-  public get label(): string {
-    return untracked(() => this._label());
-  }
-
-  protected labelComputed = computed(() => {
-    const labelVal = this._label();
-    return labelVal ? labelVal : 'Label';
-  });
-
-  protected errorComputed = computed(() => {
-    const errorVal = this._error();
-    return errorVal ? errorVal : null;
-  });
-
-  protected helperComputed = computed(() => {
-    const helperVal = this._helper();
-    return helperVal ? helperVal : null;
-  });
-
-  protected idComputed = computed(() => {
-    return this._id();
-  });
-
-  protected classComputed = computed(() => {
+  
+  protected hostClass = computed(() => {
     const classVal = this._class();
     return `form-group mb-3 ${classVal}`;
   });
 
-  protected textAreaClassComputed = computed(() => {
+  protected elementClass = computed(() => {
     const sizeVal = this._size();
     return `form-control form-control-${sizeVal}`;
   });
-
-  protected placeholderComputed = computed(() => {
-    return this._placeholder();
-  });
-  
-  protected disabledComputed = computed(() => {
-    return this._disabled();
-  });
-
-  protected readonlyComputed = computed(() => {
-    return this._readonly();
-  });
-  
-  protected valueComputed = computed(() => {
-    return this._value();
-  });
-
-  protected rowsComputed = computed(() => {
-    return this._rows();
-  });
-
-  protected hasValueComputed = computed(() => {
-    const valueVal = this._value();
-    return valueVal ? true : false;
-  });
-
-  protected notHasValueComputed = computed(() => {
-    const valueVal = this._value();
-    return !valueVal;
-  });
-
-  public clear(): void {
-    this.value = '';
-    this.element.nativeElement.focus();
-    this.ngControl?.control?.markAsPristine();
-    this.ngControl?.control?.markAsUntouched();
-  };
-
 }

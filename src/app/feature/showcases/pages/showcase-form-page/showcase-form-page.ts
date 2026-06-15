@@ -19,7 +19,7 @@ export class ShowcaseFormPage implements OnInit {
 
   private formBuilder = inject(FormBuilder);
 
-  protected form = this.formBuilder.group({
+  public readonly form = this.formBuilder.group({
     inputText: this.formBuilder.control<string|null>(null,{
       validators: [
         Validators.minLength(3),

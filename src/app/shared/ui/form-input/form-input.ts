@@ -1,15 +1,16 @@
-import { Component, computed, DestroyRef, effect, ElementRef, inject, Input, OnInit, output, Renderer2, signal, untracked, ViewChild } from '@angular/core';
+import { Component, computed, DestroyRef, inject, Input, OnInit, output, signal, untracked } from '@angular/core';
+import { ControlValueAccessor, FormsModule, NgControl, ValidationErrors } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+import { transformBoolean } from '@app/shared/utils';
+import { ToastService, ValidatorService } from '@app/shared/services';
 
 import { Label } from '../label/label';
-import { ControlValueAccessor, FormsModule, NgControl, PristineChangeEvent, StatusChangeEvent, TouchedChangeEvent, ValidationErrors, ValueChangeEvent } from '@angular/forms';
 import { Button } from '../button/button';
-import { transformBoolean } from '@app/shared/utils';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ToastService, ValidatorService } from '@app/shared/services';
 
 type InputType = 'text' | 'password' | 'email' | 'number' | 'search' | 'tel' | 'url';
 type InputSize = 'sm' | 'md' | 'lg';
-export type InputAutocomplete =
+type InputAutocomplete =
     | 'on'
     | 'off'
     | 'name'
@@ -80,7 +81,7 @@ export class FormInput implements ControlValueAccessor, OnInit  {
     this.statusUpdate();
     this.ngControl?.control?.events
     .pipe(takeUntilDestroyed(this.destroyRef))
-    .subscribe(event  => {
+    .subscribe(() => {
       this.statusUpdate();
     });
   }
@@ -150,34 +151,17 @@ export class FormInput implements ControlValueAccessor, OnInit  {
   public get pristine(): boolean {
     return untracked(() => this._pristine());
   }
+  public get dirty(): boolean {
+    return untracked(() => !this._pristine());
+  }
 
   protected readonly _touched = signal(false);
   public get touched(): boolean {
     return untracked(() => this._touched());
   }
-
-  public isValid = computed(() => {
-    return this._status() === 'VALID';
-  });
-
-  public isInvalid = computed(() => {
-    return this._status() === 'INVALID';
-  });
-
-  public isPending = computed(() => {
-    return this._status() === 'PENDING';
-  });
-
-  public isDisabled = computed(() => {
-    return this._status() === 'DISABLED';
-  });
-
-  protected showErrorComputed = computed(() => {
-    const invalidVal = this._status() === 'INVALID';
-    const touchedVal = this._touched();
-    const dirtyVal = !this._pristine();
-    return invalidVal && touchedVal && dirtyVal;
-  });
+  public get untouched(): boolean {
+    return untracked(() => !this._touched());
+  }
 
   protected readonly _value = signal<string>('');
   @Input() public get value(): string {
@@ -304,7 +288,10 @@ export class FormInput implements ControlValueAccessor, OnInit  {
   }
 
   protected readonly _enabledError = signal(true);
-  @Input({ transform: transformBoolean })
+  @Input({ 
+    transform: transformBoolean,
+    alias: 'enabled-error'
+  })
   public set enabledError(value: boolean) {
     if (value !== this._enabledError()) {
       this._enabledError.set(value);
@@ -315,7 +302,10 @@ export class FormInput implements ControlValueAccessor, OnInit  {
   }
 
   protected readonly _enabledHelper = signal(false);
-  @Input({ transform: transformBoolean })
+  @Input({ 
+    transform: transformBoolean,
+    alias: 'enabled-helper' 
+  })
   public set enabledHelper(value: boolean) {
     if (value !== this._enabledHelper()) {
       this._enabledHelper.set(value);
@@ -329,7 +319,31 @@ export class FormInput implements ControlValueAccessor, OnInit  {
   protected onToggleSecret(): void {
     var currentValue = this._secretHasBeenReversed();
     this._secretHasBeenReversed.set(!currentValue);
-  }
+  }  
+    
+  public isValid = computed(() => {
+    return this._status() === 'VALID';
+  });
+
+  public isInvalid = computed(() => {
+    return this._status() === 'INVALID';
+  });
+
+  public isPending = computed(() => {
+    return this._status() === 'PENDING';
+  });
+
+  public isDisabled = computed(() => {
+    return this._status() === 'DISABLED';
+  });
+
+  protected showErrorComputed = computed(() => {
+    const invalidVal = this._status() === 'INVALID';
+    const touchedVal = this._touched();
+    const dirtyVal = !this._pristine();
+    const enabledVal = this._enabledError();
+    return enabledVal && invalidVal && touchedVal && dirtyVal;
+  });
 
   protected showSecretComputed = computed(() => {
     const typeVal = this._type();
@@ -416,7 +430,7 @@ export class FormInput implements ControlValueAccessor, OnInit  {
   protected onError(): void {
     const errors = this.ngControl?.control?.errors;
     if (errors) {
-      var messages = this.validator.getMessages(errors, this.label);
+      var messages = this.validator.getMessages(errors);
       messages.forEach(element => {
         this.toast.error(element);
       });

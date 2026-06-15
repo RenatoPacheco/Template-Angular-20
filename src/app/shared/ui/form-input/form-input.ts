@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, effect, ElementRef, inject, Input, OnInit, Renderer2, signal, untracked, ViewChild } from '@angular/core';
+import { Component, computed, DestroyRef, effect, ElementRef, inject, Input, OnInit, output, Renderer2, signal, untracked, ViewChild } from '@angular/core';
 
 import { Label } from '../label/label';
 import { ControlValueAccessor, FormsModule, NgControl, PristineChangeEvent, StatusChangeEvent, TouchedChangeEvent, ValueChangeEvent } from '@angular/forms';
@@ -86,6 +86,10 @@ export class FormInput implements ControlValueAccessor, OnInit  {
 
   private readonly destroyRef = inject(DestroyRef);
   private readonly ngControl = inject(NgControl, { self: true, optional: true });
+
+  
+  public helper = output<void>();
+  public error = output<void>();
 
   //region ControlValueAccessor
 
@@ -400,5 +404,17 @@ export class FormInput implements ControlValueAccessor, OnInit  {
   
   protected onBlur(): void { 
     this.onTouched(); 
+  }
+
+  protected onError(): void {
+    const errors = this.ngControl?.control?.errors;
+    if (errors) {
+      console.log('Errors:', errors);
+    }
+    this.error.emit();
+  }
+
+  protected onHelper(): void {
+    this.helper.emit(); 
   }
 }

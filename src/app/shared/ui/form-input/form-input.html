@@ -1,6 +1,8 @@
 <label app-label 
     [for]="_id()"
     [text]="_label()"
+    (error)="onError()"
+    (helper)="onHelper()"
     [enabledError]="showErrorComputed()"></label>
 <div class="form-input-field"
     [class.action-clear]="hasValueComputed()"

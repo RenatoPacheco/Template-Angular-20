@@ -27,6 +27,9 @@ export class ShowcaseComponentPage {
       textArea: 'Atribundo algum valor...'
     });
     comp.form.disable();
+
+    this.open(ShowcaseFormPage);
+    this.open(ShowcaseFormPage);
   }
 
 }

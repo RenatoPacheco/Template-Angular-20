@@ -215,6 +215,12 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
     return this._status() === 'DISABLED';
   });
 
+  protected isActive = computed(() => {
+    const realOnly = this._readonly();
+    const disabled = this._disabled();
+    return !realOnly && !disabled;
+  });
+
   protected hasValueComputed = computed(() => {
     const valueVal = this._value();
     return valueVal || valueVal === false ? true : false;

@@ -20,6 +20,7 @@
         [class]="elementClass()" 
         [id]="_id()"
         [placeholder]="_placeholder()" />
+    @if (isActive()) {
     <button app-button
         class="action-hide"
         theme="transparent"
@@ -44,5 +45,6 @@
         (click)="clear()">
         <i class="fa fa-times"></i>
     </button>
+    }
 </div>
 <ng-content></ng-content>

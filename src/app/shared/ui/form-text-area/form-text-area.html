@@ -18,6 +18,7 @@
         [rows]="_rows()"
         [placeholder]="_placeholder()">
     </textarea>
+    @if (isActive()) {
     <button app-button
         class="action-clear"
         title="clique para limpar o valor"
@@ -26,5 +27,6 @@
         (click)="clear()">
         <i class="fa fa-times"></i>
     </button>
+    }
 </div>
 <ng-content></ng-content>

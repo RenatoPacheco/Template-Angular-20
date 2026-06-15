@@ -62,7 +62,10 @@ export class Label {
   }
 
   private _enabledError = signal(false);
-  @Input({ transform: transformBoolean })
+  @Input({ 
+    transform: transformBoolean,
+    alias: 'enabled-error' 
+  })
   public set enabledError(value: boolean) {
     if (value !== this._enabledError()) {
       this._enabledError.set(value);
@@ -73,7 +76,10 @@ export class Label {
   }
 
   private _enabledHelper = signal(false);
-  @Input({ transform: transformBoolean })
+  @Input({ 
+    transform: transformBoolean,
+    alias: 'enabled-helper' 
+  })
   public set enabledHelper(value: boolean) {
     if (value !== this._enabledHelper()) {
       this._enabledHelper.set(value);

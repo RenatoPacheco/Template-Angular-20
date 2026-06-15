@@ -1,0 +1,28 @@
+<!-- toast-container.component.html -->
+
+<div class="toast-container position-fixed top-0 end-0 p-3">
+
+  @for (
+    toast of service.toasts();
+    track toast.id
+  ) {
+
+    <ngb-toast
+      [autohide]="true"
+      [delay]="toast.delay ?? 5000"
+      [class]="toastClass(toast.type)"
+      (hidden)="service.remove(toast.id)">
+
+      @if (toast.title) {
+        <ng-template ngbToastHeader>
+          <strong>{{ toast.title }}</strong>
+        </ng-template>
+      }
+
+      {{ toast.message }}
+
+    </ngb-toast>
+
+  }
+
+</div>

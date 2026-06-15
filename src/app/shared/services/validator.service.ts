@@ -8,9 +8,7 @@ type ValidationMessageMap = {
   [key: string]: ValidationMessageFn;
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class ValidatorService {
 
   getMessages(

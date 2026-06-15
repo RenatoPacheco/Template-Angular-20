@@ -3,7 +3,7 @@
     [text]="_label()"
     (error)="onError()"
     (helper)="onHelper()"
-    [enabledError]="showErrorComputed()"></label>
+    [enabled-error]="showErrorComputed()"></label>
 <div class="form-input-field"
     [class.action-clear]="hasValueComputed()"
     [class.action-show]="showSecretComputed()"
@@ -45,4 +45,3 @@
     </button>
 </div>
 <ng-content></ng-content>
-{{status}} : {{_value()}}

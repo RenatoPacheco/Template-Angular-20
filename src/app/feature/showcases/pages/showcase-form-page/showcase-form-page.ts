@@ -29,7 +29,7 @@ export class ShowcaseFormPage implements OnInit {
     inputPassword: this.formBuilder.control<string|null>(null,{
       validators: [
         Validators.required,
-        CustonValidators.pasword
+        CustonValidators.pasword()
       ], updateOn: 'blur'
     }),
     inputEmail: this.formBuilder.control<string|null>(null,{

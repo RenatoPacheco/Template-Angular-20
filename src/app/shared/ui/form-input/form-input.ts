@@ -5,7 +5,7 @@ import { ControlValueAccessor, FormsModule, NgControl, PristineChangeEvent, Stat
 import { Button } from '../button/button';
 import { transformBoolean } from '@app/shared/utils';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ValidatorService } from '@app/shared/services';
+import { ToastService, ValidatorService } from '@app/shared/services';
 
 type InputType = 'text' | 'password' | 'email' | 'number' | 'search' | 'tel' | 'url';
 type InputSize = 'sm' | 'md' | 'lg';
@@ -87,6 +87,7 @@ export class FormInput implements ControlValueAccessor, OnInit  {
 
   private readonly validator = inject(ValidatorService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly toast = inject(ToastService);
   private readonly ngControl = inject(NgControl, { self: true, optional: true });
 
   
@@ -416,6 +417,9 @@ export class FormInput implements ControlValueAccessor, OnInit  {
     const errors = this.ngControl?.control?.errors;
     if (errors) {
       var messages = this.validator.getMessages(errors, this.label);
+      messages.forEach(element => {
+        this.toast.error(element);
+      });
       this.error.emit({
         messages: messages,
         label: this.label,

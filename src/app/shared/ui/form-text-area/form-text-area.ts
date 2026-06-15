@@ -1,4 +1,4 @@
-import { Component, computed, effect, ElementRef, inject, Input, Renderer2, signal, untracked, ViewChild } from '@angular/core';
+import { Component, computed, ElementRef, inject, Input, Renderer2, signal, untracked, ViewChild } from '@angular/core';
 
 import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
 import { transformBoolean, transformNumber } from '@app/shared/utils';

@@ -2,15 +2,15 @@
     <h1>Showcase Form Page</h1>    
     <form [formGroup]="form">
         <div class="row">          
-            <app-form-input
+            <app-form-input-text
                 class="col-md-6"
                 type="text"
                 formControlName="inputText"
                 label="Input text"
                 control-secret
                 placeholder="Enter text here">
-            </app-form-input>
-            <app-form-input
+            </app-form-input-text>
+            <app-form-input-text
                 class="col-md-6"
                 type="password"
                 control-secret
@@ -18,22 +18,22 @@
                 label="Input password"
                 placeholder="Enter password here"
                 autocomplete="new-password">
-            </app-form-input>
-            <app-form-input
+            </app-form-input-text>
+            <app-form-input-text
                 class="col-md-6"
                 type="email"
                 formControlName="inputEmail"
                 label="Input email"
                 placeholder="Enter email here"
                 autocomplete="off">
-            </app-form-input>
-            <app-form-input
+            </app-form-input-text>
+            <app-form-input-text
                 class="col-md-6"
                 type="search"
                 formControlName="inputSearch"
                 label="Input search"
                 placeholder="Enter search here">
-            </app-form-input>
+            </app-form-input-text>
             <app-form-text-area
                 class="col-md-12"
                 formControlName="textArea"

@@ -1,7 +1,7 @@
 <label app-label 
     [for]="idComputed()"
     [text]="labelComputed()"></label>
-<div class="form-textarea-field"
+<div class="form-text-area"
     [class.action-clear]="hasValueComputed()">
     <textarea #textarea [(ngModel)]="value"
         (blur)="onTouched()"

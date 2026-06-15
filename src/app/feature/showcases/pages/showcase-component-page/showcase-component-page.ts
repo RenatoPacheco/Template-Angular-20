@@ -1,5 +1,5 @@
 import { Component, inject, TemplateRef, Type } from '@angular/core';
-import { ModalRef, ModalService } from '@app/shared/services';
+import { ModalOptions, ModalRef, ModalService } from '@app/shared/services';
 import { ShowcaseFormPage } from '../showcase-form-page/showcase-form-page';
 
 @Component({
@@ -13,23 +13,35 @@ export class ShowcaseComponentPage {
 
   private modal = inject(ModalService);
 
-  protected open<T>(comp: Type<T>|TemplateRef<T>): ModalRef {
+  protected open<T>(
+    comp: Type<T>|TemplateRef<T>, 
+    options?: ModalOptions
+  ): ModalRef {
     return this.modal.open(comp, {
       backdrop : true,
-      centered: false
+      centered: false,
+      ...options
     });
   }
 
-  protected openForm(): void {
-    var item = this.open(ShowcaseFormPage);
+  protected openForm(options?: ModalOptions): void {
+    var item = this.open(ShowcaseFormPage, {
+      fullscreen: true,
+      ...options
+    });
     var comp = item.componentInstance as ShowcaseFormPage;
     comp.form.patchValue({
       textArea: 'Atribundo algum valor...'
     });
     comp.form.disable();
 
-    this.open(ShowcaseFormPage);
-    this.open(ShowcaseFormPage);
+    this.open(ShowcaseFormPage, {
+      centered:true,
+      ...options
+    });
+    this.open(ShowcaseFormPage, {
+      ...options
+    });
   }
 
 }

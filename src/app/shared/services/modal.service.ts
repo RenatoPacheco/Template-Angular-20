@@ -2,6 +2,7 @@ import { inject, Injectable, TemplateRef, Type } from '@angular/core';
 import { NgbModal, NgbModalOptions, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 export type ModalRef = NgbModalRef;
+export type ModalOptions = NgbModalOptions;
 
 @Injectable({ providedIn: 'root' })
 export class ModalService {
@@ -10,7 +11,7 @@ export class ModalService {
 
   public open<T>(
     component: Type<T>|TemplateRef<T>,
-    options?: NgbModalOptions
+    options?: ModalOptions
   ): ModalRef {
     return this.modal.open(component, {
       centered: true,

@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, inject, Input, OnInit, output, signal, untracked } from '@angular/core';
+import { Component, computed, DestroyRef, ElementRef, inject, Input, OnInit, output, signal, untracked, ViewChild } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NgControl, ValidationErrors } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -91,6 +91,10 @@ export class FormInput implements ControlValueAccessor, OnInit  {
   private readonly toast = inject(ToastService);
   private readonly ngControl = inject(NgControl, { self: true, optional: true });
   private errorId: string|null = null;
+  
+  @ViewChild('ref', {static: true})
+  private element: ElementRef<HTMLInputElement>|undefined;
+
     
   public helper = output<void>();
   public error = output<{
@@ -320,6 +324,7 @@ export class FormInput implements ControlValueAccessor, OnInit  {
   protected onToggleSecret(): void {
     var currentValue = this._secretHasBeenReversed();
     this._secretHasBeenReversed.set(!currentValue);
+    this.element?.nativeElement.focus()
   }  
     
   public isValid = computed(() => {
@@ -417,6 +422,7 @@ export class FormInput implements ControlValueAccessor, OnInit  {
     } else {
       this.value = '';
     }
+    this.element?.nativeElement.focus();
   };
 
   protected onInput(event: Event): void { 

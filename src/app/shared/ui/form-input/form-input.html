@@ -9,7 +9,7 @@
     [class.action-clear]="hasValueComputed()"
     [class.action-show]="showSecretComputed()"
     [class.action-hide]="hideSecretComputed()">
-    <input 
+    <input #ref
         [value]="_value()"
         (blur)="onBlur()"
         (input)="onInput($event)"
@@ -20,14 +20,6 @@
         [class]="inputClassComputed()" 
         [id]="_id()"
         [placeholder]="_placeholder()" />
-    <button app-button
-        class="action-clear"
-        title="clique para limpar o valor"
-        theme="transparent"
-        type="button"
-        (click)="clear()">
-        <i class="fa fa-times"></i>
-    </button>
     <button app-button
         class="action-hide"
         theme="transparent"
@@ -43,6 +35,14 @@
         title="clique para mostrar o valor"
         (click)="onToggleSecret()">
         <i class="fa fa-eye-slash"></i>
+    </button>
+    <button app-button
+        class="action-clear"
+        title="clique para limpar o valor"
+        theme="transparent"
+        type="button"
+        (click)="clear()">
+        <i class="fa fa-times"></i>
     </button>
 </div>
 <ng-content></ng-content>

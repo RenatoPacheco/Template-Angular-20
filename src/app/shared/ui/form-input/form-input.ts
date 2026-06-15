@@ -90,10 +90,11 @@ export class FormInput implements ControlValueAccessor, OnInit  {
   private readonly destroyRef = inject(DestroyRef);
   private readonly toast = inject(ToastService);
   private readonly ngControl = inject(NgControl, { self: true, optional: true });
-
-  
+  private errorId: string|null = null;
+    
   public helper = output<void>();
   public error = output<{
+    id: string,
     messages: string[],
     label: string,
     errors: ValidationErrors | null
@@ -431,10 +432,12 @@ export class FormInput implements ControlValueAccessor, OnInit  {
     const errors = this.ngControl?.control?.errors;
     if (errors) {
       var messages = this.validator.getMessages(errors);
-      messages.forEach(element => {
-        this.toast.error(element);
+      this.toast.remove(this.errorId);
+      this.errorId = this.toast.error({
+        message: messages
       });
       this.error.emit({
+        id: this.errorId,
         messages: messages,
         label: this.label,
         errors: errors

@@ -27,7 +27,7 @@ export function passwordValidator(): ValidatorFn {
       };
     }
 
-    if (password.length < 30) {
+    if (password.length > 30) {
       errors['maxlength'] = {
         actualLength: password.length,
         requiredLength: 30

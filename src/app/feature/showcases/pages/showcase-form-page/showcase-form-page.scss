@@ -1,0 +1,17 @@
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1rem;
+}
+
+.form-actions {
+    grid-column: 1 / -1;
+
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}

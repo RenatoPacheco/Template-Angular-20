@@ -1,45 +1,37 @@
 <div class="container">
-    <h1>Showcase Form Page</h1>    
+    <h1>Showcase Form Page</h1>
+    
     <form [formGroup]="form">
-        <div class="row">          
+        <div class="form-grid">
             <app-form-input-text
-                class="col-md-6"
-                type="text"
                 formControlName="inputText"
-                label="Input text"
-                control-secret
-                placeholder="Enter text here">
+                label="Input text">
             </app-form-input-text>
+
             <app-form-input-text
-                class="col-md-6"
-                type="password"
-                control-secret
                 formControlName="inputPassword"
-                label="Input password"
-                placeholder="Enter password here"
-                autocomplete="new-password">
+                label="Input password">
             </app-form-input-text>
+
             <app-form-input-text
-                class="col-md-6"
-                type="email"
                 formControlName="inputEmail"
-                label="Input email"
-                placeholder="Enter email here"
-                autocomplete="off">
+                label="Input email">
             </app-form-input-text>
+
             <app-form-input-text
-                class="col-md-6"
-                type="search"
                 formControlName="inputSearch"
-                label="Input search"
-                placeholder="Enter search here">
+                label="Input search">
             </app-form-input-text>
+
             <app-form-text-area
-                class="col-md-12"
+                class="full-width"
                 formControlName="textArea"
-                label="Text Area"
-                placeholder="Enter text here">
-            </app-form-text-area>
+                label="Text Area">
+            </app-form-text-area>            
+        </div>
+        <div class="form-actions mb-3">
+            <button app-button theme="submit" type="submit">Salvar</button>
+            <button app-button theme="cancel" type="button">Cancelar</button>
         </div>
     </form>
 </div>

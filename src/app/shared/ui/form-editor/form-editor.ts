@@ -20,7 +20,7 @@ export type CkeditorConfig = {
 
     readonly readOnly?: boolean;
 
-    readonly toolbar?: string | readonly string[];
+    readonly toolbar?: string | readonly string[] | any;
 
     readonly removeButtons?: string;
     readonly removePlugins?: string;
@@ -57,15 +57,26 @@ export class FormEditor extends FormBase<string>  {
   }
 
   protected readonly _paragraph = signal(true);
-    @Input({ transform: transformBoolean })
-    public set paragraph(value: boolean) {
-      if (value !== this.paragraph) {
-        this._paragraph.set(value);
-      }
+  @Input({ transform: transformBoolean })
+  public set paragraph(value: boolean) {
+    if (value !== this.paragraph) {
+      this._paragraph.set(value);
     }
-    public get paragraph(): boolean {
-      return untracked(() => this._paragraph());
+  }
+  public get paragraph(): boolean {
+    return untracked(() => this._paragraph());
+  }
+
+  protected readonly _basic = signal(false);
+  @Input({ transform: transformBoolean })
+  public set basic(value: boolean) {
+    if (value !== this.basic) {
+      this._basic.set(value);
     }
+  }
+  public get basic(): boolean {
+    return untracked(() => this._basic());
+  }
 
   protected  __config = {
     versionCheck: false,
@@ -78,6 +89,8 @@ export class FormEditor extends FormBase<string>  {
   protected configComputed = computed(() => {
     const configVal = this._config();
     const paragraphVal = this._paragraph();
+    const basicVal = this._basic();
+
     let result = {
       ...configVal, ...{
         versionCheck: false,
@@ -93,6 +106,17 @@ export class FormEditor extends FormBase<string>  {
         enterMode: 2,      // ENTER_BR
         shiftEnterMode: 2, // ENTER_BR
         autoParagraph: false
+      }};
+    }
+
+    if (basicVal == true) {
+      result = {...result, ...{
+        toolbar: [
+          ['Bold', 'Italic', 'Underline'],
+          ['NumberedList', 'BulletedList'],
+          ['Link', 'Unlink'],
+          ['Undo', 'Redo']
+        ]
       }};
     }
 

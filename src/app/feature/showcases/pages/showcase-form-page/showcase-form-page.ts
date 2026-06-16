@@ -89,6 +89,7 @@ export class ShowcaseFormPage implements OnInit {
         console.clear();
         console.log('chechbox', this.form.value.checkbox?.filter(x => x !== null));
         console.log('radio', this.form.value.radio);
+        console.log('textEditor', this.form.value.textEditor);
       }
     })
   }

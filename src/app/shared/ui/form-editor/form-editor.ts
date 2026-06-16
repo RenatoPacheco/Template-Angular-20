@@ -1,6 +1,7 @@
 import { Component, computed, Input, signal, untracked } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { FormBase } from "@app/shared/directives";
+import { transformBoolean } from "@app/shared/utils";
 import { CKEditorModule } from "ckeditor4-angular";
 
 export type CkeditorConfig = {
@@ -55,6 +56,17 @@ export class FormEditor extends FormBase<string>  {
     return untracked(() => this._config());
   }
 
+  protected readonly _paragraph = signal(true);
+    @Input({ transform: transformBoolean })
+    public set paragraph(value: boolean) {
+      if (value !== this.paragraph) {
+        this._paragraph.set(value);
+      }
+    }
+    public get paragraph(): boolean {
+      return untracked(() => this._paragraph());
+    }
+
   protected  __config = {
     versionCheck: false,
     entities: false,
@@ -65,8 +77,8 @@ export class FormEditor extends FormBase<string>  {
 
   protected configComputed = computed(() => {
     const configVal = this._config();
-
-    return {
+    const paragraphVal = this._paragraph();
+    let result = {
       ...configVal, ...{
         versionCheck: false,
         entities: false,
@@ -74,7 +86,18 @@ export class FormEditor extends FormBase<string>  {
         entities_latin: false,
         entities_greek: false
       }
+    };
+
+    if (paragraphVal == false) {
+      result = {...result, ...{
+        enterMode: 2,      // ENTER_BR
+        shiftEnterMode: 2, // ENTER_BR
+        autoParagraph: false
+      }};
     }
+
+
+    return result;
   });
 
   protected hostClass = computed(() => {

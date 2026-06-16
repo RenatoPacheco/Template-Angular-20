@@ -61,12 +61,4 @@ export class FormCheckbox extends FormCheckBase  {
 
     return parts.join('');
   });
-
-  protected elementClass = computed(() => {
-    return `form-check-input`;
-  });
-
-  protected labelClass = computed(() => {
-    return `form-check-label`;
-  });
 }

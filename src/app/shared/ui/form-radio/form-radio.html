@@ -1,15 +1,16 @@
 <input  
   [checked]="_checked()"
   (change)="onToggle($event)"
-  [disabled]="_disabled()"
-  [readonly]="_readonly()"
+  [disabled]="_disabled() || _readonly()"
   class="form-check-input" 
   type="radio"
   [id]="_id()"
   [name]="_name()" />
 <label class="form-check-label" [for]="_id()">
-  <span #ref><ng-content></ng-content></span>
-  @if(!ref.hasChildNodes()){
+  <span #content>
+    <ng-content></ng-content>
+  </span>
+  @if(!content.hasChildNodes()){
   <span [innerHTML]="_label()"></span>
   }
 </label>

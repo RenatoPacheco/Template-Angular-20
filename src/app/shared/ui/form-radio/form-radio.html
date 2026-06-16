@@ -7,8 +7,9 @@
   type="radio"
   [id]="_id()"
   [name]="_name()" />
-<label 
-  class="form-check-label" 
-  [innerHTML]="_label()" [for]="_id()">
+<label class="form-check-label" [for]="_id()">
+  <span #ref><ng-content></ng-content></span>
+  @if(!ref.hasChildNodes()){
+  <span [innerHTML]="_label()"></span>
+  }
 </label>
-<ng-content></ng-content>

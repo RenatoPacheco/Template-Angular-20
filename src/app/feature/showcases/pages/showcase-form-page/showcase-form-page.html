@@ -64,49 +64,40 @@
             </app-form-text-area>        
         </div>
         <div class="form-row" formArrayName="checkbox">
-            <app-form-checkbox
-                inline="true"
-                [formControlName]="0"
-                value="LER"
-                label="Ler">
+            <app-form-checkbox 
+            [formControlName]="0"
+            inline="true" value="LER">
+                Ler
             </app-form-checkbox>
             <app-form-checkbox
-                inline="true"
-                [formControlName]="1"
-                value="EDITAR"
-                label="Editar">
+            [formControlName]="1"
+            inline="true" value="EDITAR">
+                Editar
             </app-form-checkbox>
             <app-form-checkbox
-                inline="true"
-                [formControlName]="2"
-                value="EXCLUIR"
-                label="Excluir">
+            [formControlName]="2"
+            inline="true" value="EXCLUIR">
+                Excluir
             </app-form-checkbox>
         </div>
         <div class="form-row">
             <app-form-radio
-                inline="true"
-                switch="true"
-                name="radio"
-                formControlName="radio"
-                value="LER"
-                label="Ler">
+            formControlName="radio"
+            inline="true" switch="true"
+            name="radio" value="LER">
+                Ler
             </app-form-radio>
             <app-form-radio
-                inline="true"
-                switch="true"
-                name="radio"
-                formControlName="radio"
-                value="EDITAR"
-                label="Ediar">
+            formControlName="radio"
+            inline="true" switch="true"
+            name="radio" value="EDITAR">
+                Editar
             </app-form-radio>
             <app-form-radio
-                inline="true"
-                switch="true"
-                name="radio"
-                formControlName="radio"
-                value="EXCLUIR"
-                label="Excluir">
+            formControlName="radio"
+            inline="true" switch="true"
+            name="radio" value="EXCLUIR">
+                Excluir
             </app-form-radio>
         </div>
         <div class="form-actions mb-3">

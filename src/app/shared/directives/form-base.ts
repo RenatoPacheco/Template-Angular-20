@@ -148,8 +148,7 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
   }
 
   protected readonly _label = signal('');
-  @Input({ required: true })
-  public set label(value: string) {
+  @Input() public set label(value: string) {
     if (value !== this.label) {
       this._label.set(value);
     }

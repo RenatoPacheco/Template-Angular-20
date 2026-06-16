@@ -1,103 +1,27 @@
-import { Component, computed, inject, Input, signal, untracked } from "@angular/core";
-import { ControlContainer, FormControl } from "@angular/forms";
-import { transformBoolean } from "@app/shared/utils";
+import { Component, forwardRef, Input, signal, untracked } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+
+import { transformBoolean } from '@app/shared/utils';
 
 @Component({
-    standalone: true,
-    selector: 'app-form-radio',
-    templateUrl: './form-radio.html',
-    host: {
-        '[class]': 'hostClass()'
-    }
+  selector: 'app-form-radio',
+  standalone: true,
+  templateUrl: './form-radio.html',
+  providers: [{
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => FormRadio),
+      multi: true
+  }],
+  host: {
+    'class' : 'form-check',
+    '[class.form-check-inline]': '_inline()',
+    '[class.form-switch]': '_switch()'
+  }
 })
-export class FormRadio {
-    private controlContainer = inject(ControlContainer);
+export class FormRadio implements ControlValueAccessor {
 
-    public get status(): 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED' {
-        return this.control?.status;
-    }
-
-    public get pristine(): boolean {
-        return this.control?.pristine ?? false;
-    }
-
-    public get dirty(): boolean {
-        return this.control?.dirty ?? false;
-    }
-
-    public get touched(): boolean {
-        return this.control?.touched ?? false;
-    }
-
-    public get untouched(): boolean {
-        return this.control?.untouched ?? false;
-    }
-
-    protected readonly _controlName = signal<string>('');
-    @Input() public get controlName(): string {
-        return untracked(() => this._controlName());
-    }
-    public set controlName(controlName: string) {      
-        if (this.controlName !== controlName) {
-            this._controlName.set(controlName);
-        }
-    }
-
-    protected readonly _value = signal<unknown|null>(null);
-    @Input() public get value(): unknown|null {
-        return untracked(() => this._value());
-    }
-    public set value(value: unknown|null) {      
-        if (this.value !== value) {
-            this._value.set(value);
-        }
-    }
-
-    protected readonly _disabled = signal(false);
-    @Input({ transform: transformBoolean })
-    public set disabled(value: boolean) {
-        if (value !== this.disabled) {
-        this._disabled.set(value);
-        }
-    }
-    public get disabled(): boolean {
-        return untracked(() => this._disabled());
-    }
-
-    protected readonly _id = signal(`${crypto.randomUUID()}`);
-    @Input() public set id(value: string) {
-        if (value !== this.id) {
-            this._id.set(value);
-        }
-    }
-    public get id(): string {
-        return untracked(() => this._id());
-    }
-
-    protected readonly _class = signal('');
-    @Input() public set class(value: string) {
-        if (value !== this.class) {
-            this._class.set(value);
-        }
-    }
-    public get class(): string {
-        return untracked(() => this._class());
-    }
-
-    protected readonly _readonly = signal(false);
-    @Input({ transform: transformBoolean })
-    public set readonly(value: boolean) {
-        if (value !== this.readonly) {
-            this._readonly.set(value);
-        }
-    }
-    public get readonly(): boolean {
-        return untracked(() => this._readonly());
-    }
-
-  protected readonly _label = signal('');
-  @Input()
-  public set label(value: string) {
+  protected readonly _label = signal<string>('');
+  @Input() public set label(value: string) {
     if (value !== this.label) {
       this._label.set(value);
     }
@@ -106,15 +30,46 @@ export class FormRadio {
     return untracked(() => this._label());
   }
 
-  protected readonly _theme = signal<'switch'|''>('');
-  @Input()
-  public set theme(value: 'switch') {
-    if (value !== this.theme) {
-      this._theme.set(value);
+  protected readonly _value = signal(null);
+  @Input() public set value(value: any) {
+    if (value !== this.value) {
+      this._value.set(value);
     }
   }
-  public get theme(): 'switch'|'' {
-    return untracked(() => this._theme());
+  public get value(): any {
+    return untracked(() => this._value());
+  }
+
+  protected readonly _id = signal(`${crypto.randomUUID()}`);
+  @Input() public set id(value: string) {
+    if (value !== this.id) {
+      this._id.set(value);
+    }
+  }
+  public get id(): string {
+    return untracked(() => this._id());
+  }
+
+  protected _checked = signal(false);
+  @Input({ transform: transformBoolean })
+  public set checked(value: boolean) {
+    if (value !== this.checked) {
+      this._checked.set(value);
+      this.onChange(value ? this.value : null);
+    }
+  }
+  public get checked(): boolean {
+    return untracked(() => this._checked());
+  }
+
+  protected readonly _name = signal('');
+  @Input() public set name(value: string) {
+    if (value !== this.name) {
+      this._name.set(value);
+    }
+  }
+  public get name(): string {
+    return untracked(() => this._name());
   }
 
   protected readonly _inline = signal(false);
@@ -128,37 +83,53 @@ export class FormRadio {
     return untracked(() => this._inline());
   }
 
-  public get control(): FormControl {
-      return this.controlContainer.control?.get(this.controlName) as FormControl;
+  protected readonly _switch = signal(false);
+  @Input({ transform: transformBoolean })
+  public set switch(value: boolean) {
+    if (value !== this.switch) {
+      this._switch.set(value);
+    }
+  }
+  public get switch(): boolean {
+    return untracked(() => this._switch());
   }
 
-  public get checked(): boolean {
-      return this.control.value === this.value;
+  protected readonly _disabled = signal(false);
+  @Input({ transform: transformBoolean })
+  public set disabled(value: boolean) {
+    if (value !== this.disabled) {
+      this._disabled.set(value);
+    }
+  }
+  public get disabled(): boolean {
+    return untracked(() => this._disabled());
   }
 
+  private onChange: (value: any) => void = () => {};
+  private onTouched: () => void = () => {};
+
+  // Angular → componente
+  writeValue(value: any): void {
+    this.checked = value === this.value;
+  }
+
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
+
+  // usuário clicou
   protected onToggle(event: Event): void {
-      this.control.setValue(this.value);
-      this.control.markAsTouched();
+    if (this.disabled) return;
+
+    this.onChange(this.value);
+    this.onTouched();
   }
-
-  protected hostClass = computed(() => {
-    const classVal = this._class();
-    const themeVal = this._theme();
-    const inlineVal = this._inline();
-    const parts = ['form-check'];
-
-    if (themeVal === 'switch') {
-      parts.push(' form-switch');
-    }
-
-    if (inlineVal) {
-      parts.push(' form-check-inline');
-    }
-
-    if (classVal) {
-      parts.push(` ${classVal}`);
-    }
-
-    return parts.join('');
-  });
 }

@@ -21,14 +21,14 @@ export class FormRadio extends FormCheckBase  {
     super();
   }
 
-  protected readonly _name = signal('');
+  protected readonly _group = signal('');
   @Input({ required: true }) 
-  public set name(value: string) {
-    if (value !== this.name) {
-      this._name.set(value);
+  public set group(value: string) {
+    if (value !== this.group) {
+      this._group.set(value);
     }
   }
-  public get name(): string {
-    return untracked(() => this._name());
+  public get group(): string {
+    return untracked(() => this._group());
   }
 }

@@ -76,7 +76,7 @@
             @for (opcao of opcoes; track opcao.id; let i = $index) {
             <app-form-radio 
             formControlName="radio"
-            name="radio" switch="true"
+            [group]="checkboxId" switch="true"
             inline="true" [value]="opcao.id">
                 {{opcao.descricao}}
             </app-form-radio> 

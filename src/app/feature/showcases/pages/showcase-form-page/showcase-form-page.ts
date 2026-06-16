@@ -1,6 +1,6 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { FormInput, Button, FormCheckBox, FormRadio } from '@app/shared/ui';
 import { FormTextArea } from '@app/shared/ui/form-text-area/form-text-area';
@@ -36,10 +36,10 @@ export class ShowcaseFormPage implements OnInit {
     })
   }); 
 
-  protected checkbox = [
-    { id: 1, descricao: 'Ler' },
-    { id: 2, descricao: 'Escrever' },
-    { id: 3, descricao: 'Excluir' }
+  protected opcoes = [
+    { id: 'LER', descricao: 'Ler' },
+    { id: 'ECREVER', descricao: 'Escrever' },
+    { id: 'EXLUIR', descricao: 'Excluir' }
   ];
 
   public readonly form = this.formBuilder.group({
@@ -64,21 +64,30 @@ export class ShowcaseFormPage implements OnInit {
     }),
     inputSearch: this.formBuilder.control<string|null>(null),
     textArea: this.formBuilder.control<string|null>(null),
-    checkbox: this.formBuilder.array([null,null,null]),
+    checkbox: this.formBuilder.array<FormControl<string|null>>([]),
     radio: this.formBuilder.control<string|null>(null),
   });
 
   ngOnInit(): void {
-    this.form.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          console.clear();
-          console.log('chechbox', this.form.value.checkbox);
-          console.log('radio', this.form.value.radio);
+    this.form.controls.checkbox.clear();
+    this.opcoes.forEach(() => {
+      this.form.controls.checkbox.push(
+          this.formBuilder.control(null)
+      );
+  });
 
-        }
-      })
+  this.form.patchValue({
+    radio: this.opcoes[1].id
+  });
+
+  this.form.valueChanges
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe({
+      next: () => {
+        console.clear();
+        console.log('chechbox', this.form.value.checkbox?.filter(x => x !== null));
+        console.log('radio', this.form.value.radio);
+      }
+    })
   }
-
 }

@@ -64,41 +64,23 @@
             </app-form-text-area>        
         </div>
         <div class="form-row" formArrayName="checkbox">
+            @for (opcao of opcoes; track opcao.id; let i = $index) {
             <app-form-checkbox 
-            [formControlName]="0"
-            inline="true" value="LER">
-                Ler
-            </app-form-checkbox>
-            <app-form-checkbox
-            [formControlName]="1"
-            inline="true" value="EDITAR">
-                Editar
-            </app-form-checkbox>
-            <app-form-checkbox
-            [formControlName]="2"
-            inline="true" value="EXCLUIR">
-                Excluir
-            </app-form-checkbox>
+            [formControlName]="i"
+            inline="true" [value]="opcao.id">
+                {{opcao.descricao}}
+            </app-form-checkbox> 
+            }
         </div>
         <div class="form-row">
-            <app-form-radio
+            @for (opcao of opcoes; track opcao.id; let i = $index) {
+            <app-form-radio 
             formControlName="radio"
-            inline="true" switch="true"
-            name="radio" value="LER">
-                Ler
-            </app-form-radio>
-            <app-form-radio
-            formControlName="radio"
-            inline="true" switch="true"
-            name="radio" value="EDITAR">
-                Editar
-            </app-form-radio>
-            <app-form-radio
-            formControlName="radio"
-            inline="true" switch="true"
-            name="radio" value="EXCLUIR">
-                Excluir
-            </app-form-radio>
+            name="radio" switch="true"
+            inline="true" [value]="opcao.id">
+                {{opcao.descricao}}
+            </app-form-radio> 
+            }
         </div>
         <div class="form-actions mb-3">
             <button app-button theme="submit" type="submit"></button>

@@ -19,6 +19,21 @@ export class ShowcaseFormPage implements OnInit {
 
   private formBuilder = inject(FormBuilder);
 
+  public readonly formLogin = this.formBuilder.group({
+    login: this.formBuilder.control<string|null>(null,{
+      validators: [
+        Validators.required,
+        Validators.email,
+      ], updateOn: 'blur'
+    }),
+    senha: this.formBuilder.control<string|null>(null,{
+      validators: [
+        Validators.required,
+        CustonValidators.pasword(),
+      ], updateOn: 'blur'
+    })
+  });
+
   public readonly form = this.formBuilder.group({
     inputText: this.formBuilder.control<string|null>(null,{
       validators: [

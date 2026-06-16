@@ -11,14 +11,11 @@ export class CustonValidators {
   public static readonly cnpj = cnpjValidator;
   public static readonly alias = aliasValidator;
   public static readonly pasword = passwordValidator;
-  
+    
   public static compare(
     compareRef: string,
     compareLabel: string
   ) {
     compareValidator(compareRef, compareLabel);
   }
-
-
-
 }

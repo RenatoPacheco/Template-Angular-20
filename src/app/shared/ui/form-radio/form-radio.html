@@ -1,15 +1,14 @@
-<input
-  class="form-check-input"
-  type="radio"
-  [name]="_name()"
-  [value]="_value()"
+<input  
   [checked]="_checked()"
-  [disabled]="_disabled()"
   (change)="onToggle($event)"
+  [disabled]="_disabled()"
+  [readonly]="_readonly()"
+  class="form-check-input" 
+  type="radio"
   [id]="_id()"
-/>
-
-<label
-  class="form-check-label"
-  [for]="_id()" [innerHTML]="_label()"
-></label>
+  [name]="_name()" />
+<label 
+  class="form-check-label" 
+  [innerHTML]="_label()" [for]="_id()">
+</label>
+<ng-content></ng-content>

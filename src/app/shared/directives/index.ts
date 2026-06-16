@@ -1,2 +1,2 @@
 export * from './form-base'
-export * from './form-check-base';
+export * from './form-check-base'

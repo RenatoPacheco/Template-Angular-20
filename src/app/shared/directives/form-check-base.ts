@@ -1,30 +1,29 @@
 import { Directive, Input, signal, untracked } from "@angular/core";
-import { FormBase } from "./form-base";
 
+import { FormBase } from "@app/shared/directives";
 import { transformBoolean } from "@app/shared/utils";
 
 @Directive()
-export abstract class FormCheckBase extends FormBase<unknown> {
+export abstract class FormCheckBase extends FormBase<any>  {
 
-  constructor() {
+  constructor()  {
     super();
   }
 
   //region ControlValueAccessor
 
-  public override writeValue(value: unknown|null): void {
+  public override writeValue(value: any|null): void {
     this.checked = value === this.value;
   }
 
   //endregion
 
-  public override set value(value: unknown|null) {
+  public override set value(value: any|null) {
     if (value !== this.value) {
       this._value.set(value);
-      this.onChange(this.checked ? this.value : null);
     }
   }
-  public override get value(): unknown|null {
+  public override get value(): any|null {
     return untracked(() => this._value());
   }
 
@@ -33,27 +32,38 @@ export abstract class FormCheckBase extends FormBase<unknown> {
   public set checked(value: boolean) {
     if (value !== this.checked) {
       this._checked.set(value);
-      this.onChange(value ? this.value : null);
     }
   }
   public get checked(): boolean {
     return untracked(() => this._checked());
   }
 
-  protected readonly _name = signal('');
-  @Input()
-  public set name(value: string) {
-    if (value !== this.name) {
-      this._name.set(value);
+  protected readonly _switch = signal(false);
+  @Input({ transform: transformBoolean })
+  public set switch(value: boolean) {
+    if (value !== this.switch) {
+      this._switch.set(value);
     }
   }
-  public get name(): string {
-    return untracked(() => this._name());
+  public get switch(): boolean {
+    return untracked(() => this._switch());
+  }
+  
+  protected readonly _inline = signal(false);
+  @Input({ transform: transformBoolean })
+  public set inline(value: boolean) {
+    if (value !== this.inline) {
+      this._inline.set(value);
+    }
+  }
+  public get inline(): boolean {
+    return untracked(() => this._inline());
   }
 
   protected onToggle(event: Event): void {
       const checked = (event.target as HTMLInputElement).checked;
       this.checked = checked;
+      this.onChange(checked ? this.value : null)
       this.onTouched();
   }
 }

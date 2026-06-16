@@ -2,7 +2,7 @@ import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { FormInput, Button, FormCheckbox, FormRadio } from '@app/shared/ui';
+import { FormInput, Button, FormCheckBox, FormRadio } from '@app/shared/ui';
 import { FormTextArea } from '@app/shared/ui/form-text-area/form-text-area';
 import { CustonValidators } from '@app/shared/validators';
 
@@ -11,7 +11,7 @@ import { CustonValidators } from '@app/shared/validators';
   selector: 'app-showcase-form-page',
   imports: [
     FormsModule, ReactiveFormsModule, FormInput,
-    FormTextArea, Button, FormCheckbox, FormRadio
+    FormTextArea, Button, FormCheckBox, FormRadio
 ],
   templateUrl: './showcase-form-page.html',
   styleUrl: './showcase-form-page.scss',

@@ -1,7 +1,8 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { FormInput, Button, FormCheck } from '@app/shared/ui';
+import { FormInput, Button, FormCheckbox, FormRadio } from '@app/shared/ui';
 import { FormTextArea } from '@app/shared/ui/form-text-area/form-text-area';
 import { CustonValidators } from '@app/shared/validators';
 
@@ -10,7 +11,7 @@ import { CustonValidators } from '@app/shared/validators';
   selector: 'app-showcase-form-page',
   imports: [
     FormsModule, ReactiveFormsModule, FormInput,
-    FormTextArea, Button, FormCheck
+    FormTextArea, Button, FormCheckbox, FormRadio
 ],
   templateUrl: './showcase-form-page.html',
   styleUrl: './showcase-form-page.scss',
@@ -18,6 +19,7 @@ import { CustonValidators } from '@app/shared/validators';
 export class ShowcaseFormPage implements OnInit {
 
   private formBuilder = inject(FormBuilder);
+  protected readonly destroyRef = inject(DestroyRef);
 
   public readonly formLogin = this.formBuilder.group({
     login: this.formBuilder.control<string|null>(null,{
@@ -32,7 +34,13 @@ export class ShowcaseFormPage implements OnInit {
         CustonValidators.pasword(),
       ], updateOn: 'blur'
     })
-  });
+  }); 
+
+  protected checkbox = [
+    { id: 1, descricao: 'Ler' },
+    { id: 2, descricao: 'Escrever' },
+    { id: 3, descricao: 'Excluir' }
+  ];
 
   public readonly form = this.formBuilder.group({
     inputText: this.formBuilder.control<string|null>(null,{
@@ -55,11 +63,22 @@ export class ShowcaseFormPage implements OnInit {
       ], updateOn: 'blur'
     }),
     inputSearch: this.formBuilder.control<string|null>(null),
-    textArea: this.formBuilder.control<string|null>(null)
+    textArea: this.formBuilder.control<string|null>(null),
+    checkbox: this.formBuilder.array([null,null,null]),
+    radio: this.formBuilder.control<string|null>(null),
   });
 
   ngOnInit(): void {
-    
+    this.form.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          console.clear();
+          console.log('chechbox', this.form.value.checkbox);
+          console.log('radio', this.form.value.radio);
+
+        }
+      })
   }
 
 }

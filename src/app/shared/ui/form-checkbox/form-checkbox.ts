@@ -1,33 +1,22 @@
 import { Component, computed, Input, signal, untracked } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { FormBase } from "@app/shared/directives";
+import { FormCheckBase } from "@app/shared/directives";
 import { transformBoolean } from "@app/shared/utils";
 
 @Component({
   standalone: true,
-  selector: 'app-form-check',
+  selector: 'app-form-checkbox',
   imports: [ FormsModule ],
-  templateUrl: './form-check.html',
-  styleUrl: './form-check.scss',
+  templateUrl: './form-checkbox.html',
+  styleUrl: './form-checkbox.scss',
   host: {
     '[class]': 'hostClass()'
   }
 })
-export class FormCheck extends FormBase<string>  {
+export class FormCheckbox extends FormCheckBase  {
 
   constructor()  {
     super();
-  }
-
-  protected readonly _type = signal<'radio'|'checkbox'>('checkbox');
-  @Input({ required: true })
-  public set type(value: 'radio'|'checkbox') {
-    if (value !== this.type) {
-      this._type.set(value);
-    }
-  }
-  public get type(): string {
-    return untracked(() => this._type());
   }
 
   protected readonly _theme = signal<'switch'|''>('');
@@ -50,17 +39,6 @@ export class FormCheck extends FormBase<string>  {
   }
   public get inline(): boolean {
     return untracked(() => this._inline());
-  }
-
-  protected readonly _name = signal('');
-  @Input()
-  public set name(value: string) {
-    if (value !== this.name) {
-      this._name.set(value);
-    }
-  }
-  public get name(): string {
-    return untracked(() => this._name());
   }
 
   protected hostClass = computed(() => {
@@ -91,5 +69,4 @@ export class FormCheck extends FormBase<string>  {
   protected labelClass = computed(() => {
     return `form-check-label`;
   });
-
 }

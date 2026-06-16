@@ -63,6 +63,46 @@
                 label="Text Area">
             </app-form-text-area>        
         </div>
+        <div class="form-row" formArrayName="checkbox">
+            <app-form-checkbox
+                inline="true" type="checkbox"
+                [formControlName]="0"
+                value="LER"
+                label="Ler">
+            </app-form-checkbox>
+            <app-form-checkbox
+                inline="true" type="checkbox"
+                [formControlName]="1"
+                value="EDITAR"
+                label="Editar">
+            </app-form-checkbox>
+            <app-form-checkbox
+                inline="true" type="checkbox"
+                [formControlName]="2"
+                value="EXCLUIR"
+                label="Excluir">
+            </app-form-checkbox>
+        </div>
+        <div class="form-row">
+            <app-form-radio
+                inline="true" type="radio"
+                controlName="radio"
+                value="LER">
+                Ler
+            </app-form-radio>
+            <app-form-radio
+                inline="true"
+                controlName="radio"
+                value="EDITAR">
+                Ediar
+            </app-form-radio>
+            <app-form-radio
+                inline="true"
+                controlName="radio"
+                value="EXCLUIR">
+                Excluir
+            </app-form-radio>
+        </div>
         <div class="form-actions mb-3">
             <button app-button theme="submit" type="submit"></button>
             <button app-button theme="cancel" type="button"></button>
@@ -70,60 +110,56 @@
     </form>
     <form>
         <div class="form-row">
-            <app-form-check
+            <app-form-checkbox
                 inline="true"
                 type="checkbox"
                 label="1tem 001">
-            </app-form-check>
-            <app-form-check
+            </app-form-checkbox>
+            <app-form-checkbox
                 inline="true"
                 type="checkbox"
                 label="1tem 001">
-            </app-form-check>
-            <app-form-check
+            </app-form-checkbox>
+            <app-form-checkbox
                 inline="true"
                 name="teste"
-                value="sim"
                 type="radio"
                 label="1tem 001">
-            </app-form-check>
-            <app-form-check
+            </app-form-checkbox>
+            <app-form-checkbox
                 inline="true"
                 name="teste"
-                value="não"
                 type="radio"
                 label="1tem 001">
-            </app-form-check>
+            </app-form-checkbox>
         </div>
         <div class="form-row">
-            <app-form-check
+            <app-form-checkbox
                 theme="switch"
                 inline="true"
                 type="checkbox"
                 label="1tem 001">
-            </app-form-check>
-            <app-form-check
+            </app-form-checkbox>
+            <app-form-checkbox
                 theme="switch"
                 inline="true"
                 type="checkbox"
                 label="1tem 001">
-            </app-form-check>
-            <app-form-check
+            </app-form-checkbox>
+            <app-form-checkbox
                 theme="switch"
                 inline="true"
                 name="teste2"
-                value="sim"
                 type="radio"
                 label="1tem 001">
-            </app-form-check>
-            <app-form-check
+            </app-form-checkbox>
+            <app-form-checkbox
                 theme="switch"
                 inline="true"
                 name="teste2"
-                value="não"
                 type="radio"
                 label="1tem 001">
-            </app-form-check>
+            </app-form-checkbox>
         </div>
     </form>
 </div>

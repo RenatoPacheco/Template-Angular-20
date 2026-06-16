@@ -1,7 +1,6 @@
 <input  
-  [value]="_value()"
-  (blur)="onBlur()"
-  (input)="onInput($event)"
+  [checked]="_checked()"
+  (change)="onToggle($event)"
   [disabled]="_disabled()"
   [readonly]="_readonly()"
   [class]="elementClass()" 

@@ -22,7 +22,7 @@ O componente calcula automaticamente:
 - classe CSS final (`hostClass`): tema + tamanho + classe extra
 - ícone (`iconComputed`): pelo `theme` ou spinner quando `loading=true`
 - texto (`textComputed`): `text` manual ou texto padrão por ação
-- título (`titleComputed`): `title` manual ou título automático
+- título (`hostTitle`): `title` manual ou título automático
 
 Se você projetar conteúdo dentro do botão (ng-content), o fallback automático de ícone/texto não é renderizado.
 

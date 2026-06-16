@@ -21,7 +21,7 @@ type ButtonTheme = InputVariant|ButtonAction|'link'|'transparent';
   templateUrl: './button.html',
   styleUrl: './button.scss',
   host: {
-    '[title]': 'titleComputed()',
+    '[title]': 'hostTitle()',
     '[class]': 'hostClass()',
     '[type]': 'typeComputed()',
     '[disabled]': 'disabledComputed()'
@@ -153,7 +153,7 @@ export class Button {
     return this.texts[themeVal as ButtonAction] || '';
   });
 
-  protected titleComputed = computed(() => {
+  protected hostTitle = computed(() => {
     const themeVal = this._theme();
     const titleVal = this._title();
     if (titleVal) {

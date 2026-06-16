@@ -1,15 +1,17 @@
 import { Component, computed, EventEmitter, Input, output, Output, signal, untracked } from '@angular/core';
 import { transformBoolean } from '@app/shared/utils';
+import { Button } from '../button/button';
 
 @Component({
   standalone: true,
   selector: 'label[app-label]',
   templateUrl: './label.html',
   styleUrl: './label.scss',
+  imports: [Button],
   host: {
     '[class]': 'hostClass()',
-    '[for]': 'forComputed()',
-    '[title]': 'titleComputed()'
+    '[for]': 'hostFor()',
+    '[title]': 'hostTitle()'
   }
 })
 export class Label {
@@ -99,11 +101,11 @@ export class Label {
     return `form-label ${result}`;
   });
 
-  protected forComputed = computed(() => {
+  protected hostFor = computed(() => {
     return this._for();
   });
 
-  protected titleComputed = computed(() => {
+  protected hostTitle = computed(() => {
     return this._title();
   });
 

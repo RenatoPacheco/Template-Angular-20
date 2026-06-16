@@ -2,7 +2,7 @@ import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { FormInput, Button, FormCheckBox, FormRadio } from '@app/shared/ui';
+import { FormInput, Button, FormCheckBox, FormRadio, FormEditor } from '@app/shared/ui';
 import { FormTextArea } from '@app/shared/ui/form-text-area/form-text-area';
 import { CustonValidators } from '@app/shared/validators';
 
@@ -11,7 +11,8 @@ import { CustonValidators } from '@app/shared/validators';
   selector: 'app-showcase-form-page',
   imports: [
     FormsModule, ReactiveFormsModule, FormInput,
-    FormTextArea, Button, FormCheckBox, FormRadio
+    FormTextArea, Button, FormCheckBox, FormRadio,
+    FormEditor
 ],
   templateUrl: './showcase-form-page.html',
   styleUrl: './showcase-form-page.scss',
@@ -64,6 +65,7 @@ export class ShowcaseFormPage implements OnInit {
     }),
     inputSearch: this.formBuilder.control<string|null>(null),
     textArea: this.formBuilder.control<string|null>(null),
+    textEditor: this.formBuilder.control<string|null>(null),
     checkbox: this.formBuilder.array<FormControl<string|null>>([]),
     radio: this.formBuilder.control<string|null>(null),
   });

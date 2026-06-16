@@ -1,13 +1,12 @@
 import { Component, computed, EventEmitter, Input, output, Output, signal, untracked } from '@angular/core';
 import { transformBoolean } from '@app/shared/utils';
-import { Button } from '../button/button';
 
 @Component({
   standalone: true,
   selector: 'label[app-label]',
   templateUrl: './label.html',
   styleUrl: './label.scss',
-  imports: [Button],
+  imports: [],
   host: {
     '[class]': 'hostClass()',
     '[for]': 'hostFor()',

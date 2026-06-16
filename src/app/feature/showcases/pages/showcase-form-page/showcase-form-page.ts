@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { FormInput, Button } from '@app/shared/ui';
+import { FormInput, Button, FormCheck } from '@app/shared/ui';
 import { FormTextArea } from '@app/shared/ui/form-text-area/form-text-area';
 import { CustonValidators } from '@app/shared/validators';
 
@@ -10,7 +10,7 @@ import { CustonValidators } from '@app/shared/validators';
   selector: 'app-showcase-form-page',
   imports: [
     FormsModule, ReactiveFormsModule, FormInput,
-    FormTextArea, Button
+    FormTextArea, Button, FormCheck
 ],
   templateUrl: './showcase-form-page.html',
   styleUrl: './showcase-form-page.scss',

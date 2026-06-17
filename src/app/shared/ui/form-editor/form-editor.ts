@@ -1,8 +1,12 @@
 import { Component, computed, Input, signal, untracked } from "@angular/core";
 import { FormsModule } from "@angular/forms";
+
+import { CKEditorModule } from "ckeditor4-angular";
+
 import { FormBase } from "@app/shared/directives";
 import { transformBoolean } from "@app/shared/utils";
-import { CKEditorModule } from "ckeditor4-angular";
+
+import { Label } from "../label/label";
 
 export type CkeditorConfig = {
     readonly versionCheck?: boolean;
@@ -33,7 +37,7 @@ export type CkeditorConfig = {
 @Component({
   standalone: true,
   selector: 'app-form-editor',
-  imports: [ FormsModule, CKEditorModule ],
+  imports: [FormsModule, CKEditorModule, Label],
   templateUrl: './form-editor.html',
   styleUrl: './form-editor.scss',
   host: {

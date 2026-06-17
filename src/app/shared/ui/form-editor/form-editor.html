@@ -1,2 +1,12 @@
-<ckeditor [config]="configComputed()" [(ngModel)]="value">
+<label app-label 
+    [for]="_id()"
+    [text]="_label()"
+    (error)="onError()"
+    (helper)="onHelper()"
+    [enabled-error]="showErrorComputed()"
+    [enabled-helper]="_enabledHelper()"></label>
+<div class="form-element"
+    [class.action-clear]="hasValueComputed()">
+<ckeditor [config]="configComputed()" [(ngModel)]="value" (blur)="onBlur()">
 </ckeditor>
+<ng-content></ng-content>

@@ -65,7 +65,11 @@ export class ShowcaseFormPage implements OnInit {
     }),
     inputSearch: this.formBuilder.control<string|null>(null),
     textArea: this.formBuilder.control<string|null>(null),
-    textEditor: this.formBuilder.control<string|null>(null),
+    textEditor: this.formBuilder.control<string|null>(null,{
+      validators: [
+        Validators.minLength(300)
+      ], updateOn: 'blur'
+    }),
     checkbox: this.formBuilder.array<FormControl<string|null>>([]),
     radio: this.formBuilder.control<string|null>(null),
   });

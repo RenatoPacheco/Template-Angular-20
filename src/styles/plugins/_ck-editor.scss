@@ -1,0 +1,19 @@
+.form-group {
+  &.ng-invalid.ng-touched.ng-dirty {
+    .cke {
+        border-color: var(--bs-form-valid-border-color);
+    }
+
+    .cke {
+        border-color: var(--bs-form-invalid-border-color);
+    }
+
+    .cke:focus-within {
+        box-shadow: 0 0 0 .25rem rgba(var(--bs-success-rgb), .25);
+    }
+
+    .cke:focus-within {
+        box-shadow: 0 0 0 .25rem rgba(var(--bs-danger-rgb), .25);
+    }
+  }
+}

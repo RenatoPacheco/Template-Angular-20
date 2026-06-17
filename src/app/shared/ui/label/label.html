@@ -4,7 +4,7 @@
 @if(enabledErrorComputed()){
 <i (click)="onError()" role="alert" title="informações sobre o erro" class="error fa fa-exclamation-circle">&nbsp;</i>    
 }
-<span class="text" #ref><ng-content></ng-content></span>
-@if(!ref.hasChildNodes()){
+<span class="text" #content><ng-content></ng-content></span>
+@if(!content.hasChildNodes()){
 <span class="text" [innerHTML]="textComputed()"></span>
 }

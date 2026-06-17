@@ -7,7 +7,7 @@ import { FormBase } from "@app/shared/directives";
 import { transformBoolean } from "@app/shared/utils";
 
 import { Label } from "../label/label";
-import { FormEditorConfig } from "./form-editor-type";
+import { FormEditorConfig } from "./form-editor-model";
 import { FormEditorService } from "./form-editor-service";
 
 @Component({
@@ -30,6 +30,22 @@ export class FormEditor extends FormBase<string>  {
   private readonly controller = inject(FormEditorService);
   public readonly save = output<string|null>();
 
+  public override set value(value: string|null) {
+    if (value !== this.value) {
+      if (this.paragraph === false && value) {
+        value = value.replace(/<\s*p(\s*|\s+[^>]+)>/gi, '<br />');
+        value = value.replace(/<\s*\/p\s*>/gi, '');
+        value = value.replace(/^\s*<br\s*\/?\s*>\s*/gi, '');
+      }
+      this._value.set(value || null);
+      this.onChange(value);
+    }
+  }
+  public override get value(): string|null {
+    return untracked(() => this._value());
+  }
+
+
   protected _config = signal<FormEditorConfig>({});
   @Input() set config(value: FormEditorConfig) {
     if (value !== this.config) {
@@ -40,7 +56,7 @@ export class FormEditor extends FormBase<string>  {
     return untracked(() => this._config());
   }
 
-  protected readonly _paragraph = signal(true);
+  protected readonly _paragraph = signal(false);
   @Input({ transform: transformBoolean })
   public set paragraph(value: boolean) {
     if (value !== this.paragraph) {
@@ -78,7 +94,7 @@ export class FormEditor extends FormBase<string>  {
     let result = {
       ...configVal, ...{
         // Plugins
-        extraPlugins: ['custon-save', 'indent-paragraph'],
+        // extraPlugins: ['custon-save', 'indent-paragraph'],
         // Aparência
         skin: "moono-lisa",
         versionCheck: false,
@@ -134,6 +150,7 @@ export class FormEditor extends FormBase<string>  {
   }
 
   protected emitChange(event: CKEditor4.EventInfo): void {
+    return;
     const data = event.data?.toString();
     if (data === 'custon-save' || data === 'resize') {
       // this.controller.maximize(false);

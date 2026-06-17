@@ -86,14 +86,23 @@ export class ShowcaseFormPage implements OnInit {
     radio: this.opcoes[1].id
   });
 
+  this.form.controls.inputText.valueChanges
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe({
+      next: (value) => {
+        console.log('value: ', value);
+      }
+    });
+
   this.form.valueChanges
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe({
       next: () => {
-        console.clear();
+        //console.clear();
         console.log('chechbox', this.form.value.checkbox?.filter(x => x !== null));
         console.log('radio', this.form.value.radio);
         console.log('textEditor', this.form.value.textEditor);
+        console.log('inputText', this.form.value.inputText);
       }
     })
   }

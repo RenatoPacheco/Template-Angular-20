@@ -31,20 +31,13 @@ export class FormEditor extends FormBase<string>  {
   public readonly save = output<string|null>();
 
   public override set value(value: string|null) {
-    if (value !== this.value) {
-      if (this.paragraph === false && value) {
-        value = value.replace(/<\s*p(\s*|\s+[^>]+)>/gi, '<br />');
-        value = value.replace(/<\s*\/p\s*>/gi, '');
-        value = value.replace(/^\s*<br\s*\/?\s*>\s*/gi, '');
-      }
-      this._value.set(value || null);
-      this.onChange(value);
+    if (this.paragraph === false && value) {
+      value = value.replace(/<\s*p(\s*|\s+[^>]+)>/gi, '<br />');
+      value = value.replace(/<\s*\/p\s*>/gi, '');
+      value = value.replace(/^\s*<br\s*\/?\s*>\s*/gi, '');
     }
+    super.value = value;
   }
-  public override get value(): string|null {
-    return untracked(() => this._value());
-  }
-
 
   protected _config = signal<FormEditorConfig>({});
   @Input() set config(value: FormEditorConfig) {
@@ -56,7 +49,7 @@ export class FormEditor extends FormBase<string>  {
     return untracked(() => this._config());
   }
 
-  protected readonly _paragraph = signal(false);
+  protected readonly _paragraph = signal(true);
   @Input({ transform: transformBoolean })
   public set paragraph(value: boolean) {
     if (value !== this.paragraph) {
@@ -94,10 +87,11 @@ export class FormEditor extends FormBase<string>  {
     let result = {
       ...configVal, ...{
         // Plugins
-        // extraPlugins: ['custon-save', 'indent-paragraph'],
+        extraPlugins: ['custon-save', 'indent-paragraph'],
         // Aparência
         skin: "moono-lisa",
         versionCheck: false,
+        removeButtons: ['About'],
         // Idioma
         language: 'pt-br',
         // Caracteres

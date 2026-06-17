@@ -68,7 +68,7 @@ export class ShowcaseFormPage implements OnInit {
     textEditor: this.formBuilder.control<string|null>(null,{
       validators: [
         Validators.minLength(300)
-      ], updateOn: 'blur'
+      ]
     }),
     checkbox: this.formBuilder.array<FormControl<string|null>>([]),
     radio: this.formBuilder.control<string|null>(null),
@@ -90,6 +90,7 @@ export class ShowcaseFormPage implements OnInit {
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe({
       next: (value) => {
+        return;
         console.log('value: ', value);
       }
     });
@@ -98,7 +99,7 @@ export class ShowcaseFormPage implements OnInit {
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe({
       next: () => {
-        //console.clear();
+        return;
         console.log('chechbox', this.form.value.checkbox?.filter(x => x !== null));
         console.log('radio', this.form.value.radio);
         console.log('textEditor', this.form.value.textEditor);

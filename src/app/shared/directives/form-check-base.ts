@@ -23,9 +23,6 @@ export abstract class FormCheckBase extends FormBase<any>  {
       this._value.set(value);
     }
   }
-  public override get value(): any|null {
-    return untracked(() => this._value());
-  }
 
   protected _checked = signal(false);
   @Input({ transform: transformBoolean })

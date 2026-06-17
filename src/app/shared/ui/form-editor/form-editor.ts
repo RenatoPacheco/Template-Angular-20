@@ -1,42 +1,19 @@
-import { Component, computed, Input, signal, untracked } from "@angular/core";
+import { Component, computed, inject, Input, output, signal, untracked } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 
-import { CKEditorModule } from "ckeditor4-angular";
+import { CKEditor4, CKEditorModule } from "ckeditor4-angular";
 
 import { FormBase } from "@app/shared/directives";
 import { transformBoolean } from "@app/shared/utils";
 
 import { Label } from "../label/label";
-
-export type CkeditorConfig = {
-    readonly versionCheck?: boolean;
-
-    readonly entities?: boolean;
-    readonly basicEntities?: boolean;
-    readonly entities_latin?: boolean;
-    readonly entities_greek?: boolean;
-
-    readonly language?: string;
-    readonly contentsLanguage?: string;
-
-    readonly height?: number | string;
-    readonly width?: number | string;
-
-    readonly readOnly?: boolean;
-
-    readonly toolbar?: string | readonly string[] | any;
-
-    readonly removeButtons?: string;
-    readonly removePlugins?: string;
-    readonly extraPlugins?: string;
-
-    readonly allowedContent?: boolean;
-    readonly autoParagraph?: boolean;
-};
+import { FormEditorConfig } from "./form-editor-type";
+import { FormEditorService } from "./form-editor-service";
 
 @Component({
   standalone: true,
   selector: 'app-form-editor',
+  providers: [FormEditorService],
   imports: [FormsModule, CKEditorModule, Label],
   templateUrl: './form-editor.html',
   styleUrl: './form-editor.scss',
@@ -50,13 +27,16 @@ export class FormEditor extends FormBase<string>  {
     super();
   }
 
-  protected _config = signal<CkeditorConfig>({});
-  @Input() set config(value: CkeditorConfig) {
+  private readonly controller = inject(FormEditorService);
+  public readonly save = output<string|null>();
+
+  protected _config = signal<FormEditorConfig>({});
+  @Input() set config(value: FormEditorConfig) {
     if (value !== this.config) {
       this._config.set(value || {});
     }
   }
-  public get config(): CkeditorConfig {
+  public get config(): FormEditorConfig {
     return untracked(() => this._config());
   }
 
@@ -97,7 +77,14 @@ export class FormEditor extends FormBase<string>  {
 
     let result = {
       ...configVal, ...{
+        // Plugins
+        extraPlugins: ['custon-save', 'indent-paragraph'],
+        // Aparência
+        skin: "moono-lisa",
         versionCheck: false,
+        // Idioma
+        language: 'pt-br',
+        // Caracteres
         entities: false,
         basicEntities: false,
         entities_latin: false,
@@ -107,6 +94,7 @@ export class FormEditor extends FormBase<string>  {
 
     if (paragraphVal == false) {
       result = {...result, ...{
+        // Quebras de linha
         enterMode: 2,      // ENTER_BR
         shiftEnterMode: 2, // ENTER_BR
         autoParagraph: false
@@ -115,7 +103,9 @@ export class FormEditor extends FormBase<string>  {
 
     if (basicVal == true) {
       result = {...result, ...{
+        // Boões básicos
         toolbar: [
+          ['Save'],
           ['Bold', 'Italic', 'Underline'],
           ['NumberedList', 'BulletedList'],
           ['Link', 'Unlink'],
@@ -139,4 +129,17 @@ export class FormEditor extends FormBase<string>  {
     return itens.join(' ');
   });
 
+  protected emitReady(event: CKEditor4.EventInfo): void {
+    // this.controller.editor = event.editor;
+  }
+
+  protected emitChange(event: CKEditor4.EventInfo): void {
+    const data = event.data?.toString();
+    if (data === 'custon-save' || data === 'resize') {
+      // this.controller.maximize(false);
+    }
+    if (data === 'custon-save') {
+      this.save.emit(this.value);
+    }
+  }
 }

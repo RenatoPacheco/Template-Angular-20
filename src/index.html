@@ -12,4 +12,9 @@
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.22.1/ckeditor.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.22.1/lang/pt-br.min.js"></script>
+<script>
+  var baseHref = document.getElementsByTagName('base')[0].href
+  CKEDITOR.plugins.addExternal( 'indent-paragraph', baseHref + 'assets/ckeditor/plugins/indent-paragraph/', 'plugin.js' );
+  CKEDITOR.plugins.addExternal( 'custon-save', baseHref + 'assets/ckeditor/plugins/custon-save/', 'plugin.js' );
+</script>
 </html>

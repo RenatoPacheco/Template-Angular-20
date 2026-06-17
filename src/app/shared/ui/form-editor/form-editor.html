@@ -7,6 +7,8 @@
     [enabled-helper]="_enabledHelper()"></label>
 <div class="form-element"
     [class.action-clear]="hasValueComputed()">
-<ckeditor [config]="configComputed()" [(ngModel)]="value" (blur)="onBlur()">
+<ckeditor 
+    [config]="configComputed()" [(ngModel)]="value" (blur)="onBlur()" 
+    (ready)="emitReady($event)" (change)="emitChange($event)">
 </ckeditor>
 <ng-content></ng-content>

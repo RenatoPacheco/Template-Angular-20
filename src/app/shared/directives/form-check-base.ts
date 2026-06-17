@@ -63,7 +63,7 @@ export abstract class FormCheckBase extends FormBase<any>  {
   protected onToggle(event: Event): void {
       const checked = (event.target as HTMLInputElement).checked;
       this.checked = checked;
-      this.onChange(checked ? this.value : null)
+      this.onChange(checked ? this.value : null);
       this.onTouched();
   }
 }

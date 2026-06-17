@@ -52,7 +52,7 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
   public onTouched: () => void = () => {}
 
   public writeValue(value: T|null): void {
-    this._value.set(value);
+    this.value = value;
   }
 
   public registerOnChange(fn: (value: T|null) => void): void {
@@ -64,9 +64,7 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
   }
 
   public setDisabledState(isDisabled: boolean): void {
-    if (isDisabled !== this.disabled) {
-      this._disabled.set(isDisabled);
-    }
+    this.disabled = isDisabled;
   }
   
   //endregion
@@ -93,14 +91,14 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
   }
 
   protected readonly _value = signal<T|null>(null);
-  @Input() public get value(): T|null {
-    return untracked(() => this._value());
-  }
-  public set value(value: T|null) {      
+  @Input() public set value(value: T|null) {      
     if (this.value !== value) {
-      this.writeValue(value);
+      this._value.set(value);
       this.onChange(value);
     }
+  }
+  public get value(): T|null {
+    return untracked(() => this._value());
   }
 
   protected readonly _disabled = signal(false);
@@ -115,8 +113,7 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
   }
 
   protected readonly _id = signal(`${crypto.randomUUID()}`);
-  @Input()
-  public set id(value: string) {
+  @Input() public set id(value: string) {
     if (value !== this.id) {
       this._id.set(value);
     }
@@ -126,8 +123,7 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
   }
 
   protected readonly _class = signal('');
-  @Input()
-  public set class(value: string) {
+  @Input() public set class(value: string) {
     if (value !== this.class) {
       this._class.set(value);
     }
@@ -158,8 +154,7 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
   }
 
   protected readonly _size = signal<'sm' | 'md' | 'lg'>('md');
-  @Input()
-  public set size(value: 'sm' | 'md' | 'lg') {
+  @Input() public set size(value: 'sm' | 'md' | 'lg') {
     if (value !== this.size) {
       this._size.set(value);
     }
@@ -168,15 +163,10 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
     return untracked(() => this._size());
   }
 
-  
-
   protected readonly _enabledError = signal(true);
-  @Input({ 
-    transform: transformBoolean,
-    alias: 'enabled-error'
-  })
+  @Input({ transform: transformBoolean, alias: 'enabled-error' })
   public set enabledError(value: boolean) {
-    if (value !== this._enabledError()) {
+    if (value !== this.enabledError) {
       this._enabledError.set(value);
     }
   }
@@ -185,12 +175,9 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
   }
 
   protected readonly _enabledHelper = signal(false);
-  @Input({ 
-    transform: transformBoolean,
-    alias: 'enabled-helper' 
-  })
+  @Input({ transform: transformBoolean, alias: 'enabled-helper' })
   public set enabledHelper(value: boolean) {
-    if (value !== this._enabledHelper()) {
+    if (value !== this.enabledHelper) {
       this._enabledHelper.set(value);
     }
   }
@@ -276,6 +263,7 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
   protected onInput(event: Event): void { 
     const value = (event.target as FormElement).value; 
     this.value = value as T|null; 
+    this.onTouched();
   } 
 
   protected onBlur(): void { 

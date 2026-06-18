@@ -1,7 +1,7 @@
 import { Component, HostListener, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
-import { ToastContainer } from '@app/shared/components';
+import { ToastContainer } from '@app/core';
 import { ResizeService } from './shared/services';
 
 @Component({

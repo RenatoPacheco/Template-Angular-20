@@ -3,7 +3,8 @@ import { ControlValueAccessor, NgControl, ValidationErrors } from "@angular/form
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 import { transformBoolean } from "@app/shared/utils";
-import { ToastService, ValidatorService } from "@app/shared/services";
+import { ValidatorService } from "@app/shared/services";
+import { ToastService } from "@app/core";
 
 type FormElement =
   | HTMLInputElement

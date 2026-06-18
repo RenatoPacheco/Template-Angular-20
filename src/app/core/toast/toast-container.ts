@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { ToastService, ToastType } from '@app/shared/services';
+import { ToastService, ToastType } from '@app/core';
 
 import { NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
 

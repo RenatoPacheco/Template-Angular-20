@@ -32,7 +32,7 @@ export class Button {
   private element = inject(ElementRef);
   private renderer = inject(Renderer2);
 
-  private _type = signal<ButtonType>('button');
+  protected _type = signal<ButtonType>('button');
   @Input()
   public set type(value: ButtonType) {
     if (value !== this.type) {
@@ -43,7 +43,7 @@ export class Button {
     return untracked(() => this._type());
   }
 
-  private _text = signal('');
+  protected _text = signal('');
   @Input()
   public set text(value: string) {
     if (value !== this.text) {
@@ -54,7 +54,7 @@ export class Button {
     return untracked(() => this._text());
   }
 
-  private _title = signal('');
+  protected _title = signal('');
   @Input()
   public set title(value: string) {
     if (value !== this.title) {
@@ -65,7 +65,7 @@ export class Button {
     return untracked(() => this._title());
   }
 
-  private _disabled = signal(false);
+  protected _disabled = signal(false);
   @Input({ transform: transformBoolean })
   public set disabled(value: boolean) {
     if (value !== this.disabled) {
@@ -76,7 +76,7 @@ export class Button {
     return untracked(() => this._disabled());
   }
 
-  private _loading = signal(false);
+  protected _loading = signal(false);
   @Input({ transform: transformBoolean })
   public set loading(value: boolean) {
     if (value !== this.loading) {
@@ -87,7 +87,7 @@ export class Button {
     return untracked(() => this._loading());
   }
 
-  private _class = signal('');
+  protected _class = signal('');
   @Input()
   public set class(value: string) {
     if (value !== this.class) {
@@ -98,7 +98,7 @@ export class Button {
     return untracked(() => this._class());
   }
 
-  private _theme = signal<ButtonTheme>('');
+  protected _theme = signal<ButtonTheme>('');
   @Input() 
   public set theme(value: ButtonTheme) {
     if (value !== this._theme()) {
@@ -109,7 +109,7 @@ export class Button {
     return untracked(() => this._theme());
   }
 
-  private _size = signal<ButtonSize>('md');
+  protected _size = signal<ButtonSize>('md');
   @Input() 
   public set size(value: ButtonSize) {
     if (value !== this._size()) {

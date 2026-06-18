@@ -28,7 +28,7 @@ export class ResizeService {
   mobile = false;
   tablet = false;
 
-  private _size!: ScreenSize;
+  protected _size!: ScreenSize;
   get size(): ScreenSize {
     return this._size;
   }
@@ -39,7 +39,7 @@ export class ResizeService {
     }
   }
 
-  private _height!: number;
+  protected _height!: number;
   get height(): number {
     return this._height;
   }
@@ -50,7 +50,7 @@ export class ResizeService {
     }
   }
 
-  private _width!: number;
+  protected _width!: number;
   get width(): number {
     return this._width;
   }

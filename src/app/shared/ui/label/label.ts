@@ -18,7 +18,7 @@ export class Label {
   public helper = output<void>();
   public error = output<void>();
 
-  private _text = signal('&nbsp;');
+  protected _text = signal('&nbsp;');
   @Input()
   public set text(value: string) {
     if (value !== this.text) {
@@ -29,7 +29,7 @@ export class Label {
     return untracked(() => this._text());
   }
 
-  private _class = signal('');
+  protected _class = signal('');
   @Input()
   public set class(value: string) {
     if (value !== this._class()) {
@@ -40,7 +40,7 @@ export class Label {
     return untracked(() => this._class());
   }
 
-  private _for = signal('');
+  protected _for = signal('');
   @Input()
   public set for(value: string) {
     if (value !== this._for()) {
@@ -51,7 +51,7 @@ export class Label {
     return untracked(() => this._for());
   }
 
-  private _title = signal('');
+  protected _title = signal('');
   @Input()
   public set title(value: string) {
     if (value !== this._title()) {
@@ -62,7 +62,7 @@ export class Label {
     return untracked(() => this._title());
   }
 
-  private _enabledError = signal(false);
+  protected _enabledError = signal(false);
   @Input({ 
     transform: transformBoolean,
     alias: 'enabled-error' 
@@ -76,7 +76,7 @@ export class Label {
     return untracked(() => this._enabledError());
   }
 
-  private _enabledHelper = signal(false);
+  protected _enabledHelper = signal(false);
   @Input({ 
     transform: transformBoolean,
     alias: 'enabled-helper' 

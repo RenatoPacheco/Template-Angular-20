@@ -1,22 +1,22 @@
 <label app-label 
-    [for]="_id()"
-    [text]="_label()"
+    [for]="id"
+    [text]="label"
     (error)="onError()"
     (helper)="onHelper()"
     [enabled-error]="showErrorComputed()"
-    [enabled-helper]="_enabledHelper()"></label>
+    [enabled-helper]="enabledHelper"></label>
 <div class="form-text-area"
     [class.action-clear]="hasValueComputed()">
     <textarea #element
-        [value]="_value()"
+        [value]="value"
         (blur)="onBlur()"
         (input)="onInput($event)"
-        [disabled]="_disabled()"
-        [readonly]="_readonly()"
+        [disabled]="disabled"
+        [readonly]="readonly"
         [class]="elementClass()" 
-        [id]="_id()"
-        [rows]="_rows()"
-        [placeholder]="_placeholder()">
+        [id]="id"
+        [rows]="rows"
+        [placeholder]="placeholder">
     </textarea>
     @if (isActive()) {
     <button app-button

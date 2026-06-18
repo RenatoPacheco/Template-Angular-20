@@ -1,10 +1,10 @@
 <label app-label 
-    [for]="_id()"
-    [text]="_label()"
+    [for]="id"
+    [text]="label"
     (error)="onError()"
     (helper)="onHelper()"
     [enabled-error]="showErrorComputed()"
-    [enabled-helper]="_enabledHelper()"></label>
+    [enabled-helper]="enabledHelper"></label>
 
 @if(isActive() && useCompleteConfig()) {
 <ckeditor 

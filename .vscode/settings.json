@@ -1,0 +1,6 @@
+{
+  "material-icon-theme.files.associations": {
+    "*.config.ts": "settings",
+    "index.ts": "shader"
+  }
+}

@@ -5,8 +5,11 @@ export class CpfPipe implements PipeTransform {
 
   transform(value: string | number | null | undefined): string|null {
 
-    if (!value) {
-      return value?.toString()?.trim() || null;
+    value = value?.toString()?.trim() || null;
+
+    const pattern = /^(\d{3}\.){1,2}$|^(\d{3}\.){2}(\d{3}-\d{0,2})$/;
+    if (!value || RegExp(pattern).test(value)) {
+      return value;
     }
 
     const result = String(value)

@@ -57,15 +57,15 @@ type InputAutocomplete =
 
 @Component({
   standalone: true,
-  selector: 'app-form-input-text',
+  selector: 'app-form-text',
   imports: [ Label, FormsModule, Button ],
-  templateUrl: './form-input-text.html',
-  styleUrl: './form-input-text.scss',
+  templateUrl: './form-text.html',
+  styleUrl: './form-text.scss',
   host: {
     '[class]': 'hostClass()'
   }
 })
-export class FormInput extends FormBase<string>  {
+export class FormText extends FormBase<string>  {
   
   constructor() {
     super();

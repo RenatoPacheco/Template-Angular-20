@@ -9,15 +9,15 @@ import { FormBase } from '@app/shared/directives';
 
 @Component({
   standalone: true,
-  selector: 'app-form-text-area',
+  selector: 'app-form-textarea',
   imports: [ Label, FormsModule, Button ],
-  templateUrl: './form-text-area.html',
-  styleUrl: './form-text-area.scss',
+  templateUrl: './form-textarea.html',
+  styleUrl: './form-textarea.scss',
   host: {
     '[class]': 'hostClass()'
   }
 })
-export class FormTextArea extends FormBase<string>  {
+export class FormTextarea extends FormBase<string>  {
   
   constructor() {
     super();

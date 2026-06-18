@@ -4,19 +4,19 @@
         <form [formGroup]="formLogin"
             class="mx-auto" style="max-width: 540px;">
             <div class="form-grid-inline">
-                <app-form-input-text
+                <app-form-text
                     formControlName="login"
                     autocomplete="off"
                     control-secret="true"
                     label="Login">
-                </app-form-input-text>
-                <app-form-input-text
+                </app-form-text>
+                <app-form-text
                     formControlName="senha"
                     autocomplete="new-password"
                     control-secret="true"
                     type="password"
                     label="Senha">
-                </app-form-input-text>
+                </app-form-text>
             </div>
             <div class="form-actions mb-3 mt-3">
                 <button app-button 
@@ -37,31 +37,31 @@
     <form [formGroup]="form">
         <legend>Outro form</legend>
         <div class="form-grid">
-            <app-form-input-text
+            <app-form-text
                 formControlName="inputText"
                 label="Input text">
-            </app-form-input-text>
+            </app-form-text>
 
-            <app-form-input-text
+            <app-form-text
                 formControlName="inputPassword"
                 label="Input password">
-            </app-form-input-text>
+            </app-form-text>
 
-            <app-form-input-text
+            <app-form-text
                 formControlName="inputEmail"
                 label="Input email">
-            </app-form-input-text>
+            </app-form-text>
 
-            <app-form-input-text
+            <app-form-text
                 formControlName="inputSearch"
                 label="Input search">
-            </app-form-input-text>
+            </app-form-text>
 
-            <app-form-text-area
+            <app-form-textarea
                 class="full-width"
                 formControlName="textArea"
                 label="Text Area">
-            </app-form-text-area>
+            </app-form-textarea>
             
             <app-form-editor
                 class="full-width"

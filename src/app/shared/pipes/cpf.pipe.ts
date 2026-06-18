@@ -1,0 +1,32 @@
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({ name: 'cpf' })
+export class CpfPipe implements PipeTransform {
+
+  transform(value: string | number | null | undefined): string|null {
+
+    if (!value) {
+      return value?.toString()?.trim() || null;
+    }
+
+    const result = String(value)
+      .replace(/\D/g, '')
+      .slice(0, 11);
+
+    const total = result.length;
+
+    if (total <= 3) {
+      return result;
+    }
+    
+    if (total <= 6) {
+      return result.replace(/(\d{3})(\d{1,2})/, '$1.$2');
+    } 
+    
+    if (total <= 9) {
+      return result.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+    } 
+    
+    return result.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+  }
+}

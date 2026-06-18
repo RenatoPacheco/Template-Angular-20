@@ -1,90 +1,144 @@
-export type FormEditorConfig = {
-    readonly versionCheck?: boolean;
+export type FormEditorConfig = Partial<{
 
-    readonly entities?: boolean;
-    readonly basicEntities?: boolean;
-    readonly entities_latin?: boolean;
-    readonly entities_greek?: boolean;
+  // Geral
+  language: string;
+  defaultLanguage: string;
+  contentsLanguage: string;
+  versionCheck: boolean;
+  readOnly: boolean;
+  startupFocus: boolean;
+  startupMode: 'wysiwyg' | 'source';
 
-    readonly language?: string;
-    readonly contentsLanguage?: string;
+  // Conteúdo
+  allowedContent: boolean | string | object;
+  extraAllowedContent: string;
+  disallowedContent: string;
+  protectedSource: RegExp[];
 
-    readonly height?: number | string;
-    readonly width?: number | string;
+  // HTML
+  enterMode: number;
+  shiftEnterMode: number;
+  autoParagraph: boolean;
+  fillEmptyBlocks: boolean;
+  ignoreEmptyParagraph: boolean;
 
-    readonly readOnly?: boolean;
+  // Entidades
+  entities: boolean;
+  basicEntities: boolean;
+  entities_latin: boolean;
+  entities_greek: boolean;
+  entities_processNumerical: boolean;
 
-    readonly toolbar?: string | readonly string[] | any;
+  // Plugins
+  extraPlugins: string|string[];
+  removePlugins: string|string[];
 
-    readonly removeButtons?: string;
-    readonly removePlugins?: string;
-    readonly extraPlugins?: string;
+  // Toolbar
+  toolbar: unknown[];
+  toolbarGroups: unknown[];
+  removeButtons: string|string[];
+  stylesSet: string | unknown[];
 
-    readonly allowedContent?: boolean;
-    readonly autoParagraph?: boolean;
-};
+  // Fonte
+  font_names: string;
+  font_defaultLabel: string;
+  fontSize_sizes: string;
+  fontSize_defaultLabel: string;
 
-export const FormEditorStyles = [
-    { name: 'Computer Code', element: 'code' },
-    { name: 'Keyboard Phrase', element: 'kbd' },
-    { name: 'Sample Text', element: 'samp' },
-    { name: 'Variable', element: 'var' },
-    { name: 'Deleted Text', element: 'del' },
-    { name: 'Inserted Text', element: 'ins' },
-    { name: 'Cited Work', element: 'cite' },
-    { name: 'Inline Quotation', element: 'q' },
-    { name: 'Glossário', element: 'span', attributes: { class: 'glossario' } },
-    { name: 'Cor tema', element: 'span', attributes: { class: 'cor-tema' } }
-];
+  // Cor
+  colorButton_colors: string;
+  colorButton_enableMore: boolean;
 
-export const FormEditorComplte = {
+  // Formatação
+  format_tags: string;
+
+  // Dimensões
+  width: string | number;
+  height: string | number;
+  resize_enabled: boolean;
+  resize_dir: 'vertical' | 'horizontal' | 'both';
+
+  // Upload
+  filebrowserBrowseUrl: string;
+  filebrowserUploadUrl: string;
+  filebrowserImageBrowseUrl: string;
+  filebrowserImageUploadUrl: string;
+
+  // Colar
+  forcePasteAsPlainText: boolean;
+  pasteFilter: string;
+  pasteFromWordRemoveFontStyles: boolean;
+  pasteFromWordRemoveStyles: boolean;
+
+  // Tabelas
+  table_defaultBorder: number;
+  table_defaultWidth: string;
+
+  // Conteúdo CSS
+  contentsCss: string | string[];
+
+  // Templates
+  templates_files: string[];
+  templates_replaceContent: boolean;
+
+  // Links
+  linkShowAdvancedTab: boolean;
+  linkShowTargetTab: boolean;
+
+  // Imagens
+  image_previewText: string;
+  image_removeLinkByEmptyURL: boolean;
+
+  // Matemática / especiais
+  mathJaxLib: string;
+
+  // Seu plugin customizado
+  indentation: string;
+  indentationKey: string | number | false;
+
+}> & Record<string, unknown>;
+
+export const FormEditorBaseConfig: FormEditorConfig = {
+    // Caractéres
+    entities: false,
+    basicEntities: false,
+    entities_latin: false,
+    entities_greek: false,
+    // Dimensões
+    width: '100%',
     height: 250,
-    bodyClass: 'conteudo',
-    extraPlugins: ['custon-save', 'indent-paragraph'],
-    removePlugins: 'exportpdf',
+    skin: "moono-lisa",
+    // Avisos
+    versionCheck: false,
+    // Plugins
+    removeButtons: ['About'],
+    // Idioma
+    language: 'pt-br',
+    defaultLanguage: 'pt-br',
+    contentsLanguage: 'pt-br',
+    // Colar
     pasteFromWordPromptCleanup: true,
     pasteFromWordRemoveFontStyles: true,
     pasteFromWordNumberedHeadingToList: true,
     pasteFromWordRemoveStyles: true,
     ignoreEmptyParagraph: true,
     removeFormatAttributes: true,
-    allowedContent: true,
-    stylesSet: FormEditorStyles,
-    toolbar: [
-      { name: 'inline-zero', items: [
-        'custon-save', 'Source', '-', 'Preview', 'Print', '-',
-        'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo',
-        'Find', 'Replace', '-', 'SelectAll', 'ShowBlocks'
-      ]},
-      '/',
-      { name: 'inline-one', items: [
-        'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-',
-        'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', 'indent-paragraph', 'Blockquote', '-', 'CreateDiv', '-', 'JustifyLeft',
-        'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl',
-        'Link', 'Unlink', 'Anchor'
-      ]},
-      '/',
-      { name: 'inline-two', items: [
-        'Styles', 'Format', 'Maximize', '-',
-        'Image', 'Table', 'HorizontalRule', 'SpecialChar', 'PageBreak', 'Iframe',
-        'CopyFormatting', 'RemoveFormat'
-      ]}
-    ]
+    allowedContent: true    
+}
+
+export const FormEditorParagraphOff: FormEditorConfig = {
+  // Quebras de linha
+  enterMode: 2,      // ENTER_BR
+  shiftEnterMode: 2, // ENTER_BR
+  autoParagraph: false
+}
+
+export const FormEditorComplte: FormEditorConfig = {
+    extraPlugins: ['custon-save', 'indent-paragraph']
 };
 
-export const FormEditorBasic = {
-    height: 250,
-    bodyClass: 'conteudo',
+export const FormEditorBasic: FormEditorConfig = {
     extraPlugins: ['custon-save', 'indent-paragraph'],
-    removePlugins: ['exportpdf'],
-    pasteFromWordPromptCleanup: true,
-    pasteFromWordRemoveFontStyles: true,
-    pasteFromWordNumberedHeadingToList: true,
-    pasteFromWordRemoveStyles: true,
-    ignoreEmptyParagraph: true,
-    removeFormatAttributes: true,
-    allowedContent: true,
-    stylesSet: FormEditorStyles,
     toolbar: [
       { name: 'inline-zero', items: [
         'custon-save', 'Styles'
@@ -99,23 +153,13 @@ export const FormEditorBasic = {
     ]
 };
 
-export const FormEditorDisabled = {
-    height: 250,
-    bodyClass: 'conteudo',
-    extraPlugins: ['custon-save', 'indent-paragraph'],
-    removePlugins: ['exportpdf'],
-    pasteFromWordPromptCleanup: true,
-    pasteFromWordRemoveFontStyles: true,
-    pasteFromWordNumberedHeadingToList: true,
-    pasteFromWordRemoveStyles: true,
-    ignoreEmptyParagraph: true,
-    removeFormatAttributes: true,
-    allowedContent: true,
-    toolbar: [
-      { name: 'inline', items: [
-        'Source', '-', 'Preview', 'Print', 'Find',
-        'Maximize', 'ShowBlocks', 'About',
-      ]}
-    ]
+export const FormEditorDisabled: FormEditorConfig = {
+  ...FormEditorBaseConfig,
+  toolbar: [
+    { name: 'inline', items: [
+      'Source', '-', 'Preview', 'Print', 'Find',
+      'Maximize', 'ShowBlocks', 'About',
+    ]}
+  ]
 };
 

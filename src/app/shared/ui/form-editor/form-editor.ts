@@ -4,10 +4,10 @@ import { FormsModule } from "@angular/forms";
 import { CKEditor4, CKEditorModule } from "ckeditor4-angular";
 
 import { FormBase } from "@app/shared/directives";
-import { transformBoolean } from "@app/shared/utils";
+import { transformBoolean, transformNumber } from "@app/shared/utils";
 
 import { Label } from "../label/label";
-import { FormEditorBasic, FormEditorComplte, FormEditorConfig, FormEditorDisabled } from "./form-editor-model";
+import { FormEditorBaseConfig, FormEditorBasic, FormEditorComplte, FormEditorConfig, FormEditorDisabled, FormEditorParagraphOff } from "./form-editor-model";
 import { PlataformLocationService, ResizeService } from "@app/shared/services";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
@@ -31,6 +31,7 @@ export class FormEditor extends FormBase<string> implements OnDestroy {
   public override ngOnInit(): void {
     super.ngOnInit();
 
+    this.mobile = this.servResize.mobile;
     this.servResize.eventMobile
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((resp: boolean) => {
@@ -54,12 +55,6 @@ export class FormEditor extends FormBase<string> implements OnDestroy {
   
   public readonly save = output<string|null>();
   private readonly editors: any[] = [];
-
-  protected configs = {
-    complete: {...FormEditorComplte},
-    basic: {...FormEditorBasic},
-    disabled: {...FormEditorDisabled}
-  }
 
   protected _template = signal<'complete' | 'basic'>('complete');
   protected set template(value: 'complete' | 'basic') {
@@ -90,16 +85,6 @@ export class FormEditor extends FormBase<string> implements OnDestroy {
     super.value = value;
   }
 
-  protected _config = signal<FormEditorConfig>({});
-  @Input() set config(value: FormEditorConfig) {
-    if (value !== this.config) {
-      this._config.set(value || {});
-    }
-  }
-  public get config(): FormEditorConfig {
-    return untracked(() => this._config());
-  }
-
   protected readonly _paragraph = signal(true);
   @Input({ transform: transformBoolean })
   public set paragraph(value: boolean) {
@@ -111,72 +96,16 @@ export class FormEditor extends FormBase<string> implements OnDestroy {
     return untracked(() => this._paragraph());
   }
 
-  protected readonly _basic = signal(false);
-  @Input({ transform: transformBoolean })
-  public set basic(value: boolean) {
-    if (value !== this.basic) {
-      this._basic.set(value);
+  protected readonly _height = signal(250);
+  @Input({ transform: transformNumber })
+  public set height(value: number) {
+    if (value !== this.height) {
+      this._height.set(value);
     }
   }
-  public get basic(): boolean {
-    return untracked(() => this._basic());
+  public get height(): number {
+    return untracked(() => this._height());
   }
-
-  protected  __config = {
-    versionCheck: false,
-    entities: false,
-    basicEntities: false,
-    entities_latin: false,
-    entities_greek: false
-  };
-
-  protected configComputed = computed(() => {
-    const configVal = this._config();
-    const paragraphVal = this._paragraph();
-    const basicVal = this._basic();
-
-    let result = {
-      ...configVal, ...{
-        // Plugins
-        extraPlugins: ['custon-save', 'indent-paragraph'],
-        // Aparência
-        skin: "moono-lisa",
-        versionCheck: false,
-        removeButtons: ['About'],
-        // Idioma
-        language: 'pt-br',
-        // Caracteres
-        entities: false,
-        basicEntities: false,
-        entities_latin: false,
-        entities_greek: false
-      }
-    };
-
-    if (paragraphVal == false) {
-      result = {...result, ...{
-        // Quebras de linha
-        enterMode: 2,      // ENTER_BR
-        shiftEnterMode: 2, // ENTER_BR
-        autoParagraph: false
-      }};
-    }
-
-    if (basicVal == true) {
-      result = {...result, ...{
-        // Boões básicos
-        toolbar: [
-          ['Save'],
-          ['Bold', 'Italic', 'Underline'],
-          ['NumberedList', 'BulletedList'],
-          ['Link', 'Unlink'],
-          ['Undo', 'Redo']
-        ]
-      }};
-    }
-
-    return result;
-  });
 
   protected isMobile = computed(() => {
   return this._mobile();
@@ -194,27 +123,63 @@ export class FormEditor extends FormBase<string> implements OnDestroy {
   });
 
   protected basicConfig = computed(() => {
-    const configVal = this.configComputed();
-    return {
-      ...this.configs.basic,
-      ...configVal
-    };
+    const heightVal = this._height();
+    const paragraphVal = this._paragraph();
+
+    let result = {
+      ...FormEditorBaseConfig,
+      ...FormEditorBasic,
+      height: heightVal,
+    } as FormEditorConfig;
+
+    if (paragraphVal === false) {
+      result = {
+        ...result,
+        ...FormEditorParagraphOff
+      }
+    }
+
+    return result;
   });
 
   protected completeConfig = computed(() => {
-    const configVal = this.configComputed();
-    return {
-      ...this.configs.complete,
-      ...configVal
-    };
+    const heightVal = this._height();
+    const paragraphVal = this._paragraph();
+
+    let result = {
+      ...FormEditorBaseConfig,
+      ...FormEditorComplte,
+      height: heightVal,
+    } as FormEditorConfig;
+
+    if (paragraphVal === false) {
+      result = {
+        ...result,
+        ...FormEditorParagraphOff
+      }
+    }
+
+    return result;
   });
 
   protected disabledConfig = computed(() => {
-    const configVal = this.configComputed();
-    return {
-      ...this.configs.disabled,
-      ...configVal
-    };
+    const heightVal = this._height();
+    const paragraphVal = this._paragraph();
+
+    let result = {
+      ...FormEditorBaseConfig,
+      ...FormEditorDisabled,
+      height: heightVal,
+    } as FormEditorConfig;
+
+    if (paragraphVal === false) {
+      result = {
+        ...result,
+        ...FormEditorParagraphOff
+      }
+    }
+
+    return result;
   });
 
   protected set valueSync(value: string|null) {

@@ -84,6 +84,11 @@ export class FormEditor extends FormBase<string> implements OnDestroy {
     }
     super.value = value;
   }
+  // Como sobrescreve o set, é necessário sobrescrever 
+  // o get para manter o efeito do signal
+  public override get value(): string|null {
+    return super.value;
+  }
 
   protected readonly _paragraph = signal(true);
   @Input({ transform: transformBoolean })
@@ -181,13 +186,6 @@ export class FormEditor extends FormBase<string> implements OnDestroy {
 
     return result;
   });
-
-  protected set valueSync(value: string|null) {
-    super.value = value;
-  }
-  protected get valueSync(): string|null {
-    return this._value();
-  }
 
   protected useBasicConfig = computed(() => {
     const templateVal = this._template() == 'basic';

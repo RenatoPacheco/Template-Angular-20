@@ -8,19 +8,19 @@
 
 @if(isActive() && useCompleteConfig()) {
 <ckeditor 
-    [config]="completeConfig()" [(ngModel)]="valueSync" (blur)="onBlur()" (focus)="onBlur()" 
+    [config]="completeConfig()" [(ngModel)]="value" (blur)="onBlur()" (focus)="onBlur()" 
     (ready)="emitReady($event)" (change)="emitChange($event)" [id]="id">
 </ckeditor>
 }
 @if(isActive() && useBasicConfig()) {
 <ckeditor 
-    [config]="basicConfig()" [(ngModel)]="valueSync" (blur)="onBlur()" (focus)="onBlur()"
+    [config]="basicConfig()" [(ngModel)]="value" (blur)="onBlur()" (focus)="onBlur()"
     (ready)="emitReady($event)" (change)="emitChange($event)">
 </ckeditor>
 }
 @if(!isActive()) {
 <ckeditor [readOnly]="true"
-    [config]="disabledConfig()" [(ngModel)]="valueSync" (blur)="onBlur()" (focus)="onBlur()" 
+    [config]="disabledConfig()" [(ngModel)]="value" (blur)="onBlur()" (focus)="onBlur()" 
     (ready)="emitReady($event)" (change)="emitChange($event)" [id]="id">
 </ckeditor>
 }

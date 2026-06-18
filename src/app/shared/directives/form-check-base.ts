@@ -23,6 +23,11 @@ export abstract class FormCheckBase extends FormBase<any>  {
       this._value.set(value);
     }
   }
+  // Como sobrescreve o set, é necessário sobrescrever 
+  // o get para manter o efeito do signal
+  public override get value(): string|null {
+    return super.value;
+  }
 
   protected _checked = signal(false);
   @Input({ transform: transformBoolean })

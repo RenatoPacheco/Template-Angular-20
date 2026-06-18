@@ -40,7 +40,7 @@ export class Button {
     }
   }
   public get type(): ButtonType {
-    return untracked(() => this._type());
+    return this._type();
   }
 
   protected _text = signal('');
@@ -51,7 +51,7 @@ export class Button {
     }
   }
   public get text(): string {
-    return untracked(() => this._text());
+    return this._text();
   }
 
   protected _title = signal('');
@@ -62,7 +62,7 @@ export class Button {
     }
   }
   public get title(): string {
-    return untracked(() => this._title());
+    return this._title();
   }
 
   protected _disabled = signal(false);
@@ -73,7 +73,7 @@ export class Button {
     }
   }
   public get disabled(): boolean {
-    return untracked(() => this._disabled());
+    return this._disabled();
   }
 
   protected _loading = signal(false);
@@ -84,7 +84,7 @@ export class Button {
     }
   }
   public get loading(): boolean {
-    return untracked(() => this._loading());
+    return this._loading();
   }
 
   protected _class = signal('');
@@ -95,7 +95,7 @@ export class Button {
     }
   }
   public get class(): string {
-    return untracked(() => this._class());
+    return this._class();
   }
 
   protected _theme = signal<ButtonTheme>('');
@@ -106,7 +106,7 @@ export class Button {
     }
   }
   public get theme(): ButtonTheme {
-    return untracked(() => this._theme());
+    return this._theme();
   }
 
   protected _size = signal<ButtonSize>('md');
@@ -117,7 +117,7 @@ export class Button {
     }
   }
   public get size(): ButtonSize {
-    return untracked(() => this._size());
+    return this._size();
   }
 
   protected typeComputed = computed(() => {

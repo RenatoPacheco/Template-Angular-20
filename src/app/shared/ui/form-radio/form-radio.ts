@@ -29,6 +29,6 @@ export class FormRadio extends FormCheckBase  {
     }
   }
   public get group(): string {
-    return untracked(() => this._group());
+    return this._group();
   }
 }

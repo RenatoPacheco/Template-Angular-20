@@ -72,12 +72,12 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
 
   protected readonly _status = signal<'VALID' | 'INVALID' | 'PENDING' | 'DISABLED'>('VALID');
   public get status(): 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED' {
-    return untracked(() => this._status());
+    return this._status();
   }
 
   protected readonly _pristine = signal(true);
   public get pristine(): boolean {
-    return untracked(() => this._pristine());
+    return this._pristine();
   }
   public get dirty(): boolean {
     return untracked(() => !this._pristine());
@@ -85,7 +85,7 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
 
   protected readonly _touched = signal(false);
   public get touched(): boolean {
-    return untracked(() => this._touched());
+    return this._touched();
   }
   public get untouched(): boolean {
     return untracked(() => !this._touched());
@@ -99,7 +99,7 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
     }
   }
   public get value(): T|null {
-    return untracked(() => this._value());
+    return this._value();
   }
 
   protected readonly _disabled = signal(false);
@@ -110,7 +110,7 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
     }
   }
   public get disabled(): boolean {
-    return untracked(() => this._disabled());
+    return this._disabled();
   }
 
   protected readonly _id = signal(`${crypto.randomUUID()}`);
@@ -120,7 +120,7 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
     }
   }
   public get id(): string {
-    return untracked(() => this._id());
+    return this._id();
   }
 
   protected readonly _class = signal('');
@@ -130,7 +130,7 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
     }
   }
   public get class(): string {
-    return untracked(() => this._class());
+    return this._class();
   }
 
   protected readonly _readonly = signal(false);
@@ -141,7 +141,7 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
     }
   }
   public get readonly(): boolean {
-    return untracked(() => this._readonly());
+    return this._readonly();
   }
 
   protected readonly _label = signal('');
@@ -151,7 +151,7 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
     }
   }
   public get label(): string {
-    return untracked(() => this._label());
+    return this._label();
   }
 
   protected readonly _size = signal<'sm' | 'md' | 'lg'>('md');
@@ -161,7 +161,7 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
     }
   }
   public get size(): 'sm' | 'md' | 'lg' {
-    return untracked(() => this._size());
+    return this._size();
   }
 
   protected readonly _enabledError = signal(true);
@@ -172,7 +172,7 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
     }
   }
   public get enabledError(): boolean {
-    return untracked(() => this._enabledError());
+    return this._enabledError();
   }
 
   protected readonly _enabledHelper = signal(false);
@@ -183,7 +183,7 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
     }
   }
   public get enabledHelper(): boolean {
-    return untracked(() => this._enabledHelper());
+    return this._enabledHelper();
   }
 
   public isValid = computed(() => {

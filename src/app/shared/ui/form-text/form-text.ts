@@ -79,7 +79,7 @@ export class FormText extends FormBase<string>  {
     }
   }
   public get type(): InputType {
-    return untracked(() => this._type());
+    return this._type();
   }
   
   protected readonly _placeholder = signal('');
@@ -90,7 +90,7 @@ export class FormText extends FormBase<string>  {
     }
   }
   public get placeholder(): string {
-    return untracked(() => this._placeholder());
+    return this._placeholder();
   }
 
   protected readonly _autocomplete = signal<InputAutocomplete>('off');
@@ -101,7 +101,7 @@ export class FormText extends FormBase<string>  {
     }
   }
   public get autocomplete(): InputAutocomplete {
-    return untracked(() => this._autocomplete());
+    return this._autocomplete();
   }
 
   protected readonly _controlSecret = signal(false);
@@ -115,7 +115,7 @@ export class FormText extends FormBase<string>  {
     }
   }
   public get controlSecret(): boolean {
-    return untracked(() => this._controlSecret());
+    return this._controlSecret();
   }
 
   protected readonly _secretHasBeenReversed = signal(false);

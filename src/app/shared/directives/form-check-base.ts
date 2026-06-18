@@ -32,7 +32,7 @@ export abstract class FormCheckBase extends FormBase<any>  {
     }
   }
   public get checked(): boolean {
-    return untracked(() => this._checked());
+    return this._checked();
   }
 
   protected readonly _switch = signal(false);
@@ -43,7 +43,7 @@ export abstract class FormCheckBase extends FormBase<any>  {
     }
   }
   public get switch(): boolean {
-    return untracked(() => this._switch());
+    return this._switch();
   }
   
   protected readonly _inline = signal(false);
@@ -54,7 +54,7 @@ export abstract class FormCheckBase extends FormBase<any>  {
     }
   }
   public get inline(): boolean {
-    return untracked(() => this._inline());
+    return this._inline();
   }
 
   protected onToggle(event: Event): void {

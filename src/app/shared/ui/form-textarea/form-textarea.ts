@@ -31,7 +31,7 @@ export class FormTextarea extends FormBase<string>  {
     }
   }
   public get placeholder(): string {
-    return untracked(() => this._placeholder());
+    return this._placeholder();
   }
 
   public _rows = signal(5);
@@ -42,7 +42,7 @@ export class FormTextarea extends FormBase<string>  {
     }
   }
   public get rows(): number {
-    return untracked(() => this._rows());
+    return this._rows();
   }
   
   protected hostClass = computed(() => {

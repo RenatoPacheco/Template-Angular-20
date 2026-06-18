@@ -26,7 +26,7 @@ export class Label {
     }
   }
   public get text(): string {
-    return untracked(() => this._text());
+    return this._text();
   }
 
   protected _class = signal('');
@@ -37,7 +37,7 @@ export class Label {
     }
   }
   public get class(): string {
-    return untracked(() => this._class());
+    return this._class();
   }
 
   protected _for = signal('');
@@ -48,7 +48,7 @@ export class Label {
     }
   }
   public get for(): string {
-    return untracked(() => this._for());
+    return this._for();
   }
 
   protected _title = signal('');
@@ -59,7 +59,7 @@ export class Label {
     }
   }
   public get title(): string {
-    return untracked(() => this._title());
+    return this._title();
   }
 
   protected _enabledError = signal(false);
@@ -73,7 +73,7 @@ export class Label {
     }
   }
   public get enabledError(): boolean {
-    return untracked(() => this._enabledError());
+    return this._enabledError();
   }
 
   protected _enabledHelper = signal(false);
@@ -87,7 +87,7 @@ export class Label {
     }
   }
   public get enabledHelper(): boolean {
-    return untracked(() => this._enabledHelper());
+    return this._enabledHelper();
   }
 
   protected textComputed = computed(() => {

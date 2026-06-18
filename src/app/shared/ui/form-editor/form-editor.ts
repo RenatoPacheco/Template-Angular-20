@@ -63,7 +63,7 @@ export class FormEditor extends FormBase<string> implements OnDestroy {
     }
   }
   protected get template(): 'complete' | 'basic' {
-    return untracked(() => this._template());
+    return this._template();
   }
 
   protected _mobile = signal<boolean>(false);
@@ -73,7 +73,7 @@ export class FormEditor extends FormBase<string> implements OnDestroy {
     }
   }
   protected get mobile(): boolean {
-    return untracked(() => this._mobile());
+    return this._mobile();
   }
 
   public override set value(value: string|null) {
@@ -93,7 +93,7 @@ export class FormEditor extends FormBase<string> implements OnDestroy {
     }
   }
   public get paragraph(): boolean {
-    return untracked(() => this._paragraph());
+    return this._paragraph();
   }
 
   protected readonly _height = signal(250);
@@ -104,7 +104,7 @@ export class FormEditor extends FormBase<string> implements OnDestroy {
     }
   }
   public get height(): number {
-    return untracked(() => this._height());
+    return this._height();
   }
 
   protected isMobile = computed(() => {

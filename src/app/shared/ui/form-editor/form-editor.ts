@@ -1,4 +1,4 @@
-import { Component, computed, inject, Input, output, signal, untracked } from "@angular/core";
+import { Component, computed, inject, Input, OnDestroy, output, signal, untracked } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 
 import { CKEditor4, CKEditorModule } from "ckeditor4-angular";
@@ -7,13 +7,13 @@ import { FormBase } from "@app/shared/directives";
 import { transformBoolean } from "@app/shared/utils";
 
 import { Label } from "../label/label";
-import { FormEditorConfig } from "./form-editor-model";
-import { FormEditorService } from "./form-editor-service";
+import { FormEditorBasic, FormEditorComplte, FormEditorConfig, FormEditorDisabled } from "./form-editor-model";
+import { PlataformLocationService, ResizeService } from "@app/shared/services";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   standalone: true,
   selector: 'app-form-editor',
-  providers: [FormEditorService],
   imports: [FormsModule, CKEditorModule, Label],
   templateUrl: './form-editor.html',
   styleUrl: './form-editor.scss',
@@ -21,14 +21,65 @@ import { FormEditorService } from "./form-editor-service";
     '[class]' : 'hostClass()'
   }
 })
-export class FormEditor extends FormBase<string>  {
+// https://ckeditor.com/docs/ckeditor4/4.22.1/api/CKEDITOR_config.html
+export class FormEditor extends FormBase<string> implements OnDestroy {
 
   constructor() {
     super();
   }
 
-  private readonly controller = inject(FormEditorService);
+  public override ngOnInit(): void {
+    super.ngOnInit();
+
+    this.servResize.eventMobile
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((resp: boolean) => {
+        this.mobile = resp;
+    });
+    this.servPlataformLocation.popState
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.maximize(false);
+        }
+      });
+  }
+  
+  public ngOnDestroy(): void {
+    this.maximize(false);
+  }
+
+  private readonly servResize = inject(ResizeService);
+  private readonly servPlataformLocation = inject(PlataformLocationService);
+  
   public readonly save = output<string|null>();
+  private readonly editors: any[] = [];
+
+  protected configs = {
+    complete: {...FormEditorComplte},
+    basic: {...FormEditorBasic},
+    disabled: {...FormEditorDisabled}
+  }
+
+  protected _template = signal<'complete' | 'basic'>('complete');
+  protected set template(value: 'complete' | 'basic') {
+    if (value !== this.template) {
+      this._template.set(value);
+    }
+  }
+  protected get template(): 'complete' | 'basic' {
+    return untracked(() => this._template());
+  }
+
+  protected _mobile = signal<boolean>(false);
+  protected set mobile(value: boolean) {
+    if (value !== this.mobile) {
+      this._mobile.set(value);
+    }
+  }
+  protected get mobile(): boolean {
+    return untracked(() => this._mobile());
+  }
 
   public override set value(value: string|null) {
     if (this.paragraph === false && value) {
@@ -124,8 +175,11 @@ export class FormEditor extends FormBase<string>  {
       }};
     }
 
-
     return result;
+  });
+
+  protected isMobile = computed(() => {
+  return this._mobile();
   });
 
   protected hostClass = computed(() => {
@@ -139,18 +193,75 @@ export class FormEditor extends FormBase<string>  {
     return itens.join(' ');
   });
 
+  protected basicConfig = computed(() => {
+    const configVal = this.configComputed();
+    return {
+      ...this.configs.basic,
+      ...configVal
+    };
+  });
+
+  protected completeConfig = computed(() => {
+    const configVal = this.configComputed();
+    return {
+      ...this.configs.complete,
+      ...configVal
+    };
+  });
+
+  protected disabledConfig = computed(() => {
+    const configVal = this.configComputed();
+    return {
+      ...this.configs.disabled,
+      ...configVal
+    };
+  });
+
+  protected set valueSync(value: string|null) {
+    super.value = value;
+  }
+  protected get valueSync(): string|null {
+    return this._value();
+  }
+
+  protected useBasicConfig = computed(() => {
+    const templateVal = this._template() == 'basic';
+    const mobileVal = this.isMobile();
+    return templateVal || mobileVal;
+  });
+
+  protected useCompleteConfig = computed(() => {
+    const templateVal = this._template() == 'complete';
+    const mobileVal = this.isMobile();
+    return templateVal && !mobileVal;
+  });
+
   protected emitReady(event: CKEditor4.EventInfo): void {
-    // this.controller.editor = event.editor;
+    this.editors.push(event.editor);
   }
 
   protected emitChange(event: CKEditor4.EventInfo): void {
-    return;
     const data = event.data?.toString();
     if (data === 'custon-save' || data === 'resize') {
-      // this.controller.maximize(false);
+      this.maximize(false);
     }
     if (data === 'custon-save') {
       this.save.emit(this.value);
+    }
+  }
+
+  protected maximize(value: boolean): void {
+    for (const editor of this.editors) {
+      try {
+        if (editor.getCommand('maximize').state  === 1 && !value) {
+          editor.execCommand('maximize');
+        } else if (editor.getCommand('maximize').state  === 2 && value) {
+          editor.execCommand('maximize');
+        }
+      } catch (e) {
+        window.location.reload();
+        break;
+      }
     }
   }
 }

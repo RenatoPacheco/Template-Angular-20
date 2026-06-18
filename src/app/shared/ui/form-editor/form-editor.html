@@ -5,10 +5,24 @@
     (helper)="onHelper()"
     [enabled-error]="showErrorComputed()"
     [enabled-helper]="_enabledHelper()"></label>
-<div class="form-element"
-    [class.action-clear]="hasValueComputed()">
+
+@if(isActive() && useCompleteConfig()) {
 <ckeditor 
-    [config]="configComputed()" [(ngModel)]="value" (blur)="onBlur()" 
+    [config]="completeConfig()" [(ngModel)]="valueSync" (blur)="onBlur()" (focus)="onBlur()" 
+    (ready)="emitReady($event)" (change)="emitChange($event)" [id]="id">
+</ckeditor>
+}
+@if(isActive() && useBasicConfig()) {
+<ckeditor 
+    [config]="basicConfig()" [(ngModel)]="valueSync" (blur)="onBlur()" (focus)="onBlur()"
     (ready)="emitReady($event)" (change)="emitChange($event)">
 </ckeditor>
+}
+@if(!isActive()) {
+<ckeditor [readOnly]="true"
+    [config]="disabledConfig()" [(ngModel)]="valueSync" (blur)="onBlur()" (focus)="onBlur()" 
+    (ready)="emitReady($event)" (change)="emitChange($event)" [id]="id">
+</ckeditor>
+}
+active: {{ isActive() }} mobile: {{ isMobile() }} value: {{ _value() }}
 <ng-content></ng-content>

@@ -6,6 +6,7 @@ import { FormBase } from '@app/shared/directives';
 
 import { Label } from '../label/label';
 import { Button } from '../button/button';
+import { CnpjPipe, CpfPipe } from '@app/shared/pipes';
 
 type InputType = 'text' | 'password' | 'email' | 'number' | 'search' | 'tel' | 'url';
 type InputAutocomplete =
@@ -55,6 +56,8 @@ type InputAutocomplete =
     | 'sex'
     | 'language';
 
+  type InputMask = 'cpf' | 'cnpj';
+
 @Component({
   standalone: true,
   selector: 'app-form-text',
@@ -70,10 +73,19 @@ export class FormText extends FormBase<string>  {
   constructor() {
     super();
   }
+
+  protected readonly _mask = signal<InputMask|null>(null);
+  @Input() public set mask(value: InputMask|null) {
+    if (value !== this.mask) {
+      this._mask.set(value);
+    }
+  }
+  public get mask(): InputMask|null {
+    return this._mask();
+  }
   
   protected readonly _type = signal<InputType>('text');
-  @Input()
-  public set type(value: InputType) {
+  @Input() public set type(value: InputType) {
     if (value !== this.type) {
       this._type.set(value);
     }
@@ -83,8 +95,7 @@ export class FormText extends FormBase<string>  {
   }
   
   protected readonly _placeholder = signal('');
-  @Input()
-  public set placeholder(value: string) {
+  @Input() public set placeholder(value: string) {
     if (value !== this.placeholder) {
       this._placeholder.set(value);
     }
@@ -94,8 +105,7 @@ export class FormText extends FormBase<string>  {
   }
 
   protected readonly _autocomplete = signal<InputAutocomplete>('off');
-  @Input()
-  public set autocomplete(value: InputAutocomplete) {
+  @Input() public set autocomplete(value: InputAutocomplete) {
     if (value !== this.autocomplete) {
       this._autocomplete.set(value);
     }
@@ -105,10 +115,7 @@ export class FormText extends FormBase<string>  {
   }
 
   protected readonly _controlSecret = signal(false);
-  @Input({ 
-    alias: 'control-secret', 
-    transform: transformBoolean 
-  })
+  @Input({ alias: 'control-secret', transform: transformBoolean })
   public set controlSecret(value: boolean) {
     if (value !== this.controlSecret) {
       this._controlSecret.set(value);
@@ -175,4 +182,21 @@ export class FormText extends FormBase<string>  {
     const sizeVal = this._size();
     return `form-control form-control-${sizeVal}`;
   });
+
+  protected override onInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    let value = input?.value as string | null;
+
+    switch (this.mask) {
+      case 'cpf':
+        value = CpfPipe.apply(value);
+        break;
+      case 'cnpj':
+        value = CnpjPipe.apply(value);
+        break;
+    }
+
+    input.value = value ?? '';
+    super.onInput(event);
+  }
 }

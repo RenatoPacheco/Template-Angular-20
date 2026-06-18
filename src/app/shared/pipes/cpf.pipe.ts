@@ -1,9 +1,17 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
+export function transformCpf(value: string | number | null | undefined): string|null {
+  return CpfPipe.apply(value);
+}
+
 @Pipe({ name: 'cpf' })
 export class CpfPipe implements PipeTransform {
 
-  transform(value: string | number | null | undefined): string|null {
+  public transform(value: string | number | null | undefined): string|null {
+    return CpfPipe.apply(value);
+  }
+
+  public static apply(value: string | number | null | undefined): string|null {
 
     value = value?.toString()?.trim() || null;
 
@@ -12,7 +20,7 @@ export class CpfPipe implements PipeTransform {
       return value;
     }
 
-    const result = String(value)
+    let result = String(value)
       .replace(/\D/g, '')
       .slice(0, 11);
 

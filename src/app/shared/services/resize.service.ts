@@ -18,11 +18,11 @@ export class ResizeService {
   readonly eventTablet: EventEmitter<boolean> = new EventEmitter();
 
   private maxWidth = {
-    ms: 319,
-    xs: 576,
+    xs: 575,
     sm: 767,
     md: 991,
-    lg: 1199
+    lg: 1199,
+    xl: 1399
   };
 
   mobile = false;
@@ -64,8 +64,10 @@ export class ResizeService {
   update(): void {
     this.height = window.innerHeight;
     this.width = window.innerWidth;
-    let size = ScreenSize.MS;
-    if (this.width > this.maxWidth.lg) {
+    let size = ScreenSize.XS;
+    if (this.width > this.maxWidth.xl) {
+      size = ScreenSize.XXL;
+    } else if (this.width > this.maxWidth.lg) {
       size = ScreenSize.XL;
     } else if (this.width > this.maxWidth.md) {
       size = ScreenSize.LG;
@@ -73,8 +75,6 @@ export class ResizeService {
       size = ScreenSize.MD;
     } else if (this.width > this.maxWidth.xs) {
       size = ScreenSize.SM;
-    } else if (this.width > this.maxWidth.ms) {
-      size = ScreenSize.XS;
     }
     this.size = size;
     if (size < ScreenSize.MD && !this.mobile) {
@@ -88,8 +88,8 @@ export class ResizeService {
     if (size === ScreenSize.MD && !this.tablet) {
       this.tablet = true;
       this.eventTablet.emit(true);
-    } else if (size > ScreenSize.MD && this.tablet) {
-      this.mobile = false;
+    } else if (size !== ScreenSize.MD && this.tablet) {
+      this.tablet = false;
       this.eventTablet.emit(false);
     }
   }

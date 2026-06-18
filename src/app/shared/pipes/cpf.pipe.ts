@@ -15,6 +15,7 @@ export class CpfPipe implements PipeTransform {
 
     value = value?.toString()?.trim() || null;
 
+    const totalBase = value?.length || 0;
     const pattern = /^(\d{3}\.){1,2}$|^(\d{3}\.){2}(\d{3}-\d{0,2})$/;
     if (!value || RegExp(pattern).test(value)) {
       return value;
@@ -27,15 +28,17 @@ export class CpfPipe implements PipeTransform {
     const total = result.length;
 
     if (total <= 3) {
-      return result;
+      return totalBase > 3 ? `${result}.` : result;
     }
     
     if (total <= 6) {
-      return result.replace(/(\d{3})(\d{1,2})/, '$1.$2');
+      result = result.replace(/(\d{3})(\d{1,2})/, '$1.$2');
+      return totalBase > 7 ? `${result}.` : result;
     } 
     
     if (total <= 9) {
-      return result.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+      result = result.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+      return totalBase > 11 ? `${result}-` : result;
     } 
     
     return result.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');

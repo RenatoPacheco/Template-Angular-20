@@ -56,8 +56,10 @@ export class ShowcaseFormPage implements OnInit {
     }),
     telefone: this.formBuilder.control<string|null>(null,{
       validators: [
-        Validators.minLength(14),
-        Validators.maxLength(15),
+        CustomValidators.phonePtBr({
+          format: 'both',
+          type: 'cellphone'
+        }),
       ], updateOn: 'blur'
     }),
     inputText: this.formBuilder.control<string|null>(null,{

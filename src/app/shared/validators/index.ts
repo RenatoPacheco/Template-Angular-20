@@ -7,6 +7,7 @@ import { DateFormat, dateValidator } from './date.validator';
 import { passwordValidator } from './password.validator';
 import { timeSpanValidator } from './timespan.validator';
 import { dateTimeValidator } from './datetime.validator';
+import { phonePtBrValidator } from './phone-ptbr.validator';
 
 
 export class CustomValidators {
@@ -17,6 +18,13 @@ export class CustomValidators {
   public static readonly password = passwordValidator;
   public static readonly timeSpan = timeSpanValidator;
 
+  public static phonePtBr(param?: {
+    format?: 'formatted' | 'numbers' | 'both',
+    type?: 'cellphone' | 'landline' | 'both'
+  }) {
+    return phonePtBrValidator(param);
+  }
+  
   public static date(format?: DateFormat) {
     return dateValidator(format);
   }

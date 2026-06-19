@@ -1,14 +1,14 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-export function transformTime(value: string | number | null | undefined): string|null {
-  return TimePipe.apply(value);
+export function transformTimeSpan(value: string | number | null | undefined): string|null {
+  return TimeSpanPipe.apply(value);
 }
 
-@Pipe({ name: 'time' })
-export class TimePipe implements PipeTransform {
+@Pipe({ name: 'timespan' })
+export class TimeSpanPipe implements PipeTransform {
 
   public transform(value: string | number | null | undefined): string|null {
-    return TimePipe.apply(value);
+    return TimeSpanPipe.apply(value);
   }
 
   public static apply(value: string | number | null | undefined): string|null {

@@ -1,44 +1,44 @@
 <div class="container">
-    <h1>Showcase Form Page</h1>
-    <div class="row">
-        <form [formGroup]="formLogin"
-            class="mx-auto" style="max-width: 540px;">
-            <div class="form-grid-inline">
-                <app-form-text
-                    formControlName="login"
-                    autocomplete="off"
-                    control-secret="true"
-                    label="Login">
-                </app-form-text>
-                <app-form-text
-                    formControlName="senha"
-                    autocomplete="new-password"
-                    control-secret="true"
-                    type="password"
-                    label="Senha">
-                </app-form-text>
-            </div>
-            <div class="form-actions mb-3 mt-3">
-                <button app-button 
-                    theme="submit" 
-                    type="submit">
-                </button>
-                <button app-button 
-                    theme="secondary" 
-                    type="button"
-                    title="clique aqui para recuperar o acesso">
-                    <i class="fa fa-refresh">&nbsp;</i>
-                    Recuperar acesso
-                </button>
-            </div>
-        </form>
-    </div>
-    
+    <h1>Showcase Form Page</h1>    
     <form [formGroup]="form">
         <legend>Outro form</legend>
         <div class="form-grid">
             <app-form-text
                 transform="cpf"                
+                formControlName="cpf"
+                label="Input CPF"
+                placeholder="xxx.xxx.xxx-xx">
+            </app-form-text>
+            
+            <app-form-text
+                transform="cnpj"                
+                formControlName="cnpj"
+                label="Input CNPJ"
+                placeholder="xx.xxx.xxx/xxxx-xx">
+            </app-form-text>
+            
+            <app-form-text
+                transform="date"                
+                formControlName="data"
+                label="Input Date"
+                placeholder="dd/mm/yyyy">
+            </app-form-text>
+            
+            <app-form-text
+                transform="timeSpan"                
+                formControlName="timeSpan"
+                label="Input TimeSpan"
+                placeholder=" hh:mm:ss.tttttttttt">
+            </app-form-text>
+            
+            <app-form-text
+                transform="datetime"                
+                formControlName="dataHora"
+                label="Input DateTime"
+                placeholder="dd/mm/yyyy hh:mm:ss.tttttttttt">
+            </app-form-text>
+            
+            <app-form-text
                 formControlName="inputText"
                 label="Input text">
             </app-form-text>

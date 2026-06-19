@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators 
 
 import { FormText, Button, FormCheckBox, FormRadio, FormEditor } from '@app/shared/ui';
 import { FormTextarea } from '@app/shared/ui/form-textarea/form-textarea';
-import { CustonValidators } from '@app/shared/validators';
+import { CustomValidators } from '@app/shared/validators';
 
 @Component({
   standalone: true,
@@ -22,21 +22,6 @@ export class ShowcaseFormPage implements OnInit {
   private formBuilder = inject(FormBuilder);
   protected readonly destroyRef = inject(DestroyRef);
 
-  public readonly formLogin = this.formBuilder.group({
-    login: this.formBuilder.control<string|null>(null,{
-      validators: [
-        Validators.required,
-        Validators.email,
-      ], updateOn: 'blur'
-    }),
-    senha: this.formBuilder.control<string|null>(null,{
-      validators: [
-        Validators.required,
-        CustonValidators.pasword(),
-      ], updateOn: 'blur'
-    })
-  }); 
-
   protected opcoes = [
     { id: 'LER', descricao: 'Ler' },
     { id: 'ECREVER', descricao: 'Escrever' },
@@ -44,6 +29,31 @@ export class ShowcaseFormPage implements OnInit {
   ];
 
   public readonly form = this.formBuilder.group({
+    cpf: this.formBuilder.control<string|null>(null,{
+      validators: [
+        CustomValidators.cpf()
+      ], updateOn: 'blur'
+    }),
+    cnpj: this.formBuilder.control<string|null>(null,{
+      validators: [
+        CustomValidators.cnpj()
+      ], updateOn: 'blur'
+    }),
+    timeSpan: this.formBuilder.control<string|null>(null,{
+      validators: [
+        CustomValidators.timeSpan()
+      ], updateOn: 'blur'
+    }),
+    data: this.formBuilder.control<string|null>(null,{
+        validators: [
+        CustomValidators.date('dd/MM/yyyy')
+      ], updateOn: 'blur'
+    }),
+    dataHora: this.formBuilder.control<string|null>(null,{
+      validators: [
+        Validators.required
+      ], updateOn: 'blur'
+    }),
     inputText: this.formBuilder.control<string|null>(null,{
       validators: [
         Validators.minLength(3),
@@ -53,7 +63,7 @@ export class ShowcaseFormPage implements OnInit {
     inputPassword: this.formBuilder.control<string|null>(null,{
       validators: [
         Validators.required,
-        CustonValidators.pasword()
+        CustomValidators.password()
       ], updateOn: 'blur'
     }),
     inputEmail: this.formBuilder.control<string|null>(null,{

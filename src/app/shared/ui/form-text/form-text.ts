@@ -1,12 +1,12 @@
-import { Component, computed, Input, signal, untracked } from '@angular/core';
+import { Component, computed, Input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { InputElementUtils, transformBoolean } from '@app/shared/utils';
-import { CnpjTransform, CpfTransform, DateTimeTransform, DateTransform, FormBase, TimeTransform } from '@app/shared/directives';
+import { transformBoolean } from '@app/shared/utils';
+import { CnpjTransform, CpfTransform, DateTimeTransform, DateTransform, 
+  FormBase, TimeSpanTransform } from '@app/shared/directives';
 
 import { Label } from '../label/label';
 import { Button } from '../button/button';
-import { CnpjPipe, CpfPipe, DatePipe, DateTimePipe, TimePipe } from '@app/shared/pipes';
 
 type InputType = 'text' | 'password' | 'email' | 'number' | 'search' | 'tel' | 'url';
 type InputAutocomplete =
@@ -56,7 +56,7 @@ type InputAutocomplete =
     | 'sex'
     | 'language';
 
-  type InputTransform = 'cpf' | 'cnpj' | 'date' | 'datetime' | 'time';
+  type InputTransform = 'cpf' | 'cnpj' | 'date' | 'datetime' | 'timeSpan';
 
 @Component({
   standalone: true,
@@ -201,8 +201,8 @@ export class FormText extends FormBase<string>  {
         case 'datetime':
           DateTimeTransform.apply(input);
           break;
-        case 'time':
-          TimeTransform.apply(input);
+        case 'timeSpan':
+          TimeSpanTransform.apply(input);
           break;
       }
     }

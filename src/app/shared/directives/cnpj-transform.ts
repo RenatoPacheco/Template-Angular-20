@@ -4,7 +4,7 @@ import { CnpjPipe } from '../pipes';
 import { InputElementUtils } from '../utils';
 
 @Directive({
-  selector: '[cnpj-transform]',
+  selector: '[cnpjTransform]',
   standalone: true
 })
 export class CnpjTransform {

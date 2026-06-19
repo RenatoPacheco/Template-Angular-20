@@ -4,7 +4,7 @@ import { PhonePtBrPipe } from '../pipes';
 import { InputElementUtils } from '../utils';
 
 @Directive({
-  selector: '[phonePtBr-transform]',
+  selector: '[phonePtBrTransform]',
   standalone: true
 })
 export class PhonePtBrTransform {

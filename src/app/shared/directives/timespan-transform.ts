@@ -4,7 +4,7 @@ import { TimeSpanPipe } from '../pipes';
 import { InputElementUtils } from '../utils';
 
 @Directive({
-  selector: '[timespan-transform]',
+  selector: '[timespanTransform]',
   standalone: true
 })
 export class TimeSpanTransform {

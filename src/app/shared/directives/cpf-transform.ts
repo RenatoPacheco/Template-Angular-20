@@ -3,7 +3,7 @@ import { CpfPipe } from '../pipes';
 import { InputElementUtils } from '../utils';
 
 @Directive({
-  selector: '[cpf-transform]',
+  selector: '[cpfTransform]',
   standalone: true
 })
 export class CpfTransform {

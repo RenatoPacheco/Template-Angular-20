@@ -4,7 +4,7 @@ import { DatePipe } from '../pipes';
 import { InputElementUtils } from '../utils';
 
 @Directive({
-  selector: '[date-transform]',
+  selector: '[dateTransform]',
   standalone: true
 })
 export class DateTransform {

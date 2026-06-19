@@ -1,4 +1,4 @@
-import { InputBoolean, InputNumber } from "./types";
+import { InputBoolean, InputNumber } from "./types.utils";
 
 /**
  * Converte um valor para `number`.

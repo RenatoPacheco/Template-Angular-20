@@ -1,6 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
 
-import { ScreenSize } from '../models/screen-size';
+import { ScreenSize } from '../models/screen-size.model';
 
 @Injectable({
   providedIn: 'root'

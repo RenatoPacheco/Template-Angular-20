@@ -1,6 +1,8 @@
 {
   "material-icon-theme.files.associations": {
     "*.config.ts": "settings",
-    "index.ts": "shader"
+    "index.ts": "shader",
+    "*.utils.ts": "lib",
+    "*.model.ts": "database"
   }
 }

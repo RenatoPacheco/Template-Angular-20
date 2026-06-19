@@ -54,6 +54,12 @@ export class ShowcaseFormPage implements OnInit {
         CustomValidators.dateTime()
       ], updateOn: 'blur'
     }),
+    telefone: this.formBuilder.control<string|null>(null,{
+      validators: [
+        Validators.minLength(14),
+        Validators.maxLength(15),
+      ], updateOn: 'blur'
+    }),
     inputText: this.formBuilder.control<string|null>(null,{
       validators: [
         Validators.minLength(3),

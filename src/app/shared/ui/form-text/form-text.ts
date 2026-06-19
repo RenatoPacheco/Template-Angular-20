@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 
 import { transformBoolean } from '@app/shared/utils';
 import { CnpjTransform, CpfTransform, DateTimeTransform, DateTransform, 
-  FormBase, TimeSpanTransform } from '@app/shared/directives';
+  FormBase, PhonePtBrTransform, TimeSpanTransform } from '@app/shared/directives';
 
 import { Label } from '../label/label';
 import { Button } from '../button/button';
@@ -56,7 +56,7 @@ type InputAutocomplete =
     | 'sex'
     | 'language';
 
-  type InputTransform = 'cpf' | 'cnpj' | 'date' | 'datetime' | 'timeSpan';
+  type InputTransform = 'cpf' | 'cnpj' | 'date' | 'datetime' | 'timeSpan' | 'phonePtBr';
 
 @Component({
   standalone: true,
@@ -203,6 +203,9 @@ export class FormText extends FormBase<string>  {
           break;
         case 'timeSpan':
           TimeSpanTransform.apply(input);
+          break;
+        case 'phonePtBr':
+          PhonePtBrTransform.apply(input);
           break;
       }
     }

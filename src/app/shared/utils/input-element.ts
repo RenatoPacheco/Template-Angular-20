@@ -17,9 +17,11 @@ export class InputElementUtils {
     const currentBlock = value.substring(0, start);
     const newBlock = newValue.substring(0, start);
     if (newBlock !== currentBlock) {
+      let diff = newValue.length - value.length;
+      diff = diff > 0 ? diff : 1;
       return {
-        start: start + 1,
-        end: end + 1,
+        start: start + diff,
+        end: end + diff,
       };
     } else {
       return {

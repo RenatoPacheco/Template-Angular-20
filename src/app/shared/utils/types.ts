@@ -1,3 +1,7 @@
+export type NumberParam = number |null | undefined;
+export type StringParam = string | null | undefined;
+export type NumberOrStringParam = NumberParam | StringParam;
+
 export type InputBoolean = boolean | 'true' | 'false' | '';
 export type InputNumber = number | string;
 

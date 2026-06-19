@@ -17,7 +17,6 @@ export class CustomValidators {
   public static readonly password = passwordValidator;
   public static readonly timeSpan = timeSpanValidator;
 
-
   public static date(format?: DateFormat) {
     return dateValidator(format);
   }

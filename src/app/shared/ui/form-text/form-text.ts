@@ -1,8 +1,8 @@
 import { Component, computed, Input, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { transformBoolean } from '@app/shared/utils';
-import { FormBase } from '@app/shared/directives';
+import { InputElementUtils, transformBoolean } from '@app/shared/utils';
+import { CnpjTransform, CpfTransform, DateTimeTransform, DateTransform, FormBase, TimeTransform } from '@app/shared/directives';
 
 import { Label } from '../label/label';
 import { Button } from '../button/button';
@@ -185,27 +185,28 @@ export class FormText extends FormBase<string>  {
 
   protected override onInput(event: Event): void {
     const input = event.target as HTMLInputElement;
-    let value = input?.value as string | null;
+    let value = input?.value ?? '';
 
-    switch (this.transform) {
-      case 'cpf':
-        value = CpfPipe.apply(value);
-        break;
-      case 'cnpj':
-        value = CnpjPipe.apply(value);
-        break;
-      case 'date':
-        value = DatePipe.apply(value);
-        break;
-      case 'datetime':
-        value = DateTimePipe.apply(value);
-        break;
-      case 'time':
-        value = TimePipe.apply(value);
-        break;
+    if (value) {
+      switch (this.transform) {
+        case 'cpf':
+          CpfTransform.apply(input);
+          break;
+        case 'cnpj':
+          CnpjTransform.apply(input);
+          break;
+        case 'date':
+          DateTransform.apply(input);
+          break;
+        case 'datetime':
+          DateTimeTransform.apply(input);
+          break;
+        case 'time':
+          TimeTransform.apply(input);
+          break;
+      }
     }
 
-    input.value = value ?? '';
     super.onInput(event);
   }
 }

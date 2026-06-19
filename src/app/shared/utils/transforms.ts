@@ -19,3 +19,4 @@ export function transformNumber(value: InputNumber): number {
 export function transformBoolean(value: InputBoolean): boolean {
  return typeof value !== 'boolean' ? `${value}` == '' || (/true/i).test(`${value}`) : value;
 }
+

@@ -1,5 +1,7 @@
 import { Directive, ElementRef, HostListener, inject } from '@angular/core';
+
 import { CnpjPipe } from '../pipes';
+import { InputElementUtils } from '../utils';
 
 @Directive({
   selector: '[cnpj-transform]',
@@ -11,8 +13,16 @@ export class CnpjTransform {
 
   @HostListener('input')
   onInput(): void {
-
     const element = this.reference.nativeElement;
-    element.value = CnpjPipe.apply(element.value);
+    CnpjTransform.apply(element);
   }
+
+  public static apply(element: HTMLInputElement): void {
+    const newValue = CnpjPipe.apply(element.value) ?? '';
+    const position = InputElementUtils.getToHoldPosition(element, newValue);
+    
+    element.value = newValue;
+    element.setSelectionRange(position.start, position.end);
+  }
+
 }

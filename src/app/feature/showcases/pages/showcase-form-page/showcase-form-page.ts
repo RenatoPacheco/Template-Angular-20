@@ -46,12 +46,12 @@ export class ShowcaseFormPage implements OnInit {
     }),
     data: this.formBuilder.control<string|null>(null,{
         validators: [
-        CustomValidators.date('dd/MM/yyyy')
+        CustomValidators.date()
       ], updateOn: 'blur'
     }),
     dataHora: this.formBuilder.control<string|null>(null,{
       validators: [
-        Validators.required
+        CustomValidators.dateTime()
       ], updateOn: 'blur'
     }),
     inputText: this.formBuilder.control<string|null>(null,{

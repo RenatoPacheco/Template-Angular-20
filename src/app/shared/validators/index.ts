@@ -6,6 +6,7 @@ import { cpfValidator } from './cpf.validator';
 import { DateFormat, dateValidator } from './date.validator';
 import { passwordValidator } from './password.validator';
 import { timeSpanValidator } from './timespan.validator';
+import { dateTimeValidator } from './datetime.validator';
 
 
 export class CustomValidators {
@@ -19,6 +20,10 @@ export class CustomValidators {
 
   public static date(format?: DateFormat) {
     return dateValidator(format);
+  }
+
+  public static dateTime(format?: DateFormat) {
+    return dateTimeValidator(format);
   }
     
   public static compare(

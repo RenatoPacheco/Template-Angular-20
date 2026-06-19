@@ -14,10 +14,9 @@ export class CpfPipe implements PipeTransform {
   public static apply(value: string | number | null | undefined): string|null {
 
     value = value?.toString()?.trim() || null;
-
     const totalBase = value?.length || 0;
-    const pattern = /^(\d{3}\.){1,2}$|^(\d{3}\.){2}(\d{3}-\d{0,2})$/;
-    if (!value || RegExp(pattern).test(value)) {
+
+    if (totalBase === 0) {
       return value;
     }
 

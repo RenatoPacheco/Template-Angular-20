@@ -14,8 +14,8 @@ export class DateTimePipe implements PipeTransform {
   public static apply(value: string | number | null | undefined): string|null {
 
     value = value?.toString()?.trim() || null;
-
     const totalBase = value?.length || 0;
+
     if (totalBase === 0) {
       return value;
     }

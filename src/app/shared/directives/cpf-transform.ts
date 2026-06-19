@@ -4,21 +4,20 @@ import {
   HostListener,
   inject
 } from '@angular/core';
-import { CnpjPipe } from '../pipes';
+import { CpfPipe } from '../pipes';
 
 @Directive({
-  selector: '[cnpj-mask]',
+  selector: '[cpf-transform]',
   standalone: true
 })
-export class CnpjMask {
+export class CpfTransform {
 
   private readonly reference = inject(ElementRef<HTMLInputElement>);
-  private readonly transform = inject(CnpjPipe).transform;
 
   @HostListener('input')
   onInput(): void {
 
     const element = this.reference.nativeElement;
-    element.value = this.transform(element.value);
+    element.value = CpfPipe.apply(element.value);
   }
 }

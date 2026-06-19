@@ -6,7 +6,7 @@ import { FormBase } from '@app/shared/directives';
 
 import { Label } from '../label/label';
 import { Button } from '../button/button';
-import { CnpjPipe, CpfPipe } from '@app/shared/pipes';
+import { CnpjPipe, CpfPipe, DatePipe, DateTimePipe, TimePipe } from '@app/shared/pipes';
 
 type InputType = 'text' | 'password' | 'email' | 'number' | 'search' | 'tel' | 'url';
 type InputAutocomplete =
@@ -56,7 +56,7 @@ type InputAutocomplete =
     | 'sex'
     | 'language';
 
-  type InputMask = 'cpf' | 'cnpj';
+  type InputTransform = 'cpf' | 'cnpj' | 'date' | 'datetime' | 'time';
 
 @Component({
   standalone: true,
@@ -74,14 +74,14 @@ export class FormText extends FormBase<string>  {
     super();
   }
 
-  protected readonly _mask = signal<InputMask|null>(null);
-  @Input() public set mask(value: InputMask|null) {
-    if (value !== this.mask) {
-      this._mask.set(value);
+  protected readonly _transform = signal<InputTransform|null>(null);
+  @Input() public set transform(value: InputTransform|null) {
+    if (value !== this.transform) {
+      this._transform.set(value);
     }
   }
-  public get mask(): InputMask|null {
-    return this._mask();
+  public get transform(): InputTransform|null {
+    return this._transform();
   }
   
   protected readonly _type = signal<InputType>('text');
@@ -187,12 +187,21 @@ export class FormText extends FormBase<string>  {
     const input = event.target as HTMLInputElement;
     let value = input?.value as string | null;
 
-    switch (this.mask) {
+    switch (this.transform) {
       case 'cpf':
         value = CpfPipe.apply(value);
         break;
       case 'cnpj':
         value = CnpjPipe.apply(value);
+        break;
+      case 'date':
+        value = DatePipe.apply(value);
+        break;
+      case 'datetime':
+        value = DateTimePipe.apply(value);
+        break;
+      case 'time':
+        value = TimePipe.apply(value);
         break;
     }
 

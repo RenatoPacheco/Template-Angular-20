@@ -19,12 +19,11 @@ export class PhonePtBrPipe implements PipeTransform {
     value: string | number | null | undefined
   ): string | null {
 
-    value = value?.toString()?.trim() || null;
-
-    const totalBase = value?.length || 0;
+    value = (value?.toString() ?? '').replace(/ +/, ' ');
+    const totalBase = value == ' ' ? 1: value.trimStart().length;
 
     if (totalBase === 0) {
-      return value;
+      return value || null;
     }
 
     let result = String(value)

@@ -33,12 +33,12 @@ export class PhonePtBrPipe implements PipeTransform {
     const total = result.length;
 
     if (total <= 2) {
-      if (totalBase == 4) {
-        return `(${result})`;
+      if (totalBase >= 5) {
+        return `(${result}) `;
       }
 
-      if (totalBase == 5) {
-        return `(${result}) `;
+      if (totalBase >= 4) {
+        return `(${result})`;
       }
 
       return `(${result}`;

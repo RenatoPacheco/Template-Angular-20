@@ -1,7 +1,7 @@
 import { Directive, ElementRef, HostListener, inject } from '@angular/core';
 
 import { DateTimePipe } from '../pipes';
-import { InputElementUtils } from '../utils';
+import { getAdjustedCursorPosition } from '../utils';
 
 @Directive({
   selector: '[datetimeTransform]',
@@ -19,7 +19,7 @@ export class DateTimeTransform {
   
     public static apply(element: HTMLInputElement): void {
       const newValue = DateTimePipe.apply(element.value) ?? '';
-      const position = InputElementUtils.getToHoldPosition(element, newValue);
+      const position = getAdjustedCursorPosition(element, newValue);
       
       element.value = newValue;
       element.setSelectionRange(position.start, position.end);

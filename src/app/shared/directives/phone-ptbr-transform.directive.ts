@@ -1,7 +1,7 @@
 import { Directive, ElementRef, HostListener, inject } from '@angular/core';
 
 import { PhonePtBrPipe } from '../pipes';
-import { InputElementUtils } from '../utils';
+import { getAdjustedCursorPosition } from '../utils';
 
 @Directive({
   selector: '[phonePtBrTransform]',
@@ -19,7 +19,7 @@ export class PhonePtBrTransform {
 
   public static apply(element: HTMLInputElement): void {
     const newValue = PhonePtBrPipe.apply(element.value) ?? '';
-    const position = InputElementUtils.getToHoldPosition(element, newValue);
+    const position = getAdjustedCursorPosition(element, newValue);
     
     element.value = newValue;
     element.setSelectionRange(position.start, position.end);

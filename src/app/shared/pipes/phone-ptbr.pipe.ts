@@ -46,7 +46,7 @@ export class PhonePtBrPipe implements PipeTransform {
 
     if (total <= 6) {
       result = result.replace(/(\d{2})(\d{1,4})/,'($1) $2');
-      return totalBase > 9 ? `${result}- ` : result;
+      return totalBase > 9 ? `${result}-` : result;
     }
 
     if (total <= 10) {

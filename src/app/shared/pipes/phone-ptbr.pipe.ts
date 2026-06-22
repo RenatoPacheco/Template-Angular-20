@@ -1,8 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 export function transformPhonePtBr(
-  value: string | number | null | undefined
-): string | null {
+  value: string|number|null|undefined
+): string|null {
   return PhonePtBrPipe.apply(value);
 }
 
@@ -10,14 +10,14 @@ export function transformPhonePtBr(
 export class PhonePtBrPipe implements PipeTransform {
 
   public transform(
-    value: string | number | null | undefined
-  ): string | null {
+    value: string|number|null|undefined
+  ): string|null {
     return PhonePtBrPipe.apply(value);
   }
 
   public static apply(
-    value: string | number | null | undefined
-  ): string | null {
+    value: string|number|null|undefined
+  ): string|null {
 
     value = (value?.toString() ?? '').replace(/ +/, ' ');
     const totalBase = value == ' ' ? 1: value.trimStart().length;

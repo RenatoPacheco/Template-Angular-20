@@ -1,20 +1,20 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-export function transformCpf(value: string | number | null | undefined): string|null {
+export function transformCpf(value: string|number|null|undefined): string|null {
   return CpfPipe.apply(value);
 }
 
 @Pipe({ name: 'cpf' })
 export class CpfPipe implements PipeTransform {
 
-  public transform(value: string | number | null | undefined): string|null {
+  public transform(value: string|number|null|undefined): string|null {
     return CpfPipe.apply(value);
   }
 
-  public static apply(value: string | number | null | undefined): string|null {
+  public static apply(value: string|number|null|undefined): string|null {
 
-    value = value?.toString()?.trim() || null;
-    const totalBase = value?.length || 0;
+    value = (value?.toString() ?? '').replace(/ +/, ' ');
+    const totalBase = value == ' ' ? 1: value.trimStart().length;
 
     if (totalBase === 0) {
       return value;

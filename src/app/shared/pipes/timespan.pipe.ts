@@ -1,21 +1,21 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-export function transformTimeSpan(value: string | number | null | undefined): string|null {
+export function transformTimeSpan(value: string|number|null|undefined): string|null {
   return TimeSpanPipe.apply(value);
 }
 
 @Pipe({ name: 'timespan' })
 export class TimeSpanPipe implements PipeTransform {
 
-  public transform(value: string | number | null | undefined): string|null {
+  public transform(value: string|number|null|undefined): string|null {
     return TimeSpanPipe.apply(value);
   }
 
-  public static apply(value: string | number | null | undefined): string|null {
+  public static apply(value: string|number|null|undefined): string|null {
 
-    value = value?.toString()?.trim() || null;
-
-    const totalBase = value?.length || 0;
+    value = (value?.toString() ?? '').replace(/ +/, ' ');
+    const totalBase = value == ' ' ? 1: value.trimStart().length;
+    
     if (totalBase === 0) {
       return value;
     }

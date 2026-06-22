@@ -32,7 +32,7 @@ export class Video implements AfterViewInit, OnDestroy {
 
   private readonly elementRef = inject(ElementRef<HTMLVideoElement>);
 
-  private player: ReturnType<typeof videojs> | null = null;
+  private player: ReturnType<typeof videojs>|null = null;
   private currentSource = '';
 
   public ngAfterViewInit(): void {

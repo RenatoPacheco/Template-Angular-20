@@ -2,16 +2,16 @@ import { Component, computed, ElementRef, inject, Input, Renderer2, signal, untr
 
 import { InputVariant, transformBoolean } from '@app/shared/utils';
 
-type ButtonSize = 'sm' | 'md' | 'lg';
+type ButtonSize = 'sm'|'md'|'lg';
 
-type ButtonType = 'button' | 'submit' | 'reset';
+type ButtonType = 'button'|'submit'|'reset';
 
 type ButtonAction = 
-| 'edit' | 'delete' | 'view' | 'save' | 'cancel' 
-| 'submit' | 'reset' | 'download' | 'upload' 
-| 'search' | 'filter' | 'sort' | 'refresh' | 'add' 
-| 'remove' | 'approve' | 'reject' | 'archive'
-| 'unarchive' | 'enable' | 'disable' | 'lock' | 'unlock';
+| 'edit'|'delete'|'view'|'save'|'cancel' 
+| 'submit'|'reset'|'download'|'upload' 
+| 'search'|'filter'|'sort'|'refresh'|'add' 
+| 'remove'|'approve'|'reject'|'archive'
+| 'unarchive'|'enable'|'disable'|'lock'|'unlock';
 
 type ButtonTheme = InputVariant|ButtonAction|'link'|'transparent';
 

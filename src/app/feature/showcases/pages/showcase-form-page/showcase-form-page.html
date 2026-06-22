@@ -47,17 +47,23 @@
             
             <app-form-text
                 formControlName="inputText"
+                control-secret="true"
+                autocomplete="off"
                 label="Input text">
             </app-form-text>
 
             <app-form-text
                 formControlName="inputPassword"
+                control-secret="true"
+                type="password"
+                autocomplete="new-password"
                 label="Input password">
             </app-form-text>
 
             <app-form-text
                 formControlName="inputEmail"
-                label="Input email">
+                label="Input email"
+                autocomplete="off">
             </app-form-text>
 
             <app-form-text

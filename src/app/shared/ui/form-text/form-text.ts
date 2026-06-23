@@ -132,7 +132,7 @@ export class FormText extends FormBase<string>  {
     this.element?.nativeElement.focus()
   }
 
-  protected showSecretComputed = computed(() => {
+  protected showSecret = computed(() => {
     const typeVal = this._type();
     const controlSecretVal = this._controlSecret();
     const secretHasBeenReversedVal = this._secretHasBeenReversed();
@@ -143,7 +143,7 @@ export class FormText extends FormBase<string>  {
     return secretHasBeenReversedVal ? !result : result;
   });
 
-  protected hideSecretComputed = computed(() => {
+  protected hideSecret = computed(() => {
     const typeVal = this._type();
     const controlSecretVal = this._controlSecret();
     const secretHasBeenReversedVal = this._secretHasBeenReversed();

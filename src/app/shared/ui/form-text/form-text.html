@@ -3,12 +3,12 @@
     [text]="label"
     (error)="onError()"
     (helper)="onHelper()"
-    [enabled-error]="showErrorComputed()"
+    [enabled-error]="showError()"
     [enabled-helper]="enabledHelper"></label>
 <div class="form-element"
-    [class.action-clear]="hasValueComputed()"
-    [class.action-show]="showSecretComputed()"
-    [class.action-hide]="hideSecretComputed()">
+    [class.action-clear]="hasValue()"
+    [class.action-show]="showSecret()"
+    [class.action-hide]="hideSecret()">
     <input #element
         [value]="value"
         (blur)="onBlur()"

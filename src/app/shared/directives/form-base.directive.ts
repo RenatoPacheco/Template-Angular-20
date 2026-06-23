@@ -22,10 +22,13 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
 
   public ngOnInit(): void {
     this.statusUpdate();
+    
     this.ngControl?.control?.events
     .pipe(takeUntilDestroyed(this.destroyRef))
-    .subscribe(() => {
-      this.statusUpdate();
+    .subscribe({
+      next: () => {
+        this.statusUpdate();
+      }
     });
   }
   
@@ -70,8 +73,8 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
   
   //endregion
 
-  protected readonly _status = signal<'VALID' | 'INVALID' | 'PENDING' | 'DISABLED'>('VALID');
-  public get status(): 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED' {
+  protected readonly _status = signal<'VALID'|'INVALID'|'PENDING'|'DISABLED'>('VALID');
+  public get status(): 'VALID'|'INVALID'|'PENDING'|'DISABLED' {
     return this._status();
   }
 
@@ -80,7 +83,7 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
     return this._pristine();
   }
   public get dirty(): boolean {
-    return untracked(() => !this._pristine());
+    return !this._pristine();
   }
 
   protected readonly _touched = signal(false);
@@ -88,7 +91,7 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
     return this._touched();
   }
   public get untouched(): boolean {
-    return untracked(() => !this._touched());
+    return !this._touched();
   }
 
   protected readonly _value = signal<T|null>(null);
@@ -154,13 +157,13 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
     return this._label();
   }
 
-  protected readonly _size = signal<'sm' | 'md' | 'lg'>('md');
-  @Input() public set size(value: 'sm' | 'md' | 'lg') {
+  protected readonly _size = signal<'sm'|'md'|'lg'>('md');
+  @Input() public set size(value: 'sm'|'md'|'lg') {
     if (value !== this.size) {
       this._size.set(value);
     }
   }
-  public get size(): 'sm' | 'md' | 'lg' {
+  public get size(): 'sm'|'md'|'lg' {
     return this._size();
   }
 
@@ -202,23 +205,23 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
     return this._status() === 'DISABLED';
   });
 
-  protected isActive = computed(() => {
+  public isActive = computed(() => {
     const realOnly = this._readonly();
     const disabled = this._disabled();
     return !realOnly && !disabled;
   });
 
-  protected hasValueComputed = computed(() => {
+  public hasValue = computed(() => {
     const valueVal = this._value();
     return valueVal || valueVal === false ? true : false;
   });
 
-  protected notHasValueComputed = computed(() => {
+  public notHasValue = computed(() => {
     const valueVal = this._value();
     return valueVal || valueVal === false ? false : true;
   });
 
-  protected showErrorComputed = computed(() => {
+  protected showError = computed(() => {
     const invalidVal = this._status() === 'INVALID';
     const touchedVal = this._touched();
     const dirtyVal = !this._pristine();
@@ -264,7 +267,6 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
   protected onInput(event: Event): void { 
     const value = (event.target as FormElement).value; 
     this.value = value as T|null; 
-    this.onTouched();
   } 
 
   protected onBlur(): void { 

@@ -1,6 +1,7 @@
 <label app-label 
     [for]="id"
     [text]="label"
+    [loading]="loading"
     (error)="emitError()"
     (helper)="emitHelper()"
     [enabled-error]="showError()"
@@ -8,7 +9,7 @@
 <select
     [id]="id"
     [class]="elementClass()"
-    [disabled]="disabled"
+    [disabled]="disabled || readonly || loading"
     [value]="selectedIndex()"
     (change)="emitChange($event)"
     (blur)="emitBlur()">

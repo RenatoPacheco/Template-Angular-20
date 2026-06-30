@@ -157,6 +157,17 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
     return this._label();
   }
 
+  protected _loading = signal(false);
+  @Input({ transform: transformBoolean })
+  public set loading(value: boolean) {
+    if (value !== this._loading()) {  
+    this._loading.set(value);
+    }
+  }
+  public get loading(): boolean {
+    return this._loading();
+  }
+
   protected readonly _size = signal<'sm'|'md'|'lg'>('md');
   @Input() public set size(value: 'sm'|'md'|'lg') {
     if (value !== this.size) {

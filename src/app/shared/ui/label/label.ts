@@ -90,6 +90,17 @@ export class Label {
     return this._enabledHelper();
   }
 
+  protected _loading = signal(false);
+  @Input({ transform: transformBoolean })
+  public set loading(value: boolean) {
+    if (value !== this._loading()) {  
+    this._loading.set(value);
+    }
+  }
+  public get loading(): boolean {
+    return this._loading();
+  }
+
   protected textComputed = computed(() => {
     return this._text();
   });

@@ -1,6 +1,7 @@
 <label app-label 
     [for]="id"
     [text]="label"
+    [loading]="loading"
     (error)="emitError()"
     (helper)="emitHelper()"
     [enabled-error]="showError()"
@@ -14,7 +15,7 @@
         (blur)="emitBlur()"
         (input)="emitChange($event)"
         [disabled]="disabled"
-        [readonly]="readonly"
+        [readonly]="readonly || loading"
         [autocomplete]="autocomplete"
         [type]="typeComputed()" 
         [class]="elementClass()" 

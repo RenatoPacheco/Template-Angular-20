@@ -1,3 +1,6 @@
+@if(loading) {
+  <i class="loading fa fa-refresh fa-spin"></i>&nbsp;
+}
 @if (enabledHelperComputed()){
 <i (click)="emitHelper()" role="help" title="informações de ajuda" class="help fa fa-question-circle">&nbsp;</i>
 }

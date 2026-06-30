@@ -7,9 +7,8 @@
     [enabled-helper]="enabledHelper"></label>
 <select
     [id]="id"
-    class="form-select"
+    [class]="elementClass()"
     [disabled]="disabled"
-    [attr.aria-placeholder]="placeholder"
     [value]="selectedIndex()"
     (change)="emitChange($event)"
     (blur)="emitBlur()">
@@ -21,4 +20,3 @@
         </option>    
     }
 </select>
-<p>Value: {{ value }}</p>

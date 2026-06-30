@@ -83,7 +83,24 @@ export class FormSelect<T> extends FormBase<T>  {
   
   protected hostClass = computed(() => {
     const classVal = this._class();
-    return `mb-3 ${classVal}`;
+    return `form-group mb-3 ${classVal}`;
+  });
+
+  protected elementClass = computed(() => {
+    const sizeVal = this._size();
+    const selectedIndexVal = this.selectedIndex();
+    
+    let resul = `form-select form-select-${sizeVal}`;
+
+    if (sizeVal) {
+      resul += ` form-select-${sizeVal}`;
+    }
+
+    if (selectedIndexVal === 0) {
+      resul += ' text-muted';
+    }
+
+    return resul;
   });
 
   protected override emitChange(event: Event): void {

@@ -31,13 +31,22 @@ export class ShowcaseFormPage implements OnInit {
   protected itens = [
     { value: 'LER', text: 'Ler' },
     { value: 'ECREVER', text: 'Escrever' },
-    { value: 'EXLUIR', text: 'Excluir' }
+    { value: 'EXLUIR', text: 'Excluir' },
+    { value: '', text: 'Opções avançadas', disabled: true },
+    { value: 'REVISAR', text: 'Revisar' },
+    { value: 'APROVAR', text: 'Aprovar' },
+    { value: 'RECUSAR', text: 'Recusar' }
   ];
 
   public readonly form = this.formBuilder.group({
-    lista: this.formBuilder.control<string|null>(null),
-    cpf: this.formBuilder.control<string|null>(null,{
+    lista: this.formBuilder.control<string|null>(null, {
       validators: [
+        Validators.minLength(4),
+      ], updateOn: 'blur'
+    }),
+    cpf: this.formBuilder.control<string|null>(null,{
+      validators: [        
+        Validators.required,
         CustomValidators.cpf()
       ], updateOn: 'blur'
     }),
@@ -129,6 +138,7 @@ export class ShowcaseFormPage implements OnInit {
         console.log('radio', this.form.value.radio);
         console.log('textEditor', this.form.value.textEditor);
         console.log('inputText', this.form.value.inputText);
+        console.log('select', this.form.value.lista);
       }
     })
   }

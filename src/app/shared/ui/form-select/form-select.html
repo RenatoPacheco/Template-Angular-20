@@ -1,0 +1,20 @@
+<label app-label 
+    [for]="id"
+    [text]="label"
+    (error)="onError()"
+    (helper)="onHelper()"
+    [enabled-error]="showError()"
+    [enabled-helper]="enabledHelper"></label>
+<select
+    [id]="id"
+    [disabled]="disabled"
+    [value]="selectedItem()"
+    (blur)="onBlur()">
+    @for(item of items(); track item) {
+        <option 
+            [value]="item.value" 
+            [disabled]="item.disabled">
+            {{ item.text }}
+        </option>    
+    }
+</select>

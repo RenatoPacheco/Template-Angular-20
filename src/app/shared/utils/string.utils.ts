@@ -5,6 +5,26 @@ const codec = new HttpUrlEncodingCodec();
 export class StringUtils {
 
   /**
+   * Junta os elementos de um array em uma string, usando um separador entre os elementos e um separador especial antes do último elemento.
+   * @param arr Array de elementos a serem unidos
+   * @param separator Separador entre os elementos (padrão: ', ') 
+   * @param lastSeparator Separador antes do último elemento (padrão: ' e ')
+   * @returns String resultante da junção dos elementos
+   */
+  static join(arr: any[], separator: string = ', ', lastSeparator: string = ' e '): string {
+    if (!arr || arr.length === 0) {
+      return '';
+    }
+    if (arr.length === 1) {
+      return String(arr[0]);
+    }
+    if (arr.length === 2) {
+      return `${arr[0]}${lastSeparator}${arr[1]}`;
+    }
+    return `${arr.slice(0, -1).join(separator)}${lastSeparator}${arr[arr.length - 1]}`;
+  }
+
+  /**
    * Formata uma mensagem substituindo os placeholders pelos valores correspondentes.
    * Ex.: format('Olá {0} {1}', 'João', 'Silva') => 'Olá João Silva'
    * @param mensage Mensagem contendo placeholders no formato `{0}`, `{1}`, ...

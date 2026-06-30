@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { ValidationErrors } from "@angular/forms";
-import { ArrayUtils } from "../utils";
+
+import { StringUtils } from "../utils";
 
 type ValidationMessageFn =
   (error: any, field: string) => string;
@@ -12,7 +13,7 @@ type ValidationMessageMap = {
 @Injectable({ providedIn: 'root' })
 export class ValidatorService {
 
-  getMessages(
+  public getMessages(
     errors: ValidationErrors | null,
     fields: string = 'Campo'
   ): string[] {
@@ -41,7 +42,7 @@ export class ValidatorService {
     specialChar: (e: any, field: string = "Campo") => `${field} deve conter ao menos um caractere especial.`,
     format: (e: any, field: string = "Campo") => {
       const formats = Array.isArray(e) ? e : [e];
-      const formatJoin = ArrayUtils.join(formats, ', ', ' ou ');
+      const formatJoin = StringUtils.join(formats, ', ', ' ou ');
       return `${field} com formato inválido. Formatos esperados: ${formatJoin}.`;
     },
     minlength: (e: {

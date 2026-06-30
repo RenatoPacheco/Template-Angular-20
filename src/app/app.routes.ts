@@ -12,5 +12,12 @@ export const routes: Routes = [
         canLoad: [ ],
         canActivate: [ ],
         data: { }
+    },
+    {
+        path: 'user',
+        loadChildren: () => import('./feature/user/user.routes').then(r => r.USER_ROUTES),
+        canLoad: [ ],
+        canActivate: [ ],
+        data: { }
     }
 ];

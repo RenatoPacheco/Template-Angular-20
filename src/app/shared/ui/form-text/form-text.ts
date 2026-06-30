@@ -61,9 +61,9 @@ type InputAutocomplete =
 @Component({
   standalone: true,
   selector: 'app-form-text',
-  imports: [ Label, FormsModule, Button ],
   templateUrl: './form-text.html',
   styleUrl: './form-text.scss',
+  imports: [ Label, FormsModule, Button ],
   host: {
     '[class]': 'hostClass()'
   }

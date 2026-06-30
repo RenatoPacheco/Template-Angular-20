@@ -1,9 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { PlatformLocation } from '@angular/common';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class PlataformLocationService {
 
   constructor(

@@ -12,7 +12,7 @@ export class CnpjTransform {
   private readonly reference = inject(ElementRef<HTMLInputElement>);
 
   @HostListener('input')
-  onInput(): void {
+  emitChange(): void {
     const element = this.reference.nativeElement;
     CnpjTransform.apply(element);
   }
@@ -24,5 +24,4 @@ export class CnpjTransform {
     element.value = newValue;
     element.setSelectionRange(position.start, position.end);
   }
-
 }

@@ -2,7 +2,7 @@
     [for]="id"
     [text]="label"
     (error)="onError()"
-    (helper)="onHelper()"
+    (helper)="emitHelper()"
     [enabled-error]="showError()"
     [enabled-helper]="enabledHelper"></label>
 <div class="form-element"
@@ -11,8 +11,8 @@
     [class.action-hide]="hideSecret()">
     <input #element
         [value]="value"
-        (blur)="onBlur()"
-        (input)="onInput($event)"
+        (blur)="emitBlur()"
+        (input)="emitChange($event)"
         [disabled]="disabled"
         [readonly]="readonly"
         [autocomplete]="autocomplete"

@@ -183,7 +183,7 @@ export class FormText extends FormBase<string>  {
     return `form-control form-control-${sizeVal}`;
   });
 
-  protected override onInput(event: Event): void {
+  protected override emitChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     let value = input?.value ?? '';
 
@@ -210,6 +210,6 @@ export class FormText extends FormBase<string>  {
       }
     }
 
-    super.onInput(event);
+    super.emitChange(event);
   }
 }

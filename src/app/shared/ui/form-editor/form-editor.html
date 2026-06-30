@@ -2,25 +2,25 @@
     [for]="id"
     [text]="label"
     (error)="onError()"
-    (helper)="onHelper()"
+    (helper)="emitHelper()"
     [enabled-error]="showError()"
     [enabled-helper]="enabledHelper"></label>
 
 @if(isActive() && useCompleteConfig()) {
 <ckeditor 
-    [config]="completeConfig()" [(ngModel)]="value" (blur)="onBlur()" (focus)="onBlur()" 
+    [config]="completeConfig()" [(ngModel)]="value" (blur)="emitBlur()" (focus)="emitBlur()" 
     (ready)="emitReady($event)" (change)="emitChange($event)" [id]="id">
 </ckeditor>
 }
 @if(isActive() && useBasicConfig()) {
 <ckeditor 
-    [config]="basicConfig()" [(ngModel)]="value" (blur)="onBlur()" (focus)="onBlur()"
+    [config]="basicConfig()" [(ngModel)]="value" (blur)="emitBlur()" (focus)="emitBlur()"
     (ready)="emitReady($event)" (change)="emitChange($event)">
 </ckeditor>
 }
 @if(!isActive()) {
 <ckeditor [readOnly]="true"
-    [config]="disabledConfig()" [(ngModel)]="value" (blur)="onBlur()" (focus)="onBlur()" 
+    [config]="disabledConfig()" [(ngModel)]="value" (blur)="emitBlur()" (focus)="emitBlur()" 
     (ready)="emitReady($event)" (change)="emitChange($event)" [id]="id">
 </ckeditor>
 }

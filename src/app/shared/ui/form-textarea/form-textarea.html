@@ -2,15 +2,15 @@
     [for]="id"
     [text]="label"
     (error)="onError()"
-    (helper)="onHelper()"
+    (helper)="emitHelper()"
     [enabled-error]="showError()"
     [enabled-helper]="enabledHelper"></label>
 <div class="form-text-area"
     [class.action-clear]="hasValue()">
     <textarea #element
         [value]="value"
-        (blur)="onBlur()"
-        (input)="onInput($event)"
+        (blur)="emitBlur()"
+        (input)="emitChange($event)"
         [disabled]="disabled"
         [readonly]="readonly"
         [class]="elementClass()" 

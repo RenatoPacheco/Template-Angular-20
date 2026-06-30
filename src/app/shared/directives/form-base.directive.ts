@@ -260,16 +260,16 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
     }
   }
 
-  protected onHelper(): void {
+  protected emitHelper(): void {
     this.helper.emit(); 
   }
 
-  protected onInput(event: Event): void { 
+  protected emitChange(event: Event): void { 
     const value = (event.target as FormElement).value; 
     this.value = value as T|null; 
   } 
 
-  protected onBlur(): void { 
+  protected emitBlur(): void { 
     this.onTouched(); 
   }
 

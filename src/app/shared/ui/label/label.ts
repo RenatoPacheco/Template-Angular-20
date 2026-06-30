@@ -116,7 +116,7 @@ export class Label {
     return this._enabledError();
   });
   
-  protected onHelper(): void {
+  protected emitHelper(): void {
     this.helper.emit();
   }
 

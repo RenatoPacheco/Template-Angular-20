@@ -243,7 +243,7 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
     this.element?.nativeElement.focus();
   };
 
-  protected onError(): void {
+  protected emitError(): void {
     const errors = this.ngControl?.control?.errors;
     if (errors) {
       var messages = this.validator.getMessages(errors);

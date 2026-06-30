@@ -1,7 +1,7 @@
 <label app-label 
     [for]="id"
     [text]="label"
-    (error)="onError()"
+    (error)="emitError()"
     (helper)="emitHelper()"
     [enabled-error]="showError()"
     [enabled-helper]="enabledHelper"></label>
@@ -9,19 +9,19 @@
 @if(isActive() && useCompleteConfig()) {
 <ckeditor 
     [config]="completeConfig()" [(ngModel)]="value" (blur)="emitBlur()" (focus)="emitBlur()" 
-    (ready)="emitReady($event)" (change)="emitChange($event)" [id]="id">
+    (ready)="emitReady($event)" (change)="emitEditorChange($event)" [id]="id">
 </ckeditor>
 }
 @if(isActive() && useBasicConfig()) {
 <ckeditor 
     [config]="basicConfig()" [(ngModel)]="value" (blur)="emitBlur()" (focus)="emitBlur()"
-    (ready)="emitReady($event)" (change)="emitChange($event)">
+    (ready)="emitReady($event)" (change)="emitEditorChange($event)">
 </ckeditor>
 }
 @if(!isActive()) {
 <ckeditor [readOnly]="true"
     [config]="disabledConfig()" [(ngModel)]="value" (blur)="emitBlur()" (focus)="emitBlur()" 
-    (ready)="emitReady($event)" (change)="emitChange($event)" [id]="id">
+    (ready)="emitReady($event)" (change)="emitEditorChange($event)" [id]="id">
 </ckeditor>
 }
 <ng-content></ng-content>

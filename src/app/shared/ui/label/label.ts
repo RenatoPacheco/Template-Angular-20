@@ -120,7 +120,7 @@ export class Label {
     this.helper.emit();
   }
 
-  protected onError(): void {
+  protected emitError(): void {
     this.error.emit();
   }
 }

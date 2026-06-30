@@ -1,20 +1,24 @@
 <label app-label 
     [for]="id"
     [text]="label"
-    (error)="onError()"
+    (error)="emitError()"
     (helper)="emitHelper()"
     [enabled-error]="showError()"
     [enabled-helper]="enabledHelper"></label>
 <select
     [id]="id"
+    class="form-select"
     [disabled]="disabled"
-    [value]="selectedItem()"
+    [attr.aria-placeholder]="placeholder"
+    [value]="selectedIndex()"
+    (change)="emitChange($event)"
     (blur)="emitBlur()">
-    @for(item of items(); track item) {
-        <option 
-            [value]="item.value" 
+    @for(item of itens(); track item.value) {
+        <option
+            [value]="$index"
             [disabled]="item.disabled">
             {{ item.text }}
         </option>    
     }
 </select>
+<p>Value: {{ value }}</p>

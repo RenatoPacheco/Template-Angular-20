@@ -203,7 +203,7 @@ export class FormEditor extends FormBase<string> implements OnDestroy {
     this.editors.push(event.editor);
   }
 
-  protected emitChange(event: CKEditor4.EventInfo): void {
+  protected emitEditorChange(event: CKEditor4.EventInfo): void {
     const data = event.data?.toString();
     if (data === 'custon-save' || data === 'resize') {
       this.maximize(false);

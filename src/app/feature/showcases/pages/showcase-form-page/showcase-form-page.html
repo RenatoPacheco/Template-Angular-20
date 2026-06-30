@@ -81,7 +81,13 @@
                 class="full-width"
                 formControlName="textEditor"
                 label="Text Editor">
-            </app-form-editor>   
+            </app-form-editor>
+            
+            <app-form-select
+                formControlName="lista"
+                label="Select an option"
+                [options]="itens">
+            </app-form-select>
         </div>
         <div class="form-row" formArrayName="checkbox">
             @for (opcao of opcoes; track opcao.id; let i = $index) {

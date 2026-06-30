@@ -1,7 +1,7 @@
 <label app-label 
     [for]="id"
     [text]="label"
-    (error)="onError()"
+    (error)="emitError()"
     (helper)="emitHelper()"
     [enabled-error]="showError()"
     [enabled-helper]="enabledHelper"></label>

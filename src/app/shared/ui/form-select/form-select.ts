@@ -26,7 +26,17 @@ export class FormSelect<T> extends FormBase<T>  {
     super();
   }
 
-  public readonly items = input<SelectItem<T>[]>([]);
+  public readonly options = input<SelectItem<T>[]>([]);
+
+  public override set value(value: T|null) {
+    const exist = this.itens().some((item) => item.value == value);
+    if (exist) {
+      super.value = value;
+    }
+  }
+  public override get value(): T|null {
+    return super.value;
+  }
 
 
   protected readonly _placeholder = signal('');
@@ -39,10 +49,20 @@ export class FormSelect<T> extends FormBase<T>  {
     return this._placeholder();
   }
 
+  public readonly itens = computed(() => {
+    const optionsVal = this.options();
+    const placeholderVal = this.placeholder;
+    
+    return [
+        { value: null, text: placeholderVal || 'Selecione um item', disabled: true },
+        ...optionsVal
+      ];
+  });
+
   public readonly selectedItem = computed(() => {
     const valueVal = this._value();
-    const itemsVal = this.items();
-    return itemsVal.find((item) => item.value === valueVal) || null;
+    const optionsVal = this.itens();
+    return optionsVal.find((item) => item.value === valueVal) || null;
   });
 
   public readonly selectedText = computed(() => {
@@ -50,10 +70,15 @@ export class FormSelect<T> extends FormBase<T>  {
     return selectedItemVal ? selectedItemVal.text : '';
   });
 
+  public readonly selectedValue = computed(() => {
+    const selectedItemVal = this.selectedItem();
+    return selectedItemVal ? selectedItemVal.value : null;
+  });
+
   public readonly selectedIndex = computed(() => {
     const selectedItemVal = this.selectedItem();
-    const itemsVal = this.items();
-    return selectedItemVal ? itemsVal.indexOf(selectedItemVal) : -1;
+    const optionsVal = this.itens();
+    return selectedItemVal ? optionsVal.indexOf(selectedItemVal) : -1;
   });
   
   protected hostClass = computed(() => {
@@ -61,4 +86,12 @@ export class FormSelect<T> extends FormBase<T>  {
     return `mb-3 ${classVal}`;
   });
 
+  protected override emitChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    const value = Number(target.value);
+    const optionsVal = this.itens();
+    const selectedItem = optionsVal[value];
+    const selectedValue = selectedItem ? selectedItem.value : null;
+    this.value = selectedValue;
+  }
 }

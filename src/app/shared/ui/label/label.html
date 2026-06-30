@@ -2,7 +2,7 @@
 <i (click)="emitHelper()" role="help" title="informações de ajuda" class="help fa fa-question-circle">&nbsp;</i>
 }
 @if(enabledErrorComputed()){
-<i (click)="onError()" role="alert" title="informações sobre o erro" class="error fa fa-exclamation-circle">&nbsp;</i>    
+<i (click)="emitError()" role="alert" title="informações sobre o erro" class="error fa fa-exclamation-circle">&nbsp;</i>    
 }
 <span class="text" #content><ng-content></ng-content></span>
 @if(!content.hasChildNodes()){

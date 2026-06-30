@@ -2,7 +2,7 @@ import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { FormText, Button, FormCheckBox, FormRadio, FormEditor } from '@app/shared/ui';
+import { FormText, Button, FormCheckBox, FormRadio, FormEditor, FormSelect } from '@app/shared/ui';
 import { FormTextarea } from '@app/shared/ui/form-textarea/form-textarea';
 import { CustomValidators } from '@app/shared/validators';
 
@@ -12,7 +12,7 @@ import { CustomValidators } from '@app/shared/validators';
   imports: [
     FormsModule, ReactiveFormsModule, FormText,
     FormTextarea, Button, FormCheckBox, FormRadio,
-    FormEditor
+    FormEditor, FormSelect
 ],
   templateUrl: './showcase-form-page.html',
   styleUrl: './showcase-form-page.scss',
@@ -27,8 +27,15 @@ export class ShowcaseFormPage implements OnInit {
     { id: 'ECREVER', descricao: 'Escrever' },
     { id: 'EXLUIR', descricao: 'Excluir' }
   ];
+  
+  protected itens = [
+    { value: 'LER', text: 'Ler' },
+    { value: 'ECREVER', text: 'Escrever' },
+    { value: 'EXLUIR', text: 'Excluir' }
+  ];
 
   public readonly form = this.formBuilder.group({
+    lista: this.formBuilder.control<string|null>(null),
     cpf: this.formBuilder.control<string|null>(null,{
       validators: [
         CustomValidators.cpf()

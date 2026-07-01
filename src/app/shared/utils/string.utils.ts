@@ -1,7 +1,3 @@
-import { HttpUrlEncodingCodec } from '@angular/common/http';
-
-const codec = new HttpUrlEncodingCodec();
-
 export class StringUtils {
 
   /**

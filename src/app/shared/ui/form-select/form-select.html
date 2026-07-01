@@ -6,18 +6,31 @@
     (helper)="emitHelper()"
     [enabled-error]="showError()"
     [enabled-helper]="enabledHelper"></label>
-<select
-    [id]="id"
-    [class]="elementClass()"
-    [disabled]="disabled || readonly || loading"
-    [value]="selectedIndex()"
-    (change)="emitChange($event)"
-    (blur)="emitBlur()">
-    @for(item of itens(); track item.value) {
-        <option
-            [value]="$index"
-            [disabled]="item.disabled">
-            {{ item.text }}
-        </option>    
+<div class="form-element"
+    [class.action-clear]="hasValue()">
+    <select #element
+        [id]="id"
+        [class]="elementClass()"
+        [disabled]="disabled || readonly || loading"
+        [value]="selectedIndex()"
+        (change)="emitChange($event)"
+        (blur)="emitBlur()">
+        @for(item of itens(); track item.value) {
+            <option
+                [value]="$index"
+                [disabled]="item.disabled">
+                {{ item.text }}
+            </option>    
+        }
+    </select>
+    @if(isActive()){
+    <button app-button
+        class="action-clear"
+        title="clique para limpar a seleção"
+        theme="transparent"
+        type="button"
+        (click)="clear()">
+        <i class="fa fa-times"></i>
+    </button>
     }
-</select>
+</div>

@@ -1,5 +1,40 @@
-option {
-  &:disabled {
-    font-weight: 100;
+.form-element {
+  position: relative;
+  & option {
+    &:disabled {
+      font-weight: 100;
+    }
+  }
+
+  &.action-clear {
+    select {
+      padding-right: 4rem;
+    }
+    button.action-clear {
+      display: inline-flex;
+    }
+  }
+
+  & button {
+      position: absolute;
+      top: 50%;
+      right: 0.5rem;
+      transform: translateY(-50%);
+      z-index: 2;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      min-width: 1.75rem;
+      min-height: 1.75rem;
+      padding: 0;
+      line-height: 1;
+      &:focus {
+          border-color: var(--bs-primary);
+          box-shadow: 0 0 0 .15rem rgba(var(--bs-primary-rgb), 0.25);
+      }
+
+      &.action-clear {
+          right: 2rem;
+      }
   }
 }

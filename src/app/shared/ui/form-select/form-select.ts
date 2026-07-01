@@ -1,9 +1,9 @@
 import { Component, computed, input, Input, signal } from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import { FormBase } from "@app/shared/directives";
 
 import { Label } from '../label/label';
-import { FormsModule } from "@angular/forms";
-import { transformBoolean } from "@app/shared/utils";
+import { Button } from "../button/button";
 
 export interface SelectItem<T> {
   value: T;
@@ -16,7 +16,7 @@ export interface SelectItem<T> {
   selector: 'app-form-select',
   templateUrl: './form-select.html',
   styleUrl: './form-select.scss',
-  imports: [ Label, FormsModule ],
+  imports: [ Label, FormsModule, Button ],
   host: {
     '[class]': 'hostClass()'
   }

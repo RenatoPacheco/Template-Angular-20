@@ -4,6 +4,7 @@ import { FormBase } from "@app/shared/directives";
 
 import { Label } from '../label/label';
 import { Button } from "../button/button";
+import { transformBoolean } from "@app/shared/utils";
 
 export interface SelectItem<T> {
   value: T;
@@ -37,6 +38,17 @@ export class FormSelect<T> extends FormBase<T>  {
   }
   public override get value(): T|null {
     return super.value;
+  }
+
+  protected _cleanable = signal(false);
+  @Input({ transform: transformBoolean }) 
+  public set cleanable(value: boolean) {
+    if (value !== this._cleanable()) {
+      this._cleanable.set(value);
+    }
+  }
+  public get cleanable(): boolean {
+    return this._cleanable();
   }
 
 

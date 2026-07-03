@@ -11,13 +11,28 @@ export class LoadingService {
   private modalRef?: NgbModalRef;
   private ids: string[] = [];
 
+  /**
+   * Evento disparado quando um loading é iniciado.
+   */
   public readonly start = new EventEmitter<void>();
+
+  /**
+   * Evento disparado quando todos os loadings são finalizados.
+   */
   public readonly stop = new EventEmitter<void>();
 
+  /**
+   * Indica se há algum loading ativo.
+   * @returns boolean - true se houver loading ativo, false caso contrário.
+   */
   public get isLoading(): boolean {
     return this.ids.length > 0;
   }
 
+  /**
+   * Mostra o modal de loading e retorna um id único para o loading.
+   * @returns string - Id único do loading. 
+   */
   public show(): string {
     const result = crypto.randomUUID();
     this.ids.push(result);
@@ -35,6 +50,10 @@ export class LoadingService {
     return result;
   }
 
+  /**
+   * Esconde o modal de loading correspondente ao id fornecido.
+   * @param id - Id único do loading a ser escondido.
+   */
   public hide(id: string) {
     const index = this.ids.indexOf(id);
     if (index !== -1) {
@@ -47,6 +66,10 @@ export class LoadingService {
     }
   }
 
+  /**
+   * Reseta o estado do serviço de loading, fechando o modal e limpando os ids.
+   * Dispara o evento de stop caso haja algum loading ativo.
+   */
   public reset() {
     const isLoading = this.isLoading;
     this.ids = [];

@@ -1,16 +1,23 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import packageJson from '../../package.json';
 import { routes } from './app.routes';
+import { authInterceptor, errorInterceptor, loadingInterceptor } from './core';
 
 export const bootstrapAppConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes),
-    provideHttpClient()
+    provideHttpClient(
+      withInterceptors([
+        loadingInterceptor,
+        authInterceptor,
+        errorInterceptor
+      ])
+    )
   ]
 };
 

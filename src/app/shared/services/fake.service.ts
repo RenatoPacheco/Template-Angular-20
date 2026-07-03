@@ -15,18 +15,19 @@ export class FakeService {
     delay?: number,
     ignoreLoading?: boolean;
   }): Observable<T> {
-    param.delay = param.delay ?? 1500;
-    param.ignoreLoading = param.ignoreLoading ?? false;
-    return of(param.result).pipe(
+    const data = {...param, id: '' } 
+    data.delay = data.delay ?? 1500;
+    data.ignoreLoading = data.ignoreLoading ?? false;
+    return of(data.result).pipe(
       tap(() => {
-        if (!param.ignoreLoading) {
-          this.loading.show();
+        if (!data.ignoreLoading) {
+          data.id = this.loading.show();
         }
       }),
-      delay(param.delay),
+      delay(data.delay),
       tap(() => {
-        if (!param.ignoreLoading) {
-          this.loading.hide();
+        if (!data.ignoreLoading) {
+          this.loading.hide(data.id);
         }
       }),
     );

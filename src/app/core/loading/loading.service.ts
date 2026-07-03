@@ -9,19 +9,20 @@ export class LoadingService {
 
   private modal = inject(NgbModal);
   private modalRef?: NgbModalRef;
-  private loadingCount = 0;
+  private ids: string[] = [];
 
   public readonly start = new EventEmitter<void>();
   public readonly stop = new EventEmitter<void>();
 
   public get isLoading(): boolean {
-    return this.loadingCount > 0;
+    return this.ids.length > 0;
   }
 
-  public show() {
-    this.loadingCount++;
+  public show(): string {
+    const result = crypto.randomUUID();
+    this.ids.push(result);
     if (this.modalRef) {
-      return;
+      return result;
     }
 
     this.modalRef = this.modal.open(LoadingContainer, {
@@ -31,11 +32,15 @@ export class LoadingService {
       windowClass: 'loading-modal'
     });
     this.start.emit();
+    return result;
   }
 
-  public hide() {
-    this.loadingCount--;
-    if (this.loadingCount === 0) {
+  public hide(id: string) {
+    const index = this.ids.indexOf(id);
+    if (index !== -1) {
+      this.ids.splice(index, 1);
+    }
+    if (this.ids.length === 0) {
       this.modalRef?.close();
       this.modalRef = undefined;
       this.stop.emit();
@@ -44,7 +49,7 @@ export class LoadingService {
 
   public reset() {
     const isLoading = this.isLoading;
-    this.loadingCount = 0;
+    this.ids = [];
     this.modalRef?.close();
     this.modalRef = undefined;
     if (isLoading) {

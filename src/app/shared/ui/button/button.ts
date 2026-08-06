@@ -13,7 +13,7 @@ type ButtonAction =
 | 'remove'|'approve'|'reject'|'archive'
 | 'unarchive'|'enable'|'disable'|'lock'|'unlock';
 
-type ButtonTheme = InputVariant|ButtonAction|'link'|'transparent';
+type ButtonTheme = InputVariant|'link'|'transparent';
 
 @Component({
   standalone: true,
@@ -33,8 +33,7 @@ export class Button {
   private renderer = inject(Renderer2);
 
   protected _type = signal<ButtonType>('button');
-  @Input()
-  public set type(value: ButtonType) {
+  @Input() public set type(value: ButtonType) {
     if (value !== this.type) {
       this._type.set(value);
     }
@@ -44,8 +43,7 @@ export class Button {
   }
 
   protected _text = signal('');
-  @Input()
-  public set text(value: string) {
+  @Input() public set text(value: string) {
     if (value !== this.text) {
       this._text.set(value);
     }
@@ -55,8 +53,7 @@ export class Button {
   }
 
   protected _title = signal('');
-  @Input()
-  public set title(value: string) {
+  @Input() public set title(value: string) {
     if (value !== this.title) {
       this._title.set(value);
     }
@@ -88,8 +85,7 @@ export class Button {
   }
 
   protected _class = signal('');
-  @Input()
-  public set class(value: string) {
+  @Input() public set class(value: string) {
     if (value !== this.class) {
       this._class.set(value);
     }
@@ -99,8 +95,7 @@ export class Button {
   }
 
   protected _theme = signal<ButtonTheme>('');
-  @Input() 
-  public set theme(value: ButtonTheme) {
+  @Input() public set theme(value: ButtonTheme) {
     if (value !== this._theme()) {
       this._theme.set(value);
     }
@@ -109,9 +104,18 @@ export class Button {
     return this._theme();
   }
 
+  protected _action = signal<ButtonAction|null>(null);
+  @Input() public set action(value: ButtonAction|null) {
+    if (value !== this._action()) {
+      this._action.set(value || null);
+    }
+  }
+  public get action(): ButtonAction|null {
+    return this._action();
+  }
+
   protected _size = signal<ButtonSize>('md');
-  @Input() 
-  public set size(value: ButtonSize) {
+  @Input() public set size(value: ButtonSize) {
     if (value !== this._size()) {
       this._size.set(value);
     }
@@ -129,38 +133,55 @@ export class Button {
   });
 
   protected hostClass = computed(() => {
-    const classVal = this._class();
-    const themeVal = this.themes[this._theme()] || this.themes[''];
-    const sizeVal = this.sizes[this._size()] || '';
-    return `${themeVal} ${sizeVal} ${classVal}`;
+    const _class = this._class();
+    const _theme = this._theme();
+    const _action = this._action();
+    const _size = this._size();
+
+    let _classFinal = _class || '';
+    let _sizeFinal = this.sizes[_size] || '';
+    let _themeFinal = this.themes[_theme] || this.themes[''];
+    if (!_theme && _action) {
+      _themeFinal = this.actions[_action] || _themeFinal;
+    }
+
+    return `${_themeFinal} ${_sizeFinal} ${_classFinal}`;
   });
 
   protected iconComputed = computed(() => {
-    const themeVal = this._theme();
-    const loadingVal = this._loading();
-    if (loadingVal) {
-      return 'fa fa-spinner fa-spin';
+    const _action = this._action();
+    const _loading = this._loading();
+
+    let _result = this.icons[_action as ButtonAction] || '';
+    if (_loading) {
+      _result = 'fa fa-spinner fa-spin';
     }
-    return this.icons[themeVal as ButtonAction] || '';
+
+    return _result;
   });
 
   protected textComputed = computed(() => {
-    const themeVal = this._theme();
-    const textVal = this._text();
-    if (textVal) {
-      return textVal;
+    const _action = this._action();
+    const _text = this._text();
+
+    let _result = _text || '';
+    if (!_result && _action) {
+      _result = this.texts[_action as ButtonAction] || '';
     }
-    return this.texts[themeVal as ButtonAction] || '';
+
+    return _result;
   });
 
   protected hostTitle = computed(() => {
-    const themeVal = this._theme();
-    const titleVal = this._title();
-    if (titleVal) {
-      return titleVal;
+    const _title = this._title();
+    const _action = this._action();
+
+    let result = _title || '';
+    if (!result && _action) {
+      result = this.texts[_action as ButtonAction] || '';
     }
-    let resultVal = this.texts[themeVal as ButtonAction];
-    return resultVal ? `clique para ${resultVal.toLowerCase()}` : '';
+
+    return result ? `Clique para ${result.toLowerCase()}` : '';
   });
 
   private sizes: Record<ButtonSize, string> = {
@@ -221,17 +242,7 @@ export class Button {
     unlock: 'fa fa-unlock'
   };
 
-  private themes: Record<ButtonTheme, string> = {
-    '' : 'btn btn-outline-primary',
-    error: 'btn btn-outline-danger',
-    primary: 'btn btn-outline-primary',
-    secondary: 'btn btn-outline-secondary',
-    success: 'btn btn-outline-success',
-    warning: 'btn btn-outline-warning',
-    info: 'btn btn-outline-info',
-    danger: 'btn btn-outline-danger',
-    light: 'btn btn-outline-light',
-    dark: 'btn btn-outline-dark',
+  private actions: Record<ButtonAction, string> = {
     edit: 'btn btn-outline-primary',
     delete: 'btn btn-outline-danger',
     view: 'btn btn-outline-secondary',
@@ -254,7 +265,20 @@ export class Button {
     enable: 'btn btn-outline-success',
     disable: 'btn btn-outline-danger',
     lock: 'btn btn-outline-secondary',
-    unlock: 'btn btn-outline-secondary',
+    unlock: 'btn btn-outline-secondary'    
+  }
+
+  private themes: Record<ButtonTheme, string> = {
+    '' : 'btn btn-outline-primary',
+    error: 'btn btn-outline-danger',
+    primary: 'btn btn-outline-primary',
+    secondary: 'btn btn-outline-secondary',
+    success: 'btn btn-outline-success',
+    warning: 'btn btn-outline-warning',
+    info: 'btn btn-outline-info',
+    danger: 'btn btn-outline-danger',
+    light: 'btn btn-outline-light',
+    dark: 'btn btn-outline-dark',
     link: 'btn btn-link',
     transparent: 'btn btn-transparent'
   };

@@ -13,7 +13,7 @@ Isso significa que o atributo `app-button` deve ser usado em um elemento `button
 Exemplo mínimo:
 
 ```html
-<button app-button theme="save"></button>
+<button app-button action="save"></button>
 ```
 
 ## Como funciona
@@ -110,7 +110,7 @@ Exemplos:
 ### 1) Ação padrão por tema
 
 ```html
-<button app-button theme="save"></button>
+<button app-button action="save"></button>
 ```
 
 Resultado esperado:
@@ -124,7 +124,7 @@ Resultado esperado:
 ```html
 <button
 	app-button
-	theme="delete"
+	action="delete"
 	text="Apagar item"
 	title="Clique para apagar este registro">
 </button>
@@ -133,7 +133,7 @@ Resultado esperado:
 ### 3) Estado de carregamento
 
 ```html
-<button app-button theme="submit" [loading]="true"></button>
+<button app-button action="submit" [loading]="true"></button>
 ```
 
 Resultado esperado:
@@ -150,7 +150,7 @@ Resultado esperado:
 ### 5) Estado desabilitado
 
 ```html
-<button app-button theme="approve" disabled></button>
+<button app-button action="approve" disabled></button>
 ```
 
 ## Dependências

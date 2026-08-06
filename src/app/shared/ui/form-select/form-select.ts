@@ -62,13 +62,36 @@ export class FormSelect<T> extends FormElementBase<T>  {
     return this._placeholder();
   }
 
+  protected readonly _placeholderIfEmpty = signal('');
+  @Input() public set placeholderIfEmpty(value: string) {
+    if (value !== this._placeholderIfEmpty()) {
+      this._placeholderIfEmpty.set(value);
+    }
+  }
+  public get placeholderIfEmpty(): string {
+    return this._placeholderIfEmpty();
+  }
+
+  public readonly hasItems = computed(() => {
+    const _options = this.options();
+    return (_options?.length || 0) > 0;
+  });
+
   public readonly itens = computed(() => {
-    const optionsVal = this.options();
-    const placeholderVal = this.placeholder;
+    const _options = this.options();
+    const _placeholder = this.placeholder;
+    const _placeholderIfEmpty = this.placeholderIfEmpty;
+
+    let _placeholderFinal = _placeholder || 'Selecione um item';
+    if (!this.hasItems()) {
+      _placeholderFinal = _placeholderIfEmpty || 'Nenhum item disponível';
+    }
+
+    let _optionsFinal = this.hasItems() ? _options : [];
     
     return [
-        { value: null, text: placeholderVal || 'Selecione um item', disabled: true },
-        ...optionsVal
+        { value: null, text: _placeholderFinal, disabled: true },
+        ..._optionsFinal
       ];
   });
 

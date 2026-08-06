@@ -250,16 +250,16 @@ export abstract class FormElementBase<T>
   });
 
   public notHasValue = computed(() => {
-    const valueVal = this._value();
-    return valueVal || valueVal === false ? false : true;
+    const _value = this._value();
+    return _value || _value === false ? false : true;
   });
 
   protected showError = computed(() => {
-    const invalidVal = this._status() === 'INVALID';
-    const touchedVal = this._touched();
-    const dirtyVal = !this._pristine();
-    const enabledVal = this._enabledError();
-    return enabledVal && invalidVal && touchedVal && dirtyVal;
+    const _invalid = this._status() === 'INVALID';
+    const _touched = this._touched();
+    const _dirty = !this._pristine();
+    const _enabled = this._enabledError();
+    return _enabled && _invalid && _touched && _dirty;
   });
 
   public clear(value: T|null = null): void {

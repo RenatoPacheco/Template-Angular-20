@@ -96,43 +96,43 @@ export class FormSelect<T> extends FormElementBase<T>  {
   });
 
   public readonly selectedItem = computed(() => {
-    const valueVal = this._value();
-    const optionsVal = this.itens();
-    return optionsVal.find((item) => item.value === valueVal) || null;
+    const _value = this._value();
+    const _options = this.itens();
+    return _options.find((item) => item.value === _value) || null;
   });
 
   public readonly selectedText = computed(() => {
-    const selectedItemVal = this.selectedItem();
-    return selectedItemVal ? selectedItemVal.text : '';
+    const _selectedItem = this.selectedItem();
+    return _selectedItem ? _selectedItem.text : '';
   });
 
   public readonly selectedValue = computed(() => {
-    const selectedItemVal = this.selectedItem();
-    return selectedItemVal ? selectedItemVal.value : null;
+    const _selectedItem = this.selectedItem();
+    return _selectedItem ? _selectedItem.value : null;
   });
 
   public readonly selectedIndex = computed(() => {
-    const selectedItemVal = this.selectedItem();
-    const optionsVal = this.itens();
-    return selectedItemVal ? optionsVal.indexOf(selectedItemVal) : -1;
+    const _selectedItem = this.selectedItem();
+    const _options = this.itens();
+    return _selectedItem ? _options.indexOf(_selectedItem) : -1;
   });
   
   protected hostClass = computed(() => {
-    const classVal = this._class();
-    return `form-group mb-3 ${classVal}`;
+    const _class = this._class();
+    return `form-group mb-3 ${_class}`;
   });
 
   protected elementClass = computed(() => {
-    const sizeVal = this._size();
-    const selectedIndexVal = this.selectedIndex();
+    const _size = this._size();
+    const _selectedIndex = this.selectedIndex();
     
-    let resul = `form-select form-select-${sizeVal}`;
+    let resul = `form-select form-select-${_size}`;
 
-    if (sizeVal) {
-      resul += ` form-select-${sizeVal}`;
+    if (_size) {
+      resul += ` form-select-${_size}`;
     }
 
-    if (selectedIndexVal === 0) {
+    if (_selectedIndex === 0) {
       resul += ' text-muted';
     }
 
@@ -142,8 +142,8 @@ export class FormSelect<T> extends FormElementBase<T>  {
   protected override emitChange(event: Event): void {
     const target = event.target as HTMLSelectElement;
     const value = Number(target.value);
-    const optionsVal = this.itens();
-    const selectedItem = optionsVal[value];
+    const _options = this.itens();
+    const selectedItem = _options[value];
     const selectedValue = selectedItem ? selectedItem.value : null;
     this.value = selectedValue;
   }

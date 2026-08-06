@@ -117,27 +117,27 @@ export class FormEditor extends FormElementBase<string> implements OnDestroy {
   });
 
   protected hostClass = computed(() => {
-    const classVal = this._class();
+    const _class = this._class();
     const itens = ['form-group mb-3'];
 
-    if (classVal) {
-      itens.push(classVal);
+    if (_class) {
+      itens.push(_class);
     }
 
     return itens.join(' ');
   });
 
   protected basicConfig = computed(() => {
-    const heightVal = this._height();
-    const paragraphVal = this._paragraph();
+    const _height = this._height();
+    const _paragraph = this._paragraph();
 
     let result = {
       ...FormEditorBaseConfig,
       ...FormEditorBasic,
-      height: heightVal,
+      height: _height,
     } as FormEditorConfig;
 
-    if (paragraphVal === false) {
+    if (_paragraph === false) {
       result = {
         ...result,
         ...FormEditorParagraphOff
@@ -148,16 +148,16 @@ export class FormEditor extends FormElementBase<string> implements OnDestroy {
   });
 
   protected completeConfig = computed(() => {
-    const heightVal = this._height();
-    const paragraphVal = this._paragraph();
+    const _height = this._height();
+    const _paragraph = this._paragraph();
 
     let result = {
       ...FormEditorBaseConfig,
       ...FormEditorComplte,
-      height: heightVal,
+      height: _height,
     } as FormEditorConfig;
 
-    if (paragraphVal === false) {
+    if (_paragraph === false) {
       result = {
         ...result,
         ...FormEditorParagraphOff
@@ -168,16 +168,16 @@ export class FormEditor extends FormElementBase<string> implements OnDestroy {
   });
 
   protected disabledConfig = computed(() => {
-    const heightVal = this._height();
-    const paragraphVal = this._paragraph();
+    const _height = this._height();
+    const _paragraph = this._paragraph();
 
     let result = {
       ...FormEditorBaseConfig,
       ...FormEditorDisabled,
-      height: heightVal,
+      height: _height,
     } as FormEditorConfig;
 
-    if (paragraphVal === false) {
+    if (_paragraph === false) {
       result = {
         ...result,
         ...FormEditorParagraphOff
@@ -188,15 +188,15 @@ export class FormEditor extends FormElementBase<string> implements OnDestroy {
   });
 
   protected useBasicConfig = computed(() => {
-    const templateVal = this._template() == 'basic';
-    const mobileVal = this.isMobile();
-    return templateVal || mobileVal;
+    const _template = this._template() == 'basic';
+    const _mobile = this.isMobile();
+    return _template || _mobile;
   });
 
   protected useCompleteConfig = computed(() => {
-    const templateVal = this._template() == 'complete';
-    const mobileVal = this.isMobile();
-    return templateVal && !mobileVal;
+    const _template = this._template() == 'complete';
+    const _mobile = this.isMobile();
+    return _template && !_mobile;
   });
 
   protected emitReady(event: CKEditor4.EventInfo): void {

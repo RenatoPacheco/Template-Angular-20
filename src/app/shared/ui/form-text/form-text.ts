@@ -133,54 +133,54 @@ export class FormText extends FormElementBase<string>  {
   }
 
   protected showSecret = computed(() => {
-    const typeVal = this._type();
-    const controlSecretVal = this._controlSecret();
-    const secretHasBeenReversedVal = this._secretHasBeenReversed();
+    const _type = this._type();
+    const _controlSecret = this._controlSecret();
+    const _secretHasBeenReversed = this._secretHasBeenReversed();
     
-    let result = controlSecretVal && typeVal === 'password' 
+    let result = _controlSecret && _type === 'password' 
     ? true : false;
 
-    return secretHasBeenReversedVal ? !result : result;
+    return _secretHasBeenReversed ? !result : result;
   });
 
   protected hideSecret = computed(() => {
-    const typeVal = this._type();
-    const controlSecretVal = this._controlSecret();
-    const secretHasBeenReversedVal = this._secretHasBeenReversed();
+    const _type = this._type();
+    const _controlSecret = this._controlSecret();
+    const _secretHasBeenReversed = this._secretHasBeenReversed();
     
-    let result = controlSecretVal && typeVal !== 'password' 
+    let result = _controlSecret && _type !== 'password' 
     ? true : false;
 
-    return secretHasBeenReversedVal ? !result : result;
+    return _secretHasBeenReversed ? !result : result;
   });
 
   protected typeComputed = computed(() => {
-    let typeVal = this._type();
-    const isPasswordType = typeVal === 'password';
-    const controlSecretVal = this._controlSecret();
-    const reverseSecretVal = this._secretHasBeenReversed();
+    let _type = this._type();
+    const isPasswordType = _type === 'password';
+    const _controlSecret = this._controlSecret();
+    const _reverseSecret = this._secretHasBeenReversed();
 
-    if (controlSecretVal && reverseSecretVal) {
-      typeVal = isPasswordType ? 'text' : 'password';
+    if (_controlSecret && _reverseSecret) {
+      _type = isPasswordType ? 'text' : 'password';
     } else {
-      switch (typeVal) {
+      switch (_type) {
         case 'search':
-          typeVal = 'text';
+          _type = 'text';
           break;
       }
     }
 
-    return typeVal;
+    return _type;
   });
 
   protected hostClass = computed(() => {
-    const classVal = this._class();
-    return `form-group mb-3 ${classVal}`;
+    const _class = this._class();
+    return `form-group mb-3 ${_class}`;
   });
 
   protected elementClass = computed(() => {
-    const sizeVal = this._size();
-    return `form-control form-control-${sizeVal}`;
+    const _size = this._size();
+    return `form-control form-control-${_size}`;
   });
 
   protected override emitChange(event: Event): void {

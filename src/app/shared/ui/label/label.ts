@@ -106,8 +106,8 @@ export class Label {
   });
 
   protected hostClass = computed(() => {
-    const classVal = this._class();
-    let result = classVal;
+    const _class = this._class();
+    let result = _class;
     return `form-label ${result}`;
   });
 

@@ -46,12 +46,12 @@ export class FormTextarea extends FormElementBase<string>  {
   }
   
   protected hostClass = computed(() => {
-    const classVal = this._class();
-    return `form-group mb-3 ${classVal}`;
+    const _class = this._class();
+    return `form-group mb-3 ${_class}`;
   });
 
   protected elementClass = computed(() => {
-    const sizeVal = this._size();
-    return `form-control form-control-${sizeVal}`;
+    const _size = this._size();
+    return `form-control form-control-${_size}`;
   });
 }

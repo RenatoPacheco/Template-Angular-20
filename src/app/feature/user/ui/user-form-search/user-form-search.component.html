@@ -1,1 +1,18 @@
-<p>User Form Search</p>
+<form [formGroup]="form" novalidate
+  [class]="_class()" [id]="_id()"
+  (ngSubmit)="search()">
+  <div class="form-row">
+  <app-form-text
+    label="Query" class="col-12 col-md-6"
+    formControlName="query">
+  </app-form-text>
+  <app-form-text
+    label="Status" class="col-12 col-md-6"
+    formControlName="status">
+  </app-form-text>
+  <label app-label>&nbsp;</label>
+  <button app-button theme="search" 
+    type="submit" [disabled]="form.invalid">Search</button>
+
+  </div>
+</form>

@@ -4,7 +4,10 @@ export function transformTimeSpan(value: string|number|null|undefined): string|n
   return TimeSpanPipe.apply(value);
 }
 
-@Pipe({ name: 'timespan' })
+@Pipe({ 
+  name: 'timespan',
+  standalone: true
+})
 export class TimeSpanPipe implements PipeTransform {
 
   public transform(value: string|number|null|undefined): string|null {

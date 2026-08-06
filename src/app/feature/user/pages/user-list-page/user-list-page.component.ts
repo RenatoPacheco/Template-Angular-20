@@ -1,7 +1,7 @@
 import { Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
-import { IUserFormSearchResolved, UserFormSearchComponent } from "@app/feature/user/ui";
+import { IUserFormSearchData, IUserFormSearchParams, IUserFormSearchResolved, UserFormSearchComponent } from "@app/feature/user/ui";
 
 @Component({
   standalone: true,
@@ -15,14 +15,17 @@ import { IUserFormSearchResolved, UserFormSearchComponent } from "@app/feature/u
 export class UserListPageComponent implements OnInit {
 
   ngOnInit(): void {
-    this.resolved = this.route.snapshot.data['resolved'];
+    const resolved: IUserFormSearchResolved = this.route.snapshot.data['resolved'];
+    this.data = resolved.data;
+    this.params = resolved.params;
   }
 
   protected readonly destroyRef = inject(DestroyRef);
   protected readonly route = inject(ActivatedRoute);
   protected readonly router = inject(Router);
   
-  protected resolved!: IUserFormSearchResolved;
+  protected params!: IUserFormSearchParams;
+  protected data!: IUserFormSearchData;
 
 
 

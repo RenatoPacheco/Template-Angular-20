@@ -1,6 +1,6 @@
 import { Component, computed, input, Input, signal } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { FormBase } from "@app/shared/directives";
+import { FormElementBase } from "@app/shared/directives";
 
 import { Label } from '../label/label';
 import { Button } from "../button/button";
@@ -22,7 +22,7 @@ export interface SelectItem<T> {
     '[class]': 'hostClass()'
   }
 })
-export class FormSelect<T> extends FormBase<T>  {
+export class FormSelect<T> extends FormElementBase<T>  {
 
   constructor() {
     super();

@@ -4,7 +4,10 @@ export function transformCpf(value: string|number|null|undefined): string|null {
   return CpfPipe.apply(value);
 }
 
-@Pipe({ name: 'cpf' })
+@Pipe({ 
+  name: 'cpf',
+  standalone: true
+})
 export class CpfPipe implements PipeTransform {
 
   public transform(value: string|number|null|undefined): string|null {

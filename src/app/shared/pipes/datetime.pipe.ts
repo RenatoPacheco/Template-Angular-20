@@ -4,7 +4,10 @@ export function transformDateTime(value: string | number | null | undefined): st
   return DateTimePipe.apply(value);
 }
 
-@Pipe({ name: 'datetime' })
+@Pipe({ 
+  name: 'datetime',
+  standalone: true
+})
 export class DateTimePipe implements PipeTransform {
 
   public transform(value: string | number | null | undefined): string|null {

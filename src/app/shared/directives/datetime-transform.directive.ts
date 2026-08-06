@@ -4,7 +4,7 @@ import { DateTimePipe } from '../pipes';
 import { getAdjustedCursorPosition } from '../utils';
 
 @Directive({
-  selector: '[datetimeTransform]',
+  selector: '[dateTimeTransform]',
   standalone: true
 })
 export class DateTimeTransform {

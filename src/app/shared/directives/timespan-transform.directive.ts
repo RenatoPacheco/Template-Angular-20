@@ -4,7 +4,7 @@ import { TimeSpanPipe } from '../pipes';
 import { getAdjustedCursorPosition } from '../utils';
 
 @Directive({
-  selector: '[timespanTransform]',
+  selector: '[timeSpanTransform]',
   standalone: true
 })
 export class TimeSpanTransform {

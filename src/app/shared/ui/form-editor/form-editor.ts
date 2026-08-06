@@ -3,7 +3,7 @@ import { FormsModule } from "@angular/forms";
 
 import { CKEditor4, CKEditorModule } from "ckeditor4-angular";
 
-import { FormBase } from "@app/shared/directives";
+import { FormElementBase } from "@app/shared/directives";
 import { transformBoolean, transformNumber } from "@app/shared/utils";
 
 import { Label } from "../label/label";
@@ -22,7 +22,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
   }
 })
 // https://ckeditor.com/docs/ckeditor4/4.22.1/api/CKEDITOR_config.html
-export class FormEditor extends FormBase<string> implements OnDestroy {
+export class FormEditor extends FormElementBase<string> implements OnDestroy {
 
   constructor() {
     super();

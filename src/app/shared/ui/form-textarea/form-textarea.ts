@@ -5,7 +5,7 @@ import { transformNumber } from '@app/shared/utils';
 
 import { Button } from '../button/button';
 import { Label } from '../label/label';
-import { FormBase } from '@app/shared/directives';
+import { FormElementBase } from '@app/shared/directives';
 
 @Component({
   standalone: true,
@@ -17,7 +17,7 @@ import { FormBase } from '@app/shared/directives';
     '[class]': 'hostClass()'
   }
 })
-export class FormTextarea extends FormBase<string>  {
+export class FormTextarea extends FormElementBase<string>  {
   
   constructor() {
     super();

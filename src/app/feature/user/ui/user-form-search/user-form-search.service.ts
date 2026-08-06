@@ -3,19 +3,23 @@ import { inject, Injectable } from "@angular/core";
 import { forkJoin, lastValueFrom, Observable, of, tap } from "rxjs";
 
 import { User, UserService } from "../../data-access";
-import { IUserFormSearchParams, IUserFormSearchResolved } from "./user-form-search.model";
+import { IUserFormSearchData, IUserFormSearchParams, IUserFormSearchResolved } from "./user-form-search.model";
+import { FakeService } from "@app/shared/services";
 
 @Injectable({ providedIn: 'root' })
 export class UserFormSearchService {
 
   private readonly servData = inject(UserService);
+  private readonly servFake = inject(FakeService);
 
   public async resolve(
     params: IUserFormSearchParams,
     options?: { ignoreLoading?: boolean; }
   ): Promise<IUserFormSearchResolved> {
     const result: IUserFormSearchResolved = {
-      status: [],
+      data: {
+        status: []
+      },
       params: params
     };
 
@@ -23,7 +27,7 @@ export class UserFormSearchService {
       status: this.listStatus()
     }).pipe(
       tap((resp) => {
-        result.status = resp.status;
+        result.data.status = resp.status;
       })
     ));
 
@@ -42,13 +46,16 @@ export class UserFormSearchService {
   }
 
   public listStatus(): Observable<string[]> {
-    return of([
-      'Active',
-      'Inactive',
-      'Pending',
-      'Suspended',
-      'Excluded'
-    ]);
+    return this.servFake.observable({
+      delay: 10000,
+      result: [
+        'Active',
+        'Inactive',
+        'Pending',
+        'Suspended',
+        'Excluded'
+      ]
+    });
   }
 
   public search(request?: IUserFormSearchParams, options?:{

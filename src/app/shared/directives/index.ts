@@ -1,4 +1,4 @@
-export * from './form-base.directive'
+export * from './form-element-base.directive'
 export * from './form-check-base.directive'
 export * from './cpf-transform.directive'
 export * from './cnpj-transform.directive'

@@ -6,7 +6,10 @@ export function transformPhonePtBr(
   return PhonePtBrPipe.apply(value);
 }
 
-@Pipe({ name: 'phonePtBr' })
+@Pipe({ 
+  name: 'phonePtBr',
+  standalone: true
+})
 export class PhonePtBrPipe implements PipeTransform {
 
   public transform(

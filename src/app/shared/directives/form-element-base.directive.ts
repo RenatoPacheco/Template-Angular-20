@@ -12,7 +12,8 @@ type FormElement =
   | HTMLSelectElement;
 
 @Directive()
-export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
+export abstract class FormElementBase<T> 
+  implements ControlValueAccessor, OnInit {
   
   constructor() {
     if (this.ngControl) {
@@ -223,8 +224,29 @@ export abstract class FormBase<T> implements ControlValueAccessor, OnInit {
   });
 
   public hasValue = computed(() => {
-    const valueVal = this._value();
-    return valueVal || valueVal === false ? true : false;
+    const value = this._value();
+
+    if (typeof value === 'boolean') {
+      return true;
+    }
+
+    if (typeof value === 'number') {
+      return true;
+    }
+
+    if (!value) {
+      return false;
+    }
+
+    if (Array.isArray(value)) {
+      return value.length > 0;
+    }
+
+    if (typeof value === 'object') {
+      return Object.keys(value).length > 0;
+    }
+
+    return true;
   });
 
   public notHasValue = computed(() => {

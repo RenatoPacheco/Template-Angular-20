@@ -19,3 +19,11 @@
     cursor: help;
     color: var(--bs-form-invalid-border-color);
 }
+
+[role="alert"]:focus,
+[role="help"]:focus {
+    outline-offset: 2px;
+    border-radius: 0.25rem;
+    outline: 1px solid var(--bs-primary);
+    box-shadow: 0 0 0 .15rem rgba(var(--bs-primary-rgb), 0.25);
+}

@@ -1,10 +1,11 @@
 import { Directive, Input, signal, untracked } from "@angular/core";
 
-import { FormBase } from "@app/shared/directives";
 import { transformBoolean } from "@app/shared/utils";
 
+import { FormElementBase } from "./form-element-base.directive";
+
 @Directive()
-export abstract class FormCheckBase extends FormBase<any>  {
+export abstract class FormCheckBase extends FormElementBase<any>  {
 
   constructor()  {
     super();

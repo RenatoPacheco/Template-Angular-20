@@ -4,7 +4,10 @@ export function transformCnpj(value: string | number | null | undefined): string
   return CnpjPipe.apply(value);
 }
 
-@Pipe({ name: 'cnpj' })
+@Pipe({ 
+  name: 'cnpj',
+  standalone: true
+})
 export class CnpjPipe implements PipeTransform {
 
   public transform(value: string | number | null | undefined): string|null {

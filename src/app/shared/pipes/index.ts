@@ -4,3 +4,4 @@ export * from './date.pipe';
 export * from './datetime.pipe';
 export * from './timespan.pipe';
 export * from './phone-ptbr.pipe';
+export * from './decode-html.pipe';

@@ -28,7 +28,13 @@ export class FormSelect<T> extends FormElementBase<T>  {
     super();
   }
 
-  public readonly options = input<SelectItem<T>[]>([]);
+  public readonly _options = signal<SelectItem<T>[]>([]);
+  @Input() public set options(value: SelectItem<T>[]) {   
+      this._options.set(value || []);
+  }
+  public get options(): SelectItem<T>[] {
+    return this._options();
+  }
 
   public override set value(value: T|null) {
     const exist = this.itens().some((item) => item.value == value);
@@ -73,12 +79,12 @@ export class FormSelect<T> extends FormElementBase<T>  {
   }
 
   public readonly hasItems = computed(() => {
-    const _options = this.options();
+    const _options = this.options;
     return (_options?.length || 0) > 0;
   });
 
   public readonly itens = computed(() => {
-    const _options = this.options();
+    const _options = this.options;
     const _placeholder = this.placeholder;
     const _placeholderIfEmpty = this.placeholderIfEmpty;
 

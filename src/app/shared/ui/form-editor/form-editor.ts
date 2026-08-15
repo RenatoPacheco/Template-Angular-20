@@ -7,7 +7,7 @@ import { FormElementBase } from "@app/shared/directives";
 import { transformBoolean, transformNumber } from "@app/shared/utils";
 
 import { Label } from "../label/label";
-import { FormEditorBaseConfig, FormEditorBasic, FormEditorComplte, FormEditorConfig, FormEditorDisabled, FormEditorParagraphOff } from "./form-editor-model";
+import { FormEditorBaseConfig, FormEditorBasic, FormEditorComplte, FormEditorConfig, FormEditorDisabled, FormEditorParagraphOff } from "./form-editor.model";
 import { PlataformLocationService, ResizeService } from "@app/shared/services";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 

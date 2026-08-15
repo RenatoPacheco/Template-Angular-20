@@ -1,6 +1,6 @@
 <input  
   [checked]="checked"
-  (change)="onToggle($event)"
+  (change)="emitToggle($event)"
   [disabled]="disabled || readonly"
   class="form-check-input" 
   type="checkbox"
@@ -9,7 +9,7 @@
   <span #content>
     <ng-content></ng-content>
   </span>
-  @if(!content.hasChildNodes()){
+  @if (!content.hasChildNodes()){
   <span [innerHTML]="label"></span>
   }
 </label>

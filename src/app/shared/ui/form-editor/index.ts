@@ -1,2 +1,2 @@
 export * from './form-editor';
-export * from './form-editor-model';
+export * from './form-editor.model';

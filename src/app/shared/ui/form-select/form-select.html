@@ -5,7 +5,8 @@
     (error)="emitError()"
     (helper)="emitHelper()"
     [enabled-error]="showError()"
-    [enabled-helper]="enabledHelper"></label>
+    [enabled-helper]="enabledHelper">
+</label>
 <div class="form-element"
     [class.action-clear]="hasValue()">
     <select #element
@@ -15,7 +16,7 @@
         [value]="selectedIndex()"
         (change)="emitChange($event)"
         (blur)="emitBlur()">
-        @for(item of itens(); track item.value) {
+        @for (item of itens(); track item.value) {
             <option
                 [value]="$index"
                 [disabled]="item.disabled">
@@ -23,7 +24,7 @@
             </option>    
         }
     </select>
-    @if(cleanable && isActive()){
+    @if (cleanable && isActive()){
     <button app-button
         class="action-clear"
         title="clique para limpar a seleção"

@@ -1,12 +1,6 @@
 import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  OnDestroy,
-  effect,
-  inject,
-  input,
-  numberAttribute
+  AfterViewInit, Component, ElementRef, OnDestroy,
+  effect, inject, input, numberAttribute
 } from '@angular/core';
 
 import videojs from 'video.js';

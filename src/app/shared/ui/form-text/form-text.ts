@@ -126,7 +126,7 @@ export class FormText extends FormElementBase<string>  {
   }
 
   protected readonly _secretHasBeenReversed = signal(false);
-  protected onToggleSecret(): void {
+  protected emitToggleSecret(): void {
     var currentValue = this._secretHasBeenReversed();
     this._secretHasBeenReversed.set(!currentValue);
     this.element?.nativeElement.focus()

@@ -21,14 +21,14 @@ export class FormDataUtils {
         return out;
     }
 
-        /**
-         * Popula um `FormData` a partir de um objeto, navegando recursivamente em sub-objetos.
-         * @param out `FormData` que será populado (retornado atualizado)
-         * @param params Objeto de origem dos dados a serem incluídos no `FormData`
-         * @param prefix Prefixo opcional aplicado às chaves (útil para objetos aninhados)
-         * @returns O `FormData` atualizado
-         */
-        static setObject(out: FormData, params: object, prefix: string = ''): FormData {
+    /**
+     * Popula um `FormData` a partir de um objeto, navegando recursivamente em sub-objetos.
+     * @param out `FormData` que será populado (retornado atualizado)
+     * @param params Objeto de origem dos dados a serem incluídos no `FormData`
+     * @param prefix Prefixo opcional aplicado às chaves (útil para objetos aninhados)
+     * @returns O `FormData` atualizado
+     */
+    static setObject(out: FormData, params: object, prefix: string = ''): FormData {
       let value: any = null;
       let obj: any = params;
         if (obj !== undefined && obj !== null) {

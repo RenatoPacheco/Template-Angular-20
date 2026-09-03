@@ -11,7 +11,8 @@ type ButtonAction =
 | 'submit'|'reset'|'download'|'upload' 
 | 'search'|'filter'|'sort'|'refresh'|'add' 
 | 'remove'|'approve'|'reject'|'archive'
-| 'unarchive'|'enable'|'disable'|'lock'|'unlock';
+| 'unarchive'|'enable'|'disable'|'lock'|'unlock'
+| 'notify'|'next'|'previous'|'copy';
 
 type ButtonTheme = InputVariant|'link'|'transparent';
 
@@ -178,10 +179,10 @@ export class Button {
 
     let result = _title || '';
     if (!result && _action) {
-      result = this.texts[_action as ButtonAction] || '';
+      result = this.titles[_action as ButtonAction] || '';
     }
 
-    return result ? `Clique para ${result.toLowerCase()}` : '';
+    return result;
   });
 
   private sizes: Record<ButtonSize, string> = {
@@ -213,8 +214,43 @@ export class Button {
     'enable': 'Habilitar',
     'disable': 'Desabilitar',
     'lock': 'Bloquear',
-    'unlock': 'Desbloquear'
+    'unlock': 'Desbloquear',
+    'notify': 'Notificar',
+    'next': 'Próximo',
+    'previous': 'Anterior',
+    'copy': 'Copiar'
   };
+
+  private titles: Record<ButtonAction, string> = {
+    'edit': 'clique aqui para editar',
+    'delete': 'clique aqui para excluir',
+    'view': 'clique aqui para visualizar',
+    'save': 'clique aqui para salvar',
+    'cancel': 'clique aqui para cancelar',
+    'submit': 'clique aqui para enviar',
+    'reset': 'clique aqui para redefinir',
+    'download': 'clique aqui para baixar',
+    'upload': 'clique aqui para enviar',
+    'search': 'clique aqui para pesquisar',
+    'filter': 'clique aqui para filtrar',
+    'sort': 'clique aqui para ordenar',
+    'refresh': 'clique aqui para atualizar',
+    'add': 'clique aqui para adicionar',
+    'remove': 'clique aqui para remover',
+    'approve': 'clique aqui para aprovar',
+    'reject': 'clique aqui para rejeitar',
+    'archive': 'clique aqui para arquivar',
+    'unarchive': 'clique aqui para desarquivar',
+    'enable': 'clique aqui para habilitar',
+    'disable': 'clique aqui para desabilitar',
+    'lock': 'clique aqui para bloquear',
+    'unlock': 'clique aqui para desbloquear',
+    'notify': 'clique aqui para notificar',
+    'next': 'clique aqui para ir para o próximo',
+    'previous': 'clique aqui para ir para o anterior',
+    'copy': 'clique aqui para copiar'
+
+  }
 
   private icons: Record<ButtonAction, string> = {
     edit: 'fa fa-pencil',
@@ -239,7 +275,11 @@ export class Button {
     enable: 'fa fa-toggle-on',
     disable: 'fa fa-toggle-off',
     lock: 'fa fa-lock',
-    unlock: 'fa fa-unlock'
+    unlock: 'fa fa-unlock',
+    copy: 'fa fa-copy',
+    notify: 'fa fa-bell',
+    next: 'fa fa-arrow-right',
+    previous: 'fa fa-arrow-left'
   };
 
   private actions: Record<ButtonAction, string> = {
@@ -265,8 +305,12 @@ export class Button {
     enable: 'btn btn-outline-success',
     disable: 'btn btn-outline-danger',
     lock: 'btn btn-outline-secondary',
-    unlock: 'btn btn-outline-secondary'    
-  }
+    unlock: 'btn btn-outline-secondary',
+    copy: 'btn btn-outline-secondary',
+    notify: 'btn btn-outline-secondary',
+    next: 'btn btn-outline-primary',
+    previous: 'btn btn-outline-primary'
+  };
 
   private themes: Record<ButtonTheme, string> = {
     '' : 'btn btn-outline-primary',

@@ -1,5 +1,5 @@
 import { computed, DestroyRef, Directive, ElementRef, inject, Input, OnInit, output, signal, untracked, ViewChild } from "@angular/core";
-import { ControlValueAccessor, NgControl, ValidationErrors } from "@angular/forms";
+import { AbstractControl, ControlValueAccessor, NgControl, ValidationErrors } from "@angular/forms";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 import { transformBoolean } from "@app/shared/utils";
@@ -110,11 +110,17 @@ export abstract class FormElementBase<T>
   @Input({ transform: transformBoolean })
   public set disabled(value: boolean) {
     if (value !== this.disabled) {
+      if (this.disabled) {
+        this.control?.enable();
+      } else {
+        this.control?.disable();
+      }
       this._disabled.set(value);
     }
   }
-  public get disabled(): boolean {
-    return this._disabled();
+  public get disabled(): boolean { 
+    const _disabled = this._disabled();
+    return this.control?.disabled ?? _disabled;
   }
 
   protected readonly _id = signal(`${crypto.randomUUID()}`);
@@ -250,8 +256,7 @@ export abstract class FormElementBase<T>
   });
 
   public notHasValue = computed(() => {
-    const _value = this._value();
-    return _value || _value === false ? false : true;
+    return !this.hasValue();
   });
 
   protected showError = computed(() => {
@@ -306,20 +311,23 @@ export abstract class FormElementBase<T>
     this.onTouched(); 
   }
 
+  protected get control(): AbstractControl | null {
+    return this.ngControl?.control || null;
+  }
+
   protected statusUpdate():void {
-    const control = this.ngControl?.control;
-    if (control) {
-      if (this.status !== control.status) {
-        this._status.set(control.status);
+    if (this.control) {
+      if (this.status !== this.control.status) {
+        this._status.set(this.control.status);
       }
-      if (this.pristine !== control.pristine) {
-        this._pristine.set(control.pristine);
+      if (this.pristine !== this.control.pristine) {
+        this._pristine.set(this.control.pristine);
       }
-      if (this.touched !== control.touched) {
-        this._touched.set(control.touched);
+      if (this.touched !== this.control.touched) {
+        this._touched.set(this.control.touched);
       }
-      if (this.disabled !== control.disabled) {
-        this._disabled.set(control.disabled);
+      if (this.disabled !== this.control.disabled) {
+        this._disabled.set(this.control.disabled);
       }
     }
   }

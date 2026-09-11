@@ -16,11 +16,20 @@ export class DatePipe implements PipeTransform {
 
   public static apply(value: string | number | null | undefined): string|null {
 
-    value = value?.toString()?.trim() || null;
-    const totalBase = value?.length || 0;
+    value = value?.toString()?.trim() || '';
+    let totalBase = value?.length || 0;
 
     if (totalBase === 0) {
-      return value;
+      return value || null;
+    }
+
+    const isoDatePattern = /^(\d{4}-\d{2}-\d{2})(.*)/;
+    if (isoDatePattern.test(value || '')) {
+      value = value.replace(isoDatePattern, (_, datePart, rest) => {
+        const [year, month, day] = datePart.split('-');
+        return `${day}/${month}/${year}${rest}`;
+      });
+      totalBase = value.length;
     }
 
     let result = String(value)

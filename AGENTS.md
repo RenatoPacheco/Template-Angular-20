@@ -12,6 +12,24 @@ ng test              # Karma unit tests
 
 No lint or typecheck scripts are configured. There is no `ng lint` or `ng e2e` setup.
 
+## Git Commit Convention
+
+Use [Conventional Commits](https://www.conventionalcommits.org/). Every commit message must start with a type and (where applicable) a scope:
+
+```
+<type>(<scope>): <subject>
+```
+
+- `feat` — new feature (e.g. `feat(user): add profile page`)
+- `fix` — bugfix (e.g. `fix(toast): close on escape`)
+- `doc` — documentation only (e.g. `doc: update OPENCODE.md`)
+- `refactor` — code change without changing behavior
+- `style` — formatting, no logic change
+- `test` — adding/updating tests
+- `chore` — maintenance, deps, build tooling
+
+Keep the subject brief (imperative mood), max 72 chars. Only commit when explicitly asked to.
+
 ## Project Structure
 
 Single Angular 20 app (not a monorepo). Standalone components, no NgModules.

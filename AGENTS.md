@@ -30,6 +30,37 @@ Use [Conventional Commits](https://www.conventionalcommits.org/). Every commit m
 
 Keep the subject brief (imperative mood), max 72 chars. Only commit when explicitly asked to.
 
+## Gitflow Workflow
+
+The project follows [Gitflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow).
+
+### Branches
+
+| Branch         | Source          | Target        | Lifecycle | Purpose                                  |
+| -------------- | --------------- | ------------- | --------- | ---------------------------------------- |
+| `main`         | —               | —             | permanent | Production-ready code. Tagged releases.  |
+| `develop`      | `main`          | `main`        | permanent | Integration branch for ongoing work.     |
+| `feature/*`    | `develop`       | `develop`     | temporary | New features. Delete after merge.        |
+| `release/*`    | `develop`       | `main` + `develop` | temporary | Release preparation. Delete after merge. |
+| `hotfix/*`     | `main`          | `main` + `develop` | temporary | Urgent fixes on production. Delete after merge. |
+
+### Naming
+
+- Feature: `feature/<descriptive-slug>` (e.g. `feature/user-registration`).
+- Release: `release/<version>` (e.g. `release/v1.4.0`).
+- Hotfix: `hotfix/<descriptive-slug>` (e.g. `hotfix/fix-login-crash`).
+
+### Rules
+
+- Only `main` and `develop` are permanent — never commit directly to `main`.
+- Work always starts from `develop` (or from `main` for a hotfix) and is delivered in a temporary branch.
+- Merge PRs back into `develop` after review; `main` receives merges only from `release/*` or `hotfix/*`.
+- After a `release/*` or `hotfix/*` merge into `main`, always merge it back into `develop` to keep them in sync.
+- Tag every merge into `main` with the version (semantic versioning, e.g. `v1.4.0`).
+- `feature/*` branches are usually squashed on merge; `release/*` and `hotfix/*` are merged with a plain merge commit to preserve history.
+- Keep a branch up to date by rebasing `develop` into it rather than merging it into `develop` repeatedly.
+- After merging, delete the temporary branch locally and on the remote.
+
 ## Project Structure
 
 Single Angular 20 app (not a monorepo). Standalone components, no NgModules.

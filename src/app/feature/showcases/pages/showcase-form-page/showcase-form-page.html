@@ -111,6 +111,22 @@
         <div class="form-actions mb-3">
             <button app-button action="submit" type="submit"></button>
             <button app-button action="cancel" type="button"></button>
+            <app-button-dropdown
+                theme="warning"
+                title="Título aqui..."
+                text="Texto aqui...">
+                <button app-button 
+                    theme="warning" dropdown-item>
+                    Action - 1
+                </button>
+				<button app-button 
+                    theme="info" dropdown-item>
+                    Another Action
+                </button>
+				<button app-button 
+                    action="edit" dropdown-item>
+                </button>
+            </app-button-dropdown>
         </div>
     </form>
 </div>

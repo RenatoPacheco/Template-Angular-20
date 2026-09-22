@@ -1,20 +1,20 @@
-import { Component, computed, ElementRef, inject, Input, Renderer2, signal, untracked } from '@angular/core';
+import { Component, computed, Input, signal } from '@angular/core';
 
 import { InputVariant, transformBoolean } from '@app/shared/utils';
 
-type ButtonSize = 'sm'|'md'|'lg';
+export type ButtonSizeType = 'sm'|'md'|'lg';
 
-type ButtonType = 'button'|'submit'|'reset';
+export type ButtonType = 'button'|'submit'|'reset';
 
-type ButtonAction = 
+export type ButtonActionType = 
 | 'edit'|'delete'|'view'|'save'|'cancel' 
 | 'submit'|'reset'|'download'|'upload' 
 | 'search'|'filter'|'sort'|'refresh'|'add' 
 | 'remove'|'approve'|'reject'|'archive'
 | 'unarchive'|'enable'|'disable'|'lock'|'unlock'
-| 'notify'|'next'|'previous'|'copy';
+| 'notify'|'next'|'previous'|'copy'|'action';
 
-type ButtonTheme = InputVariant|'link'|'transparent';
+export type ButtonThemeType = InputVariant|'link'|'transparent';
 
 @Component({
   standalone: true,
@@ -24,14 +24,11 @@ type ButtonTheme = InputVariant|'link'|'transparent';
   host: {
     '[title]': 'hostTitle()',
     '[class]': 'hostClass()',
-    '[type]': 'typeComputed()',
-    '[disabled]': 'disabledComputed()'
+    '[type]': 'hostType()',
+    '[disabled]': 'hostDisabled()'
   }
 })
 export class Button {
-
-  private element = inject(ElementRef);
-  private renderer = inject(Renderer2);
 
   protected _type = signal<ButtonType>('button');
   @Input() public set type(value: ButtonType) {
@@ -95,41 +92,55 @@ export class Button {
     return this._class();
   }
 
-  protected _theme = signal<ButtonTheme>('');
-  @Input() public set theme(value: ButtonTheme) {
+  protected _theme = signal<ButtonThemeType>('');
+  @Input() public set theme(value: ButtonThemeType) {
     if (value !== this._theme()) {
       this._theme.set(value);
     }
   }
-  public get theme(): ButtonTheme {
+  public get theme(): ButtonThemeType {
     return this._theme();
   }
 
-  protected _action = signal<ButtonAction|null>(null);
-  @Input() public set action(value: ButtonAction|null) {
+  protected _action = signal<ButtonActionType|null>(null);
+  @Input() public set action(value: ButtonActionType|null) {
     if (value !== this._action()) {
       this._action.set(value || null);
     }
   }
-  public get action(): ButtonAction|null {
+  public get action(): ButtonActionType|null {
     return this._action();
   }
 
-  protected _size = signal<ButtonSize>('md');
-  @Input() public set size(value: ButtonSize) {
+  protected _size = signal<ButtonSizeType>('md');
+  @Input() public set size(value: ButtonSizeType) {
     if (value !== this._size()) {
       this._size.set(value);
     }
   }
-  public get size(): ButtonSize {
+  public get size(): ButtonSizeType {
     return this._size();
   }
 
-  protected typeComputed = computed(() => {
+  protected _dropdownItem = signal(false);
+  @Input({ 
+    alias: 'dropdown-item', 
+    transform: transformBoolean 
+  })
+  public set dropdownItem(value: boolean) {
+    if (value !== this._dropdownItem()) {
+      this._dropdownItem.set(value);
+    }
+  }
+  public get dropdownItem(): boolean {
+    return this._dropdownItem();
+  }
+
+  protected hostType = computed(() => {
     return this._type();
   });
 
-  protected disabledComputed = computed(() => {
+  protected hostDisabled = computed(() => {
     return this._disabled();
   });
 
@@ -138,22 +149,26 @@ export class Button {
     const _theme = this._theme();
     const _action = this._action();
     const _size = this._size();
+    const _dropdownItem = this._dropdownItem();
 
     let _classFinal = _class || '';
     let _sizeFinal = this.sizes[_size] || '';
     let _themeFinal = this.themes[_theme] || this.themes[''];
+    let _dropdownItemFinal = _dropdownItem ? 'dropdown-item' : ''; 
+
     if (!_theme && _action) {
       _themeFinal = this.actions[_action] || _themeFinal;
     }
 
-    return `${_themeFinal} ${_sizeFinal} ${_classFinal}`;
+    return `${_themeFinal} ${_sizeFinal} ${_classFinal} ${_dropdownItemFinal}`;
   });
 
   protected iconComputed = computed(() => {
     const _action = this._action();
     const _loading = this._loading();
 
-    let _result = this.icons[_action as ButtonAction] || '';
+    let _result = this.icons[_action as ButtonActionType] || '';
+
     if (_loading) {
       _result = 'fa fa-spinner fa-spin';
     }
@@ -166,8 +181,9 @@ export class Button {
     const _text = this._text();
 
     let _result = _text || '';
+
     if (!_result && _action) {
-      _result = this.texts[_action as ButtonAction] || '';
+      _result = this.texts[_action as ButtonActionType] || '';
     }
 
     return _result;
@@ -178,20 +194,21 @@ export class Button {
     const _action = this._action();
 
     let result = _title || '';
+
     if (!result && _action) {
-      result = this.titles[_action as ButtonAction] || '';
+      result = this.titles[_action as ButtonActionType] || '';
     }
 
     return result;
   });
 
-  private sizes: Record<ButtonSize, string> = {
+  private sizes: Record<ButtonSizeType, string> = {
     sm: 'btn-sm',
     md: '',
     lg: 'btn-lg'
   };
 
-  private texts: Record<ButtonAction, string> = {
+  private texts: Record<ButtonActionType, string> = {
     'edit': 'Editar',
     'delete': 'Excluir',
     'view': 'Visualizar',
@@ -218,10 +235,11 @@ export class Button {
     'notify': 'Notificar',
     'next': 'Próximo',
     'previous': 'Anterior',
-    'copy': 'Copiar'
+    'copy': 'Copiar',
+    'action': 'Ações'
   };
 
-  private titles: Record<ButtonAction, string> = {
+  private titles: Record<ButtonActionType, string> = {
     'edit': 'clique aqui para editar',
     'delete': 'clique aqui para excluir',
     'view': 'clique aqui para visualizar',
@@ -248,11 +266,12 @@ export class Button {
     'notify': 'clique aqui para notificar',
     'next': 'clique aqui para ir para o próximo',
     'previous': 'clique aqui para ir para o anterior',
-    'copy': 'clique aqui para copiar'
+    'copy': 'clique aqui para copiar',
+    'action': 'clique aqui para aecssar as ações'
 
   }
 
-  private icons: Record<ButtonAction, string> = {
+  private icons: Record<ButtonActionType, string> = {
     edit: 'fa fa-pencil',
     delete: 'fa fa-trash',
     view: 'fa fa-eye',
@@ -279,10 +298,11 @@ export class Button {
     copy: 'fa fa-copy',
     notify: 'fa fa-bell',
     next: 'fa fa-arrow-right',
-    previous: 'fa fa-arrow-left'
+    previous: 'fa fa-arrow-left',
+    action: 'fa fa-cog'
   };
 
-  private actions: Record<ButtonAction, string> = {
+  private actions: Record<ButtonActionType, string> = {
     edit: 'btn btn-outline-primary',
     delete: 'btn btn-outline-danger',
     view: 'btn btn-outline-secondary',
@@ -309,10 +329,11 @@ export class Button {
     copy: 'btn btn-outline-secondary',
     notify: 'btn btn-outline-secondary',
     next: 'btn btn-outline-primary',
-    previous: 'btn btn-outline-primary'
+    previous: 'btn btn-outline-primary',
+    action: 'btn btn-outline-secondary'
   };
 
-  private themes: Record<ButtonTheme, string> = {
+  private themes: Record<ButtonThemeType, string> = {
     '' : 'btn btn-outline-primary',
     error: 'btn btn-outline-danger',
     primary: 'btn btn-outline-primary',

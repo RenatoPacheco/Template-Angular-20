@@ -1,0 +1,9 @@
+<div ngbDropdown [class]="hostClass()">
+	<button app-button type="button" ngbDropdownToggle [id]="id"
+		[theme]="theme" [action]="action" [text]="text" [title]="title"
+		[size]="size" [disabled]="disabled" [loading]="loading">
+	</button>
+	<div ngbDropdownMenu [attr.aria-labelledby]="id">
+    <ng-content></ng-content>
+	</div>
+</div>

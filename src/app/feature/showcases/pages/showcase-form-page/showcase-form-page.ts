@@ -2,7 +2,7 @@ import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { FormText, Button, FormCheckBox, FormRadio, FormEditor, FormSelect } from '@app/shared/ui';
+import { FormText, Button, FormCheckBox, FormRadio, FormEditor, FormSelect, ButtonDropdown } from '@app/shared/ui';
 import { FormTextarea } from '@app/shared/ui/form-textarea/form-textarea';
 import { CustomValidators } from '@app/shared/validators';
 
@@ -12,7 +12,7 @@ import { CustomValidators } from '@app/shared/validators';
   imports: [
     FormsModule, ReactiveFormsModule, FormText,
     FormTextarea, Button, FormCheckBox, FormRadio,
-    FormEditor, FormSelect
+    FormEditor, FormSelect, ButtonDropdown
 ],
   templateUrl: './showcase-form-page.html',
   styleUrl: './showcase-form-page.scss',

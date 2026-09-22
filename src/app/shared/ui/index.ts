@@ -7,3 +7,4 @@ export * from './form-checkbox/form-checkbox';
 export * from './form-radio/form-radio';
 export * from './form-editor';
 export * from './video/video';
+export * from './button-dropdown/button-dropdown';

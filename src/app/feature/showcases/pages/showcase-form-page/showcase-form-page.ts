@@ -142,6 +142,7 @@ export class ShowcaseFormPage implements OnInit {
     .subscribe({
       next: () => {
         return;
+        console.log('lista', this.form.value.lista);
         console.log('listaMultipla', this.form.value.listaMultipla);
         console.log('chechbox', this.form.value.checkbox?.filter(x => x !== null));
         console.log('radio', this.form.value.radio);

@@ -1,40 +1,49 @@
+// A `.ng-arrow-wrapper` do tema tem 25px, mas 5px são padding interno à
+// direita: a seta em si ocupa apenas ~20px. O botão de limpar é encostado
+// nessa largura útil para não sobrar espaço morto.
+$arrow-width: 7px;
+$clear-width: 1.5rem;
+
 .form-element {
   position: relative;
-  & option {
-    &:disabled {
-      font-weight: 100;
-    }
-  }
 
   &.action-clear {
-    select {
-      padding-right: 4rem;
+    // `.ng-select-container` pertence ao template do ng-select, fora do
+    // encapsulamento deste componente. O `padding` também impede que o texto
+    // do item selecionado passe por baixo do botão de limpar.
+    .ng-select ::ng-deep > .ng-select-container {
+      padding-right: calc(#{$arrow-width} + #{$clear-width});
     }
     button.action-clear {
       display: inline-flex;
     }
   }
 
+  // O `title` nativo só aparece se o texto estiver visualmente truncado,
+  // então a opção precisa ser um bloco com reticências.
+  .option-text {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   & button {
       position: absolute;
       top: 50%;
-      right: 0.5rem;
+      right: $arrow-width;
       transform: translateY(-50%);
       z-index: 2;
       display: none;
       align-items: center;
       justify-content: center;
-      min-width: 1.75rem;
-      min-height: 1.75rem;
+      min-width: $clear-width;
+      min-height: $clear-width;
       padding: 0;
       line-height: 1;
       &:focus {
           border-color: var(--bs-primary);
           box-shadow: 0 0 0 .15rem rgba(var(--bs-primary-rgb), 0.25);
-      }
-
-      &.action-clear {
-          right: 2rem;
       }
   }
 }

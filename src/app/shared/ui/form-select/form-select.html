@@ -8,23 +8,29 @@
     [enabled-helper]="enabledHelper">
 </label>
 <div class="form-element"
-    [class.action-clear]="hasValue()">
-    <select #element
-        [id]="id"
+    [class.action-clear]="showClear()">
+    <ng-select #ngSelect
+        [labelForId]="id"
         [class]="elementClass()"
+        [items]="options"
+        bindValue="value"
+        bindLabel="text"
+        [multiple]="false"
+        [clearable]="false"
+        [placeholder]="placeholderText()"
+        [searchable]="searchable"
+        [closeOnSelect]="closeOnSelect"
         [disabled]="disabled || readonly || loading"
-        [value]="selectedIndex()"
-        (change)="emitChange($event)"
+        [ngModel]="selectedValue()"
+        [ngModelOptions]="{ standalone: true }"
+        (ngModelChange)="selectionChange($event)"
         (blur)="emitBlur()">
-        @for (item of itens(); track item.value) {
-            <option
-                [value]="$index"
-                [disabled]="item.disabled">
-                {{ item.text }}
-            </option>    
-        }
-    </select>
-    @if (cleanable && isActive()){
+
+        <ng-template ng-option-tmp let-item="item">
+            <span class="option-text" [title]="item.text">{{ item.text }}</span>
+        </ng-template>
+    </ng-select>
+    @if (showClear()){
     <button app-button
         class="action-clear"
         title="clique para limpar a seleção"

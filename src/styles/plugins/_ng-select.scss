@@ -101,6 +101,27 @@ $ng-select-value-font-size: 1rem;
   }
 }
 
+// O input de busca do ng-select é um `<input>` dentro do `.form-group`, então
+// é atingido pelas regras globais de `_forms.scss`, que assumem campos nativos:
+//
+// - `_forms.scss:2` pinta o fundo de `[readonly]`, e o ng-select marca o input
+//   como readonly sempre que `searchable` é falso;
+// - `_forms.scss:14` pinta a borda e o box-shadow de foco no estado inválido,
+//   fazendo a marcação vermelha aparecer TAMBÉM na área interna do campo.
+//
+// A marcação de erro e o fundo de desabilitado pertencem ao
+// `.ng-select-container`, nunca ao input interno.
+.ng-select .ng-value-container .ng-input > input {
+  &,
+  &:focus,
+  &[readonly],
+  &[readonly]:focus {
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+  }
+}
+
 // Estado inválido: o ng-select não herda `.is-invalid` do Bootstrap.
 .form-group {
   &.ng-invalid.ng-touched.ng-dirty {
@@ -110,6 +131,17 @@ $ng-select-value-font-size: 1rem;
     .ng-select.ng-select-focused > .ng-select-container {
       border-color: var(--bs-form-invalid-border-color);
       box-shadow: 0 0 0 0.25rem rgba(var(--bs-danger-rgb), 0.25);
+    }
+
+    // Precisa repetir o reset aqui dentro: a regra de `_forms.scss` tem
+    // especificidade (0,5,1) e `_forms` é importado DEPOIS de `_plugins`
+    // (`bootstrap.scss`), então o reset genérico acima perderia.
+    .ng-select .ng-value-container .ng-input > input {
+      &,
+      &:focus {
+        border-color: transparent;
+        box-shadow: none;
+      }
     }
   }
 }

@@ -79,6 +79,57 @@ O componente DEVE suportar o input booleano `cleanable`, transformado por
 - **WHEN** o controle está `disabled` ou `readonly`
 - **THEN** a ação de limpar não é exibida
 
+#### Scenario: Limpeza desabilitada
+
+- **WHEN** `cleanable` é falso
+- **THEN** a ação de limpar não é exibida **e** nenhum espaço é reservado para ela no campo
+
+### Requirement: Texto longo
+
+Textos que não cabem no espaço disponível DEVEM ser truncados com reticências,
+mantendo o conteúdo completo acessível.
+
+#### Scenario: Opção com texto longo
+
+- **WHEN** o texto de uma opção da lista excede a largura disponível
+- **THEN** ele é truncado com reticências e o texto completo é exposto no `title`
+
+#### Scenario: Item selecionado com texto longo
+
+- **WHEN** o texto de um item selecionado excede a largura disponível
+- **THEN** ele é truncado com reticências, sem invadir a seta de seleção nem a ação de limpar
+
+#### Scenario: Altura do campo
+
+- **WHEN** um item selecionado com texto longo é o único ou o último da lista
+- **THEN** o campo não ganha uma linha adicional vazia
+
+### Requirement: Resumo de itens selecionados
+
+O componente DEVE aceitar o input opcional `max-visible-items`, que substitui a
+listagem dos itens selecionados por um resumo textual quando o limite é
+ultrapassado.
+
+#### Scenario: Comportamento padrão
+
+- **WHEN** `max-visible-items` não é informado
+- **THEN** todos os itens selecionados são listados individualmente
+
+#### Scenario: Abaixo do limite
+
+- **WHEN** `max-visible-items` é `5` e há 5 itens selecionados
+- **THEN** os 5 itens são listados individualmente
+
+#### Scenario: Acima do limite
+
+- **WHEN** `max-visible-items` é `5` e há 6 itens selecionados
+- **THEN** o campo exibe `6 itens selecionados` no lugar dos itens
+
+#### Scenario: Resumo no singular
+
+- **WHEN** o resumo é exibido para um único item
+- **THEN** o texto é `1 item selecionado`
+
 ### Requirement: Estados herdados do controle base
 
 O componente DEVE respeitar `disabled`, `readonly`, `loading`, `size`, `id`,

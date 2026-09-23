@@ -88,6 +88,13 @@
                 label="Select an option"
                 [options]="itens" clearable="true">
             </app-form-select>
+
+            <app-form-select-multiple
+                formControlName="listaMultipla"
+                label="Select many options"
+                placeholder="Selecione uma ou mais permissões"
+                [options]="itens" cleanable="true">
+            </app-form-select-multiple>
         </div>
         <div class="form-row" formArrayName="checkbox">
             @for (opcao of opcoes; track opcao.id; let i = $index) {

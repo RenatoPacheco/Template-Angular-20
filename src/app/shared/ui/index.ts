@@ -1,6 +1,7 @@
 export * from './button/button';
 export * from './label/label';
 export * from './form-select/form-select';
+export * from './form-select-multiple/form-select-multiple';
 export * from './form-text/form-text';
 export * from './form-textarea/form-textarea';
 export * from './form-checkbox/form-checkbox';

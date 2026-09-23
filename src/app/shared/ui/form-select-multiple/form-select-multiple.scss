@@ -1,0 +1,105 @@
+// A `.ng-arrow-wrapper` do tema tem 25px, mas 5px são padding interno à
+// direita: a seta em si ocupa apenas ~20px. O botão de limpar é encostado
+// nessa largura útil para não sobrar espaço morto.
+$arrow-width: 7px;
+$clear-width: 1.5rem;
+
+// Espaço mínimo reservado na linha para o input de busca do ng-select.
+// Quanto menor, mais texto do chip aparece antes das reticências — mas o
+// input precisa sobrar clicável o suficiente para abrir a lista e digitar.
+$search-width: 1.5rem;
+
+.form-element {
+  position: relative;
+
+  &.action-clear {
+    // `.ng-select-container` pertence ao template do ng-select, fora do
+    // encapsulamento deste componente.
+    .ng-select ::ng-deep > .ng-select-container {
+      padding-right: calc(#{$arrow-width} + #{$clear-width});
+    }
+    button.action-clear {
+      display: inline-flex;
+    }
+  }
+
+  // Chips dos itens selecionados: sem isto, um texto longo empurra o chip
+  // para fora do container e passa por baixo da seta e do botão de limpar.
+  //
+  // O `max-width` desconta `$search-width` de propósito. `.ng-value-container`
+  // é `flex-wrap: wrap` e o input de busca (`.ng-input`) é um IRMÃO dos chips
+  // com `flex: 1` (ng-select.component.scss:138,158). A quebra de linha do
+  // flexbox usa o tamanho hipotético do item (flex-basis), que `min-width: 0`
+  // não reduz — por isso um chip de 100% jogava o input para uma segunda
+  // linha, que aparecia como uma linha em branco abaixo do item.
+  // Deixar folga garante que o input caiba na mesma linha e continue usável.
+  .ng-select ::ng-deep .ng-value-container {
+    min-width: 0;
+  }
+
+  .ng-select ::ng-deep .ng-value {
+    max-width: calc(100% - #{$search-width});
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .ng-select ::ng-deep .ng-value-container .ng-input {
+    flex: 1 1 0;
+    min-width: 0;
+
+    > input {
+      min-width: 0;
+    }
+  }
+
+  // Resumo `N itens selecionados`: não é um item removível, então não recebe
+  // o fundo de chip nem o ícone de remoção.
+  .ng-value.value-summary {
+    background-color: transparent;
+    color: var(--bs-body-color);
+    padding-left: 0;
+  }
+
+  .ng-value-icon {
+    flex: 0 0 auto;
+  }
+
+  .ng-value-label {
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+
+  // O `title` nativo só aparece se o texto estiver visualmente truncado,
+  // então a opção precisa ser um bloco com reticências.
+  .option-text {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & button {
+      position: absolute;
+      top: 50%;
+      right: $arrow-width;
+      transform: translateY(-50%);
+      z-index: 2;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      min-width: $clear-width;
+      min-height: $clear-width;
+      padding: 0;
+      line-height: 1;
+      &:focus {
+          border-color: var(--bs-primary);
+          box-shadow: 0 0 0 .15rem rgba(var(--bs-primary-rgb), 0.25);
+      }
+  }
+}

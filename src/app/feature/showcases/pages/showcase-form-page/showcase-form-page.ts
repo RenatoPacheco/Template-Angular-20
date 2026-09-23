@@ -2,7 +2,7 @@ import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { FormText, Button, FormCheckBox, FormRadio, FormEditor, FormSelect, ButtonDropdown } from '@app/shared/ui';
+import { FormText, Button, FormCheckBox, FormRadio, FormEditor, FormSelect, FormSelectMultiple, ButtonDropdown } from '@app/shared/ui';
 import { FormTextarea } from '@app/shared/ui/form-textarea/form-textarea';
 import { CustomValidators } from '@app/shared/validators';
 
@@ -12,7 +12,7 @@ import { CustomValidators } from '@app/shared/validators';
   imports: [
     FormsModule, ReactiveFormsModule, FormText,
     FormTextarea, Button, FormCheckBox, FormRadio,
-    FormEditor, FormSelect, ButtonDropdown
+    FormEditor, FormSelect, FormSelectMultiple, ButtonDropdown
 ],
   templateUrl: './showcase-form-page.html',
   styleUrl: './showcase-form-page.scss',
@@ -35,13 +35,21 @@ export class ShowcaseFormPage implements OnInit {
     { value: '', text: 'Opções avançadas', disabled: true },
     { value: 'REVISAR', text: 'Revisar' },
     { value: 'APROVAR', text: 'Aprovar' },
-    { value: 'RECUSAR', text: 'Recusar' }
+    { value: 'RECUSAR', text: 'Recusar' },
+    { value: 'LONGO', text: 'Fazendo teste com um texto mais longo para ver como fica' },
+    { value: 'LONGO-2', text: 'Fazendo teste 2 com um texto mais longo para ver como fica' }
   ];
 
   public readonly form = this.formBuilder.group({
     lista: this.formBuilder.control<string|null>(null, {
       validators: [
         Validators.minLength(4),
+      ], updateOn: 'blur'
+    }),
+    listaMultipla: this.formBuilder.control<string[]>([], {
+      nonNullable: true,
+      validators: [
+        Validators.required,
       ], updateOn: 'blur'
     }),
     cpf: this.formBuilder.control<string|null>(null,{
@@ -134,6 +142,7 @@ export class ShowcaseFormPage implements OnInit {
     .subscribe({
       next: () => {
         return;
+        console.log('listaMultipla', this.form.value.listaMultipla);
         console.log('chechbox', this.form.value.checkbox?.filter(x => x !== null));
         console.log('radio', this.form.value.radio);
         console.log('textEditor', this.form.value.textEditor);

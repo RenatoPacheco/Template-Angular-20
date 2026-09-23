@@ -1,0 +1,115 @@
+// Tema do ng-select alinhado ao Bootstrap usado no projeto.
+// As variáveis abaixo precisam ser definidas ANTES do import do tema,
+// pois todas são declaradas com `!default` no pacote.
+
+$ng-select-highlight: $primary;
+$ng-select-primary-text: #212529;
+$ng-select-border: #dee2e6;
+$ng-select-border-radius: 0;
+$ng-select-bg: #ffffff;
+$ng-select-box-shadow: none;
+$ng-select-height: 38px;
+$ng-select-value-padding-left: 0.75rem;
+$ng-select-value-font-size: 1rem;
+
+@import '@ng-select/ng-select/scss/default.theme';
+
+.ng-select {
+  // Alinha a tipografia e o espaçamento ao `.form-control` / `.form-select`.
+  font-size: 1rem;
+  line-height: 1.5;
+
+  > .ng-select-container {
+    min-height: 38px;
+    color: var(--bs-body-color);
+    border-color: var(--bs-border-color);
+  }
+
+  &.ng-select-focused:not(.ng-select-opened) > .ng-select-container {
+    border-color: var(--bs-primary);
+    box-shadow: none;
+  }
+
+  &.ng-select-opened > .ng-select-container {
+    border-color: var(--bs-primary);
+  }
+
+  &.ng-select-disabled > .ng-select-container {
+    background-color: var(--bs-secondary-bg);
+    opacity: 1;
+    cursor: default;
+  }
+
+  .ng-placeholder {
+    color: var(--bs-secondary-color);
+  }
+
+  // Tamanhos equivalentes a `.form-select-sm` e `.form-select-lg`.
+  &.ng-select-sm {
+    font-size: 0.875rem;
+    > .ng-select-container {
+      min-height: 31px;
+      .ng-value-container {
+        padding-left: 0.5rem;
+      }
+    }
+  }
+
+  &.ng-select-lg {
+    font-size: 1.25rem;
+    > .ng-select-container {
+      min-height: 48px;
+      .ng-value-container {
+        padding-left: 1rem;
+      }
+    }
+  }
+
+  // Chips dos itens selecionados no modo múltiplo.
+  &.ng-select-multiple .ng-select-container .ng-value-container .ng-value {
+    background-color: var(--bs-primary);
+    color: #ffffff;
+    border-radius: 0;
+
+    .ng-value-icon {
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.15);
+      }
+      &.left {
+        border-right-color: rgba(255, 255, 255, 0.35);
+      }
+    }
+
+    &.ng-value-disabled {
+      background-color: var(--bs-secondary);
+    }
+  }
+
+  .ng-dropdown-panel .ng-dropdown-panel-items .ng-option {
+    &.ng-option-marked {
+      background-color: var(--bs-tertiary-bg);
+    }
+    &.ng-option-selected,
+    &.ng-option-selected.ng-option-marked {
+      background-color: var(--bs-secondary-bg);
+      font-weight: 500;
+    }
+    &.ng-option-disabled {
+      color: var(--bs-secondary-color);
+      font-weight: 100;
+    }
+  }
+}
+
+// Estado inválido: o ng-select não herda `.is-invalid` do Bootstrap.
+.form-group {
+  &.ng-invalid.ng-touched.ng-dirty {
+    .ng-select > .ng-select-container {
+      border-color: var(--bs-form-invalid-border-color);
+    }
+    .ng-select.ng-select-focused > .ng-select-container {
+      border-color: var(--bs-form-invalid-border-color);
+      box-shadow: 0 0 0 0.25rem rgba(var(--bs-danger-rgb), 0.25);
+    }
+  }
+}

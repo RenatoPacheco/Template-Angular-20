@@ -1,0 +1,65 @@
+<label app-label 
+    [for]="id"
+    [text]="label"
+    [loading]="loading"
+    (error)="emitError()"
+    (helper)="emitHelper()"
+    [enabled-error]="showError()"
+    [enabled-helper]="enabledHelper">
+</label>
+<div class="form-element"
+    [class.action-clear]="showClear()">
+    <ng-select #ngSelect
+        [labelForId]="id"
+        [class]="elementClass()"
+        [items]="options"
+        bindValue="value"
+        bindLabel="text"
+        [multiple]="true"
+        [clearable]="false"
+        [placeholder]="placeholderText()"
+        [searchable]="searchable"
+        [closeOnSelect]="closeOnSelect"
+        [hideSelected]="hideSelected"
+        [maxSelectedItems]="maxSelectedItems"
+        [disabled]="disabled || readonly || loading"
+        [ngModel]="selectedValues()"
+        [ngModelOptions]="{ standalone: true }"
+        (ngModelChange)="selectionChange($event)"
+        (blur)="emitBlur()">
+
+        <ng-template ng-option-tmp let-item="item">
+            <span class="option-text" [title]="item.text">{{ item.text }}</span>
+        </ng-template>
+
+        <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+            @if (showSummary(items.length)) {
+            <div class="ng-value value-summary">
+                <span class="ng-value-label">{{ summaryText(items.length) }}</span>
+            </div>
+            } @else {
+                @for (item of items; track item.value) {
+                <div class="ng-value" [class.ng-value-disabled]="item.disabled">
+                    @if (isActive() && !loading) {
+                    <span class="ng-value-icon left"
+                        aria-hidden="true"
+                        (click)="clear(item)">×</span>
+                    }
+                    <span class="ng-value-label" [title]="item.text">{{ item.text }}</span>
+                </div>
+                }
+            }
+        </ng-template>
+    </ng-select>
+    @if (showClear()){
+    <button app-button
+        class="action-clear"
+        title="clique para limpar a seleção"
+        theme="transparent"
+        type="button"
+        (click)="clear()">
+        <i class="fa fa-times"></i>
+    </button>
+    }
+</div>
+<ng-content></ng-content>

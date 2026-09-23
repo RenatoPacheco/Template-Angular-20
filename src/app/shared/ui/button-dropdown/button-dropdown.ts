@@ -21,7 +21,7 @@ import { Button, ButtonActionType, ButtonSizeType, ButtonThemeType } from "../bu
 })
 export class ButtonDropdown {
 
-  protected _id = signal(crypto.randomUUID().toString());
+  protected _id = signal(`${crypto.randomUUID()}`);
   @Input() public set id(value: string) {
     if (value !== this.id) {
       this._id.set(value);

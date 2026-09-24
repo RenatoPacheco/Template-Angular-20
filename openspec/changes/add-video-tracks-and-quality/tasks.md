@@ -14,6 +14,8 @@
 - [x] 2.5 Extrair leitura de tracks, deteccao de troca de faixa e cues de legenda para `src/app/shared/ui/video/video-track-selector.ts`, retornar cleanup dos listeners e verificar com `npx tsc --noEmit -p tsconfig.app.json`
 - [x] 2.6 Configurar localidade pt-BR e traducoes para controles, menus e acessibilidade, e verificar visualmente rotulos traduzidos no showcase
 - [x] 2.7 Remover `textTrackSettings` dos filhos do Video.js sem remover `subsCapsButton`, e verificar que o menu ainda permite selecionar/desligar legenda mas nao mostra “Subtitle Settings”
+- [x] 2.8 Expor `stateChange` tipado por `VideoState` e substituir outputs `play`/`pause` por metodos publicos de comando, manter outputs especificos restantes e ligar o showcase ao estado, verificando TypeScript/build
+- [x] 2.9 Emitir `skipped`/`rewound` com `previousTime` e `currentTime` ao completar buscas para frente/tras, ligar logs no showcase e verificar ambos os sentidos
 
 ## 3. Verificacao final
 

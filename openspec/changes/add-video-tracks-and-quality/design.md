@@ -45,6 +45,12 @@ Estado atual (branch `feature/migrate-video-to-app-video`): `app-video` passa `s
 8. **Faixas seguem o ciclo de vida do manifest; `quality` e input live.**
    Racional: ao trocar `src`, VHS reconstrui faixas de audio/legenda conforme o novo manifest; nao ha estado paralelo de faixas a reconciliar.
 
+9. **Expor `stateChange` como uniao `VideoState`; usar metodos `play()`/`pause()` para comandos.**
+   Racional: `stateChange` e o fluxo unico de observacao (`ready`, `playing`, `paused`, `ended`, `error`); os nomes `play`/`pause` ficam reservados para comandos do consumidor. Outputs detalhados `ready`, `ended` e `error` permanecem.
+
+10. **Emitir `skipped`/`rewound` apos `seeked` com posicoes antes/depois.**
+    Racional: a ultima posicao observada por `timeupdate` e guardada antes do seek; ao concluir, comparar com `currentTime()` e emitir apenas o evento direcional correspondente, com tempos em segundos.
+
 ## Risks / Trade-offs
 
 - [`qualityLevels()` sem tipos oficiais] → Mitigacao: shape isolado em `video-quality-selector.ts`, sem `any` espalhado.

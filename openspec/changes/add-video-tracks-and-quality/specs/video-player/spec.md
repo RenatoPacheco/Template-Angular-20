@@ -90,3 +90,45 @@ O showcase SHALL escrever no console um registro quando o usuario alterar volume
 
 - **WHEN** o usuario altera volume, qualidade, faixa de audio ou velocidade
 - **THEN** o console registra o tipo de controle e seu novo valor ou faixa selecionada.
+
+### Requirement: Estado consolidado do player
+
+O sistema SHALL emitir `stateChange` com um valor do tipo `VideoState` quando o player entrar nos estados `ready`, `playing`, `paused`, `ended` ou `error`, mantendo os outputs especificos `ready`, `ended` e `error`.
+
+#### Scenario: Player pronto e transicoes de reproducao
+
+- **WHEN** o player fica pronto, inicia a reproducao, pausa ou termina
+- **THEN** `stateChange` emite, respectivamente, `ready`, `playing`, `paused` ou `ended`.
+
+#### Scenario: Falha de reproducao
+
+- **WHEN** o player emite erro
+- **THEN** os outputs `error` e `stateChange` sao emitidos, com `stateChange` igual a `error`.
+
+### Requirement: Comandos publicos de reproducao
+
+O sistema SHALL expor metodos `play()` e `pause()` que executam as respectivas acoes no player; esses nomes SHALL NOT ser outputs de evento.
+
+#### Scenario: Comando play
+
+- **WHEN** o consumidor chama `play()` com o player inicializado
+- **THEN** a reproducao e solicitada e `stateChange` emite `playing` quando o player inicia.
+
+#### Scenario: Comando pause
+
+- **WHEN** o consumidor chama `pause()` com o player inicializado
+- **THEN** a reproducao e pausada e `stateChange` emite `paused` quando o player pausa.
+
+### Requirement: Eventos direcionais de busca
+
+O sistema SHALL emitir `skipped` quando uma busca termina em uma posicao posterior a anterior e `rewound` quando termina em uma posicao anterior; cada evento SHALL incluir `previousTime` e `currentTime` em segundos.
+
+#### Scenario: Busca para frente
+
+- **WHEN** o usuario avanca a barra de progresso e o seek termina
+- **THEN** `skipped` emite os tempos anterior e novo, sem emitir `rewound`.
+
+#### Scenario: Busca para tras
+
+- **WHEN** o usuario retorna a barra de progresso e o seek termina
+- **THEN** `rewound` emite os tempos anterior e novo, sem emitir `skipped`.

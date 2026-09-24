@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { Video } from '@app/shared/ui';
+import { Video, VideoSeekChange, VideoState } from '@app/shared/ui';
 
 @Component({
   standalone: true,
@@ -32,5 +32,17 @@ export class ShowcaseVideoPage {
 
   protected logPlaybackRateChange(rate: number): void {
     console.log('[Video] Velocidade alterada:', rate);
+  }
+
+  protected logVideoStateChange(state: VideoState): void {
+    console.log('[Video] Estado alterado:', state);
+  }
+
+  protected logVideoSkipped(change: VideoSeekChange): void {
+    console.log('[Video] Avanco:', change);
+  }
+
+  protected logVideoRewound(change: VideoSeekChange): void {
+    console.log('[Video] Retorno:', change);
   }
 }

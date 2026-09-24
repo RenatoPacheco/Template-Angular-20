@@ -23,6 +23,8 @@ export type VideoPreload = 'auto' | 'metadata' | 'none';
 
 export type VideoState = 'ready' | 'playing' | 'paused' | 'ended' | 'error';
 
+export type VideoSubtitleVisibility = 'normal' | 'fullscreen' | 'hidden' | 'windowed';
+
 export interface VideoSeekChange {
   previousTime: number;
   currentTime: number;
@@ -226,6 +228,16 @@ export class Video implements AfterViewInit, OnDestroy {
     return this._height();
   }
 
+  private _subtitleVisibility = signal<VideoSubtitleVisibility>('normal');
+  @Input() public set subtitleVisibility(value: VideoSubtitleVisibility) {
+    if (value !== this.subtitleVisibility) {
+      this._subtitleVisibility.set(value);
+    }
+  }
+  public get subtitleVisibility(): VideoSubtitleVisibility {
+    return this._subtitleVisibility();
+  }
+
   public readonly ready = output<void>();
   public readonly ended = output<void>();
   public readonly error = output<unknown>();
@@ -245,6 +257,7 @@ export class Video implements AfterViewInit, OnDestroy {
   private currentSourceKey = '';
   private appliedWidth: number | null = null;
   private appliedHeight: number | null = null;
+  private appliedSubtitleVisibility: VideoSubtitleVisibility | null = null;
   private lastQualityInput = 'auto';
   private removeTrackListeners: (() => void) | null = null;
   private lastPlaybackTime = 0;
@@ -324,6 +337,7 @@ export class Video implements AfterViewInit, OnDestroy {
     });
     this.appliedWidth = this.width;
     this.appliedHeight = this.height;
+    this.applySubtitleVisibility(this.subtitleVisibility);
 
     this.currentSourceKey = this.sourceKey(desiredSources);
     this.lastQualityInput = this.quality;
@@ -405,6 +419,7 @@ export class Video implements AfterViewInit, OnDestroy {
     const width = this.width;
     const height = this.height;
     const quality = this.quality;
+    const subtitleVisibility = this.subtitleVisibility;
 
     if (!this.player) {
       return;
@@ -426,6 +441,10 @@ export class Video implements AfterViewInit, OnDestroy {
       }
 
       this.player?.playbackRate(this.normalizePlaybackRate(playbackRate, playbackRates));
+
+      if (subtitleVisibility !== this.appliedSubtitleVisibility) {
+        this.applySubtitleVisibility(subtitleVisibility);
+      }
 
       if (quality !== this.lastQualityInput) {
         setVideoQuality(this.player!, quality);
@@ -472,6 +491,23 @@ export class Video implements AfterViewInit, OnDestroy {
 
     this.lastPlaybackTime = currentTime;
     this.pendingSeekFrom = null;
+  }
+
+  private applySubtitleVisibility(visibility: VideoSubtitleVisibility): void {
+    if (!this.player) {
+      return;
+    }
+
+    const modes: VideoSubtitleVisibility[] = ['fullscreen', 'hidden', 'windowed'];
+    for (const mode of modes) {
+      this.player.removeClass(`vjs-subtitle-visibility-${mode}`);
+    }
+
+    if (visibility !== 'normal') {
+      this.player.addClass(`vjs-subtitle-visibility-${visibility}`);
+    }
+
+    this.appliedSubtitleVisibility = visibility;
   }
 
   private resolveSources(): VideoSource[] {

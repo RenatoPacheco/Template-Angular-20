@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 
-import { Video, VideoSeekChange, VideoState } from '@app/shared/ui';
+import { Video, VideoSeekChange, VideoState, VideoSubtitleVisibility } from '@app/shared/ui';
 
 @Component({
   standalone: true,
@@ -10,6 +10,13 @@ import { Video, VideoSeekChange, VideoState } from '@app/shared/ui';
   styleUrl: './showcase-video-page.scss',
 })
 export class ShowcaseVideoPage {
+  protected readonly subtitleVisibility = signal<VideoSubtitleVisibility>('normal');
+
+  protected setSubtitleVisibility(event: Event): void {
+    const visibility = (event.target as HTMLSelectElement).value as VideoSubtitleVisibility;
+    this.subtitleVisibility.set(visibility);
+  }
+
   protected logQualityChange(quality: string): void {
     console.log('[Video] Qualidade alterada:', quality);
   }

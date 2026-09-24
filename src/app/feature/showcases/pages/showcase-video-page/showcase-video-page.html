@@ -23,10 +23,22 @@
       </app-video>
     </div>
     <div class="col-6 mt-4">
+      <label class="form-label" for="subtitle-visibility">Visibilidade da legenda</label>
+      <select
+        id="subtitle-visibility"
+        class="form-select mb-2"
+        [value]="subtitleVisibility()"
+        (change)="setSubtitleVisibility($event)">
+        <option value="normal">Normal (sempre visível)</option>
+        <option value="fullscreen">Somente em tela cheia</option>
+        <option value="hidden">Oculta</option>
+        <option value="windowed">Somente em janela</option>
+      </select>
       <app-video
         [fluid]="false"
         [width]="640"
         [height]="360"
+        [subtitleVisibility]="subtitleVisibility()"
         (qualityChange)="logQualityChange($event)"
         (volumeChange)="logVolumeChange($event)"
         (audioTrackChange)="logAudioTrackChange($event)"

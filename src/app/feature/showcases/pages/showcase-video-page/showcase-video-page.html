@@ -1,6 +1,40 @@
-<video
-  app-video
-  [playbackRate]="1.5"
-  [playbackRates]="[0.5, 1, 1.25, 1.5, 2]"
-  src="https://avtshare01.rz.tu-ilmenau.de/avt-vqdb-uhd-1/test_1/segments/bigbuck_bunny_8bit_15000kbps_1080p_60.0fps_h264.mp4">
-</video>
+<div class="container">
+  <div class="row">
+    <div class="col-6 mt-4">
+      <app-video
+        [playbackRate]="1.5"
+        [playbackRates]="[0.5, 1, 1.25, 1.5, 2]"
+        src="https://cdn.truefilesize.com/mp4/sample-1mb.mp4?utm_source=chatgpt.com">
+      </app-video>  
+    </div>
+    <div class="col-6 mt-4">
+      <app-video
+        [playbackRate]="1"
+        [playbackRates]="[0.5, 1, 1.25, 1.5, 2]"
+        src="https://vjs.zencdn.net/v/oceans.mp4">
+      </app-video>  
+    </div>
+    <div class="col-6 mt-4">
+      <app-video
+        [fluid]="false"
+        [width]="640"
+        [height]="360"
+        src="https://avtshare01.rz.tu-ilmenau.de/avt-vqdb-uhd-1/test_1/segments/bigbuck_bunny_8bit_15000kbps_1080p_60.0fps_h264.mp4">
+      </app-video>
+    </div>
+    <div class="col-6 mt-4">
+      <app-video
+        [fluid]="false"
+        [width]="640"
+        [height]="360"
+        (qualityChange)="logQualityChange($event)"
+        (volumeChange)="logVolumeChange($event)"
+        (audioTrackChange)="logAudioTrackChange($event)"
+        (subtitleChange)="logSubtitleChange($event)"
+        (subtitleTextChange)="logSubtitleTextChange($event)"
+        (playbackRateChange)="logPlaybackRateChange($event)"
+        src="/video/hls.m3u8">
+      </app-video> 
+    </div>
+  </div>
+</div>

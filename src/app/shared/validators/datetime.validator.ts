@@ -21,7 +21,7 @@ export function dateTimeValidator(
 
     if (separatorIndex < 0) {
       return {
-        invalidDateTime: true
+        dateTime: true
       };
     }
 
@@ -41,7 +41,7 @@ export function dateTimeValidator(
     }
 
     return {
-      invalidDateTime: true,
+      dateTime: true,
       ...(dateResult ?? {}),
       ...(timeResult ?? {})
     };

@@ -1,10 +1,10 @@
-# form-error-toast
+# form-error-toast Specification
 
 ## Purpose
 
 Garantir que clicar no ícone de alerta de um campo de formulário inválido sempre exiba um toast com as mensagens dos erros, sem que nenhuma chave de erro dos validadores do projeto caia em silêncio.
 
-## ADDED Requirements
+## Requirements
 
 ### Requirement: Toast com as mensagens ao clicar no alerta
 
@@ -38,3 +38,8 @@ Os validadores de período de tempo e de data-hora DEVEM reprovar valores invál
 
 - **WHEN** um `app-form-text` com `transform="dateTime"` e `CustomValidators.dateTime()` contém texto inválido e o usuário clica no alerta
 - **THEN** o toast exibe a mensagem de data e hora inválida
+
+#### Scenario: Senha curta notifica
+
+- **WHEN** um campo com `CustomValidators.password()` contém menos de 8 caracteres e o usuário clica no alerta
+- **THEN** o toast exibe a mensagem de mínimo de caracteres

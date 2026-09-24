@@ -10,6 +10,7 @@ O mesmo defeito existe em `dateTimeValidator` (retorna `{ invalidDateTime: true 
 
 - Renomear a chave de erro de `timeSpanValidator` de `invalidTimeSpan` para `timeSpan` (`src/app/shared/validators/timespan.validator.ts:20`), alinhando ao mapa de mensagens e à convenção dos demais validadores.
 - Renomear a chave de erro de `dateTimeValidator` de `invalidDateTime` para `dateTime` (`src/app/shared/validators/datetime.validator.ts:24,44`), mesmo defeito (inclusão confirmada com o solicitante).
+- Renomear a chave de erro de `passwordValidator` de `minLength` para `minlength` (`src/app/shared/validators/password.validator.ts:21`), mesmo defeito revelado pela auditoria (padrão do Angular e do mapa; inclusão confirmada com o solicitante).
 - Sem mudanças em `FormElementBase.emitError()`, `ValidatorService`, `ToastService`, `Label` ou templates: com as chaves alinhadas, o fluxo existente (ícone → `error` → `getMessages()` → `toast.error()` → saída `error` com as mensagens) passa a funcionar.
 - Validar no showcase (`/showcase/form`, controles `timeSpan` e `dataHora` com `transform` + validadores correspondentes) que o clique no alerta abre o toast com a mensagem.
 

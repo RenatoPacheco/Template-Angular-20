@@ -27,14 +27,14 @@ Ver `proposal.md` (Why) para a motivação. Cadeia do bug, verificada por leitur
 
 ### 1. Renomear as chaves nos validadores, não acrescentar entradas no mapa
 
-`invalidTimeSpan` → `timeSpan` e `invalidDateTime` → `dateTime`, seguindo a convenção já usada por `cpf`, `cnpj`, `date`, `alias` e `compare` (chave curta = chave do mapa).
+`invalidTimeSpan` → `timeSpan`, `invalidDateTime` → `dateTime` e `minLength` → `minlength`, seguindo a convenção já usada por `cpf`, `cnpj`, `date`, `alias` e `compare` (chave curta = chave do mapa; `minlength` minúsculo é também o padrão do `Validators.minLength` do Angular).
 
 - Alternativa considerada: adicionar `invalidTimeSpan`/`invalidDateTime` ao mapa de `ValidatorService`. Rejeitada: perpetuaria duas convenções de nome e deixaria o próximo validador livre para repetir o erro; a correção na origem elimina a classe do defeito nesses dois casos.
 - `datetime.validator.ts:43-46` espalha `...(dateResult ?? {})` e `...(timeResult ?? {})` junto de `invalidDateTime` — como `dateValidator`/`timeSpanValidator` já retornam as chaves curtas, após o rename o objeto combinado carrega `dateTime` + `date`/`timeSpan` conforme a parte inválida, e o toast lista cada mensagem correspondente.
 
 ## Risks / Trade-offs
 
-- [Risco] Consumidor lendo `errors?.invalidTimeSpan` / `errors?.invalidDateTime` diretamente quebra silenciosamente (passa a `undefined`) → Mitigação: task de busca por essas chaves em `src/` antes da mudança; busca na investigação não indicou uso fora dos validadores.
+- [Risco] Consumidor lendo `errors?.invalidTimeSpan` / `errors?.invalidDateTime` / `errors?.minLength` diretamente quebra silenciosamente (passa a `undefined`) → Mitigação: task de busca por essas chaves em `src/` antes da mudança; busca na investigação não indicou uso fora dos validadores.
 - [Trade-off] `datetime` inválido por parte de data gera duas mensagens (`dateTime` + `date`) — comportamento herdado da combinação atual, mantido; não é regressão.
 
 ## Migration Plan

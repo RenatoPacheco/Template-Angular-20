@@ -17,7 +17,7 @@ export function timeSpanValidator(): ValidatorFn {
 
     if (!match) {
       return {
-        invalidTimeSpan: true
+        timeSpan: true
       };
     }
 

@@ -6,6 +6,13 @@ import {
 import videojs from 'video.js';
 
 import { transformBoolean, transformNumber } from '@app/shared/utils';
+import {
+  addVideoQualitySelector,
+  registerVideoQualitySelector,
+  setVideoQuality
+} from './video-quality-selector';
+import { watchVideoTrackChanges } from './video-track-selector';
+import { videoJsPtBr } from './video-pt-br';
 
 export interface VideoSource {
   src: string;
@@ -61,6 +68,7 @@ export class Video implements AfterViewInit, OnDestroy {
 
   public src = input<string | null>(null);
   public sources = input<VideoSource[] | null>(null);
+  public quality = input('auto');
   public autoplay = input(false, { transform: transformBoolean });
   public controls = input(true, { transform: transformBoolean });
   public loop = input(false, { transform: transformBoolean });
@@ -78,6 +86,12 @@ export class Video implements AfterViewInit, OnDestroy {
   public readonly pause = output<void>();
   public readonly ended = output<void>();
   public readonly error = output<unknown>();
+  public readonly qualityChange = output<string>();
+  public readonly volumeChange = output<{ volume: number; muted: boolean }>();
+  public readonly audioTrackChange = output<{ label: string; language: string } | null>();
+  public readonly subtitleChange = output<{ label: string; language: string } | null>();
+  public readonly subtitleTextChange = output<string>();
+  public readonly playbackRateChange = output<number>();
 
   private readonly target = viewChild<ElementRef<HTMLVideoElement>>('target');
 
@@ -85,6 +99,8 @@ export class Video implements AfterViewInit, OnDestroy {
   private currentSourceKey = '';
   private appliedWidth: number | null = null;
   private appliedHeight: number | null = null;
+  private lastQualityInput = 'auto';
+  private removeTrackListeners: (() => void) | null = null;
 
   constructor() {
     effect(() => {
@@ -105,10 +121,12 @@ export class Video implements AfterViewInit, OnDestroy {
     }
 
     const playbackRates = this.normalizePlaybackRates(this.playbackRates());
-
     applyClockFormat();
+    registerVideoQualitySelector();
 
     this.player = videojs(target, {
+      language: 'pt-BR',
+      languages: { 'pt-BR': videoJsPtBr },
       autoplay: this.autoplay(),
       controls: this.controls(),
       loop: this.loop(),
@@ -120,6 +138,23 @@ export class Video implements AfterViewInit, OnDestroy {
       height: this.height() ?? undefined,
       playbackRates,
       sources: desiredSources,
+      children: [
+        'mediaLoader',
+        'posterImage',
+        'titleBar',
+        'textTrackDisplay',
+        'loadingSpinner',
+        'bigPlayButton',
+        'liveTracker',
+        'controlBar',
+        'errorDisplay',
+        'resizeManager'
+      ],
+      html5: {
+        vhs: { overrideNative: true },
+        nativeAudioTracks: false,
+        nativeVideoTracks: false
+      },
       controlBar: {
         children: [
           'playToggle',
@@ -143,7 +178,11 @@ export class Video implements AfterViewInit, OnDestroy {
     this.appliedHeight = this.height();
 
     this.currentSourceKey = this.sourceKey(desiredSources);
+    this.lastQualityInput = this.quality();
     this.player.playbackRate(this.normalizePlaybackRate(this.playbackRate(), playbackRates));
+
+    this.player.on('loadedmetadata', () => this.initializeQualitySelector());
+    this.player.on('loadeddata', () => this.initializeQualitySelector());
 
     this.player.ready(() => {
       this.ready.emit();
@@ -152,9 +191,23 @@ export class Video implements AfterViewInit, OnDestroy {
     this.player.on('pause', () => this.pause.emit());
     this.player.on('ended', () => this.ended.emit());
     this.player.on('error', () => this.error.emit(this.player?.error() ?? { message: 'Erro de reproducao.' }));
+    this.player.on('volumechange', () => {
+      this.volumeChange.emit({
+        volume: this.player?.volume() ?? 1,
+        muted: this.player?.muted() ?? false
+      });
+    });
+    this.player.on('ratechange', () => this.playbackRateChange.emit(this.player?.playbackRate() ?? 1));
+    this.removeTrackListeners = watchVideoTrackChanges(this.player, {
+      audioTrackChange: (track) => this.audioTrackChange.emit(track),
+      subtitleChange: (track) => this.subtitleChange.emit(track),
+      subtitleTextChange: (text) => this.subtitleTextChange.emit(text)
+    });
   }
 
   public ngOnDestroy(): void {
+    this.removeTrackListeners?.();
+    this.removeTrackListeners = null;
     this.player?.dispose();
     this.player = null;
   }
@@ -172,6 +225,7 @@ export class Video implements AfterViewInit, OnDestroy {
     const playbackRates = this.normalizePlaybackRates(this.playbackRates());
     const width = this.width();
     const height = this.height();
+    const quality = this.quality();
 
     if (!this.player) {
       return;
@@ -194,6 +248,11 @@ export class Video implements AfterViewInit, OnDestroy {
 
       this.player?.playbackRate(this.normalizePlaybackRate(playbackRate, playbackRates));
 
+      if (quality !== this.lastQualityInput) {
+        setVideoQuality(this.player!, quality);
+        this.lastQualityInput = quality;
+      }
+
       if (width !== null && width !== this.appliedWidth) {
         this.player?.width(width);
         this.appliedWidth = width;
@@ -203,6 +262,18 @@ export class Video implements AfterViewInit, OnDestroy {
         this.appliedHeight = height;
       }
     });
+  }
+
+  private initializeQualitySelector(): void {
+    if (!this.player) {
+      return;
+    }
+
+    addVideoQualitySelector(this.player, this.quality(), (quality) => {
+      this.lastQualityInput = this.quality();
+      this.qualityChange.emit(quality);
+    });
+    setVideoQuality(this.player, this.quality());
   }
 
   private resolveSources(): VideoSource[] {

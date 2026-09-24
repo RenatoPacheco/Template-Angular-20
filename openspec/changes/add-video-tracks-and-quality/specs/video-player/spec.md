@@ -2,24 +2,42 @@
 
 ## ADDED Requirements
 
-### Requirement: Faixas de legenda multiplas
+### Requirement: Interface do player em pt-BR
 
-O sistema SHALL aceitar uma lista de faixas de legenda WebVTT (`src`, `srclang`, `label`, `kind` e `default` opcional) e exibir o botao de legendas quando houver ao menos uma faixa.
+O sistema SHALL apresentar os controles, menus e textos de acessibilidade do player em portugues do Brasil.
 
-#### Scenario: Duas legendas com default
+#### Scenario: Controles e menus localizados
 
-- **WHEN** `tracks` contem pt-BR (default) e en
-- **THEN** o player exibe legendas em pt-BR ao iniciar e permite trocar para en pelo botao de legendas.
+- **WHEN** o player e inicializado
+- **THEN** botoes, menus de audio/legenda/qualidade, velocidade e mensagens acessiveis usam rotulos em pt-BR, incluindo a opcao `Automático`.
 
-#### Scenario: Sem faixas
+### Requirement: Menu de legendas sem ajustes visuais
 
-- **WHEN** `tracks` nao e informado ou e vazio
-- **THEN** o botao de legendas nao aparece e nada muda no comportamento atual.
+O sistema SHALL permitir selecionar ou desativar faixas de legenda sem exibir o item de configuracao visual de legendas do Video.js.
 
-#### Scenario: Faixa com URL invalida
+#### Scenario: Menu de legendas
 
-- **WHEN** uma faixa aponta para URL inexistente
-- **THEN** o player segue reproduzindo sem legendas (ou com as demais faixas validas) e emite `error` com detalhe, sem quebrar.
+- **WHEN** o usuario abre o menu de legendas
+- **THEN** ve as faixas disponiveis e a opcao para desligar legendas, mas nao ve `Subtitle Settings`/`Configurações de legendas`.
+
+### Requirement: Faixas alternativas de audio e legenda HLS
+
+O sistema SHALL expor as faixas alternativas de audio e legenda declaradas pelo manifest HLS nos controles nativos do player, preservando idiomas, rotulos e selecoes default informadas pelo manifest.
+
+#### Scenario: Selecao de audio alternativo
+
+- **WHEN** o manifest HLS declara varias faixas de audio
+- **THEN** o controle de audio lista os rotulos/idiomas do manifest e permite trocar a faixa sem reiniciar o video.
+
+#### Scenario: Selecao de legenda alternativa
+
+- **WHEN** o manifest HLS declara varias faixas de legenda
+- **THEN** o controle de legendas lista os rotulos/idiomas do manifest, respeita a legenda default e permite selecionar outra faixa ou desligar legendas.
+
+#### Scenario: Manifesto sem faixas alternativas
+
+- **WHEN** o manifest HLS nao declara faixas alternativas
+- **THEN** os controles de audio/legenda ficam ocultos ou desabilitados e a reproducao principal continua normal.
 
 ### Requirement: Qualidade fixa por rotulo
 
@@ -53,3 +71,22 @@ O sistema SHALL exibir no grupo direito da control bar um menu com `Auto` + nive
 
 - **WHEN** o usuario escolhe `Auto` apos fixar um nivel
 - **THEN** o adaptativo do HLS retoma e o menu indica `Auto`.
+
+### Requirement: Diagnostico de interacoes no showcase
+
+O showcase SHALL escrever no console um registro quando o usuario alterar volume, qualidade, faixa de audio, legenda, texto de legenda ou velocidade de reproducao no player HLS de demonstracao. A mudanca de idioma/estado da legenda e a atualizacao do texto devem ser eventos separados.
+
+#### Scenario: Idioma de legenda trocado ou legenda desativada
+
+- **WHEN** o usuario seleciona outra faixa de legenda ou desativa as legendas
+- **THEN** `subtitleChange` emite `{ label, language }` para a faixa selecionada ou `null` quando desativada, e o showcase registra essa mudanca no console.
+
+#### Scenario: Texto da legenda atualizado
+
+- **WHEN** as cues ativas da faixa selecionada mudam
+- **THEN** `subtitleTextChange` emite o texto ativo (cues simultaneas unidas por newline) ou string vazia para limpar, e o showcase registra o texto no console.
+
+#### Scenario: Outro controle alterado
+
+- **WHEN** o usuario altera volume, qualidade, faixa de audio ou velocidade
+- **THEN** o console registra o tipo de controle e seu novo valor ou faixa selecionada.

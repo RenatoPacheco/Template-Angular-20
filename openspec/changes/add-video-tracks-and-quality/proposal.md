@@ -2,15 +2,18 @@
 
 ## Why
 
-O `app-video` hoje so reproduz uma fonte por vez — sem legendas e sem controle de qualidade: em HLS (`.m3u8`) o VHS adapta sozinho sem expor escolha, e nao ha como declarar faixas de legenda. Para conteudo multilingue e redes instaveis, ambos sao requisitos de produto.
+O `app-video` ainda nao expoe selecao de faixas de audio/legenda que ja estao declaradas em manifests HLS e nao permite escolher qualidade: o VHS adapta sozinho sem expor niveis. Para conteudo multilingue e redes instaveis, esses controles sao necessarios.
 
 ## What Changes
 
-- Novo input `tracks` no `app-video`: lista de faixas WebVTT (`{ src, srclang, label, kind?, default? }`), repassada a opcao `tracks` do video.js; botao de legendas (captions) aparece automaticamente quando ha faixas; `default: true` seleciona a faixa inicial.
+- Usar as faixas alternativas de audio e legendas declaradas no manifest HLS (`EXT-X-MEDIA`), expondo os controles nativos de selecao do video.js; o manifest define idiomas, rotulos e defaults.
 - Novo input `quality` (`'auto' | indice/rotulo`) + menu seletor de qualidade para HLS: modo `auto` (adaptativo do VHS, default) ou nivel fixo (ex.: 1080p, 720p, 480p); troca sem recarregar a pagina e, sempre que possivel, sem perder a posicao atual.
 - Mostrador/rotulos de nivel derivados dos metadados do manifest (altura/largura ou BANDWIDTH); com fallback para `Auto/Alta/Media/Baixa` quando o manifest nao expoe resolucao.
-- Showcase com exemplo HLS (`.m3u8` multi-nivel) + 2 legendas (pt-BR default, en) e exemplo de qualidade fixa.
-- Nova dependencia de plugin de UI para o seletor (ex.: `videojs-hls-quality-selector` ou botao custom sobre a API `qualityLevels` do VHS) — decisao final no design/spike.
+- Showcase usa `public/video/hls.m3u8`, que ja declara multiplos niveis de qualidade, audios e legendas; sem criar faixas VTT paralelas.
+- Showcase registra no console mudancas de volume, qualidade, faixa de audio, legenda e velocidade.
+- Interface, botoes, menus e textos de acessibilidade do player ficam em pt-BR.
+- Menu de legendas permite selecionar/desativar faixas, sem a opcao “Subtitle Settings”.
+- Seletor customizado baseado na API VHS `qualityLevels()` (sem dependencia npm nova).
 
 ## Capabilities
 
@@ -24,6 +27,6 @@ O `app-video` hoje so reproduz uma fonte por vez — sem legendas e sem controle
 
 ## Impact
 
-- Afetado: `src/app/shared/ui/video/video.ts` (inputs `tracks`/`quality`, grupos live), `video.scss` (posicao do botao de qualidade no grupo direito), `showcase-video-page` (exemplos HLS+legendas).
-- Nova dependencia npm (plugin de seletor) + `@types` correspondente, se o spike confirmar; sem breaking na API existente (inputs novos, todos opcionais).
+- Afetado: `src/app/shared/ui/video/video.ts`, novo `video-track-selector.ts` (eventos e leitura das faixas), `video-quality-selector.ts`, `video.scss`, `showcase-video-page` (usa manifest HLS local existente).
+- Sem breaking na API existente (input `quality` opcional).
 - Comportamento `src` MP4 inalterado: sem manifest HLS, o seletor de qualidade nao aparece.

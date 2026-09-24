@@ -24,7 +24,7 @@ O showcase atual tem quatro cards de vídeo; o último usa `/video/hls.m3u8` e j
    Racional: campos vinculados ao form atualizam os inputs do player no mesmo fluxo e evitam manter um segundo conjunto de propriedades soltas. Usar `ReactiveFormsModule`, `FormBuilder` e um signal derivado de `valueChanges` para compatibilidade com o app zoneless.
 
 2. **Modo de fonte explícito: `src` simples ou `sources` estruturado.**
-   Racional: o componente dá precedência à lista `sources` quando ela contém itens; o modo evita passar ambas as opções ativas e confundir o teste. A lista usa um `FormArray` de linhas com `src`/`type` e ações adicionar/remover.
+   Racional: o componente dá precedência à lista `sources` quando ela contém itens; o modo evita passar ambas as opções ativas e confundir o teste. A lista usa um `FormArray` de linhas com `src`/`type` e ações adicionar/remover. Campos de URL usam `updateOn: 'blur'` para não solicitar mídias em cada caractere digitado.
 
 3. **`playbackRates` editável como lista estruturada de números.**
    Racional: corresponde diretamente a `number[]` e evita parsing ambíguo de string. A taxa atual (`playbackRate`) fica em campo separado.
@@ -32,10 +32,13 @@ O showcase atual tem quatro cards de vídeo; o último usa `/video/hls.m3u8` e j
 4. **Botões dedicados para `play()` e `pause()` via referência ao componente Video.**
    Racional: testa os métodos públicos sem simular cliques nos controles nativos. O formulário não altera os outputs; seus logs atuais seguem sendo registrados no console.
 
-5. **Recriação explícita para opções init-only.**
+5. **Sincronizar os campos `quality` e `playbackRate` quando os menus nativos mudarem.**
+   Racional: `qualityChange` e `playbackRateChange` atualizam os controles do formulário; os setters signal do componente ignoram valores estritamente iguais, evitando atualizações repetidas no player.
+
+6. **Recriação explícita para opções init-only.**
    Racional: `fluid` e `playbackRates` só afetam a configuração na criação do player. Uma ação “Reinicializar player” desmonta/remonta o `app-video`, aplicando os valores atuais e reiniciando a reprodução; evitar recriação automática em cada alteração impede interrupções enquanto se edita.
 
-6. **Demais inputs ligados como propriedades do player HLS.**
+7. **Demais inputs ligados como propriedades do player HLS.**
    Racional: source, quality, autoplay, controls, loop, muted, preload, poster, playbackRate, width, height e subtitleVisibility continuam usando os caminhos reativos normais de `Video`.
 
 ## Risks / Trade-offs

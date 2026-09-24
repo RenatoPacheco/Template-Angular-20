@@ -1,44 +1,23 @@
-<div class="container">
-  <div class="row">
-    <div class="col-6 mt-4">
+<div class="container py-4">
+  <section class="mb-4" aria-label="Player HLS de demonstração">
+    @for (generation of playerInstances(); track generation) {
+      @let settings = playerSettings();
       <app-video
-        [playbackRate]="1.5"
-        [playbackRates]="[0.5, 1, 1.25, 1.5, 2]"
-        src="https://cdn.truefilesize.com/mp4/sample-1mb.mp4?utm_source=chatgpt.com">
-      </app-video>  
-    </div>
-    <div class="col-6 mt-4">
-      <app-video
-        [playbackRate]="1"
-        [playbackRates]="[0.5, 1, 1.25, 1.5, 2]"
-        src="https://vjs.zencdn.net/v/oceans.mp4">
-      </app-video>  
-    </div>
-    <div class="col-6 mt-4">
-      <app-video
-        [fluid]="false"
-        [width]="640"
-        [height]="360"
-        src="https://avtshare01.rz.tu-ilmenau.de/avt-vqdb-uhd-1/test_1/segments/bigbuck_bunny_8bit_15000kbps_1080p_60.0fps_h264.mp4">
-      </app-video>
-    </div>
-    <div class="col-6 mt-4">
-      <label class="form-label" for="subtitle-visibility">Visibilidade da legenda</label>
-      <select
-        id="subtitle-visibility"
-        class="form-select mb-2"
-        [value]="subtitleVisibility()"
-        (change)="setSubtitleVisibility($event)">
-        <option value="normal">Normal (sempre visível)</option>
-        <option value="fullscreen">Somente em tela cheia</option>
-        <option value="hidden">Oculta</option>
-        <option value="windowed">Somente em janela</option>
-      </select>
-      <app-video
-        [fluid]="false"
-        [width]="640"
-        [height]="360"
-        [subtitleVisibility]="subtitleVisibility()"
+        [src]="settings.src"
+        [sources]="settings.sources"
+        [quality]="settings.quality"
+        [autoplay]="settings.autoplay"
+        [controls]="settings.controls"
+        [loop]="settings.loop"
+        [muted]="settings.muted"
+        [preload]="settings.preload"
+        [poster]="settings.poster"
+        [playbackRate]="settings.playbackRate"
+        [playbackRates]="settings.playbackRates"
+        [fluid]="settings.fluid"
+        [width]="settings.width"
+        [height]="settings.height"
+        [subtitleVisibility]="settings.subtitleVisibility"
         (qualityChange)="logQualityChange($event)"
         (volumeChange)="logVolumeChange($event)"
         (audioTrackChange)="logAudioTrackChange($event)"
@@ -47,9 +26,182 @@
         (playbackRateChange)="logPlaybackRateChange($event)"
         (stateChange)="logVideoStateChange($event)"
         (skipped)="logVideoSkipped($event)"
-        (rewound)="logVideoRewound($event)"
-        src="/video/hls.m3u8">
-      </app-video> 
+        (rewound)="logVideoRewound($event)">
+      </app-video>
+    }
+  </section>
+
+  <form [formGroup]="form" class="card shadow-sm">
+    <div class="card-header">
+      <h2 class="h5 mb-0">Controles do player</h2>
     </div>
-  </div>
+
+    <div class="card-body">
+      <div class="row g-3">
+        <fieldset class="col-12 col-lg-6">
+          <legend class="h6">Fonte de vídeo</legend>
+
+          <label class="form-label" for="video-source-mode">Modo de fonte</label>
+          <select id="video-source-mode" class="form-select mb-3" formControlName="sourceMode">
+            <option value="src">Fonte única (src)</option>
+            <option value="sources">Lista de fontes (sources)</option>
+          </select>
+
+          @if (form.controls.sourceMode.value === 'src') {
+            <label class="form-label" for="video-src">URL da fonte</label>
+            <input id="video-src" class="form-control" type="url" formControlName="src">
+          } @else {
+            <div formArrayName="sources" class="vstack gap-2">
+              @for (source of sourceRows; track $index; let index = $index) {
+                <div class="row g-2 align-items-end" [formGroupName]="index">
+                  <div class="col-12 col-md-6">
+                    <label class="form-label" [for]="'video-source-url-' + index">URL</label>
+                    <input
+                      class="form-control"
+                      type="url"
+                      [id]="'video-source-url-' + index"
+                      formControlName="src">
+                  </div>
+                  <div class="col-12 col-md-4">
+                    <label class="form-label" [for]="'video-source-type-' + index">MIME (opcional)</label>
+                    <input
+                      class="form-control"
+                      type="text"
+                      [id]="'video-source-type-' + index"
+                      formControlName="type"
+                      placeholder="application/x-mpegURL">
+                  </div>
+                  <div class="col-12 col-md-2">
+                    <button class="btn btn-outline-danger w-100" type="button" (click)="removeSource(index)">
+                      Remover
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+            <button class="btn btn-outline-primary mt-2" type="button" (click)="addSource()">
+              Adicionar fonte
+            </button>
+          }
+        </fieldset>
+
+        <fieldset class="col-12 col-lg-6">
+          <legend class="h6">Reprodução</legend>
+
+          <label class="form-label" for="video-quality">Qualidade</label>
+          <select id="video-quality" class="form-select mb-3" formControlName="quality">
+            <option value="auto">Automática</option>
+            <option value="576p">576p</option>
+            <option value="480p">480p</option>
+            <option value="360p">360p</option>
+            <option value="240p">240p</option>
+            <option value="144p">144p</option>
+          </select>
+
+          <label class="form-label" for="video-playback-rate">Velocidade atual</label>
+          <input
+            id="video-playback-rate"
+            class="form-control mb-3"
+            type="number"
+            min="0.25"
+            step="0.25"
+            formControlName="playbackRate">
+
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="form-label mb-0">Velocidades disponíveis</span>
+            <button class="btn btn-sm btn-outline-primary" type="button" (click)="addPlaybackRate()">
+              Adicionar velocidade
+            </button>
+          </div>
+          <div formArrayName="playbackRates" class="row g-2 mt-1">
+            @for (rate of playbackRateRows; track $index; let index = $index) {
+              <div class="col-6 col-md-4 d-flex gap-2">
+                <input
+                  class="form-control"
+                  type="number"
+                  min="0.25"
+                  step="0.25"
+                  [attr.aria-label]="'Velocidade ' + (index + 1)"
+                  [formControlName]="index">
+                <button
+                  class="btn btn-outline-danger"
+                  type="button"
+                  [attr.aria-label]="'Remover velocidade ' + (index + 1)"
+                  (click)="removePlaybackRate(index)">
+                  ×
+                </button>
+              </div>
+            }
+          </div>
+        </fieldset>
+
+        <fieldset class="col-12 col-lg-6">
+          <legend class="h6">Opções do vídeo</legend>
+          <div class="row g-2">
+            <div class="col-12">
+              <label class="form-label" for="video-poster">Poster (opcional)</label>
+              <input id="video-poster" class="form-control" type="url" formControlName="poster">
+            </div>
+            <div class="col-6">
+              <label class="form-label" for="video-preload">Pré-carregamento</label>
+              <select id="video-preload" class="form-select" formControlName="preload">
+                <option value="none">Nenhum</option>
+                <option value="metadata">Metadados</option>
+                <option value="auto">Automático</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label class="form-label" for="video-subtitle-visibility">Visibilidade da legenda</label>
+              <select id="video-subtitle-visibility" class="form-select" formControlName="subtitleVisibility">
+                <option value="normal">Normal</option>
+                <option value="fullscreen">Somente em tela cheia</option>
+                <option value="hidden">Oculta</option>
+                <option value="windowed">Somente em janela</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label class="form-label" for="video-width">Largura (px)</label>
+              <input id="video-width" class="form-control" type="number" min="1" formControlName="width">
+            </div>
+            <div class="col-6">
+              <label class="form-label" for="video-height">Altura (px)</label>
+              <input id="video-height" class="form-control" type="number" min="1" formControlName="height">
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="col-12 col-lg-6">
+          <legend class="h6">Comportamento</legend>
+          <div class="form-check">
+            <input id="video-controls" class="form-check-input" type="checkbox" formControlName="controls">
+            <label class="form-check-label" for="video-controls">Mostrar controles</label>
+          </div>
+          <div class="form-check">
+            <input id="video-autoplay" class="form-check-input" type="checkbox" formControlName="autoplay">
+            <label class="form-check-label" for="video-autoplay">Reprodução automática</label>
+          </div>
+          <div class="form-check">
+            <input id="video-loop" class="form-check-input" type="checkbox" formControlName="loop">
+            <label class="form-check-label" for="video-loop">Repetir vídeo</label>
+          </div>
+          <div class="form-check">
+            <input id="video-muted" class="form-check-input" type="checkbox" formControlName="muted">
+            <label class="form-check-label" for="video-muted">Sem áudio</label>
+          </div>
+          <div class="form-check">
+            <input id="video-fluid" class="form-check-input" type="checkbox" formControlName="fluid">
+            <label class="form-check-label" for="video-fluid">Layout fluido (init-only)</label>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+
+    <div class="card-footer d-flex flex-wrap gap-2">
+      <button class="btn btn-primary" type="button" (click)="playVideo()">Play</button>
+      <button class="btn btn-secondary" type="button" (click)="pauseVideo()">Pause</button>
+      <button class="btn btn-warning" type="button" (click)="reinitializePlayer()">
+        Reinicializar player (aplicar fluid e velocidades)
+      </button>
+    </div>
+  </form>
 </div>

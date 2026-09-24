@@ -8,7 +8,7 @@ Oferecer um controle de data com calendário visual em português (ng-bootstrap)
 
 ### Requirement: Data única ligada a formulários Angular
 
-O componente DEVE funcionar como um `ControlValueAccessor`, expondo o valor como `string | null` no formato `dd/MM/yyyy` no modo de data única.
+O componente DEVE funcionar como um `ControlValueAccessor`, expondo o valor como `string | null` no modo de data única: data válida em `dd/MM/yyyy`, ou o próprio texto digitado quando inválido/incompleto (para que os validadores do formulário acusem o erro); campo vazio é `null`.
 
 #### Scenario: Valor inicial vazio
 
@@ -28,7 +28,7 @@ O componente DEVE funcionar como um `ControlValueAccessor`, expondo o valor como
 #### Scenario: Digitação inválida ou incompleta
 
 - **WHEN** o usuário deixa no campo um texto que não é uma data válida em `dd/MM/yyyy`
-- **THEN** o valor do controle é `null` (o texto visível é preservado para correção) e a validação de data do formulário (por exemplo, `CustomValidators.date()`) pode acusar o erro
+- **THEN** o valor do controle é o próprio texto digitado (por exemplo, `31/02/2026`) e a validação de data do formulário (por exemplo, `CustomValidators.date()`) acusa o erro
 
 #### Scenario: Escrita externa de valor
 
@@ -42,7 +42,7 @@ O componente DEVE funcionar como um `ControlValueAccessor`, expondo o valor como
 
 ### Requirement: Modo intervalo
 
-O componente DEVE suportar o modo de intervalo (`range`), expondo o valor como `{ start: string | null; end: string | null }`, com ambas as pontas em `dd/MM/yyyy`.
+O componente DEVE suportar o modo de intervalo (`range`), expondo o valor como `{ start: string | null; end: string | null }`: cada ponta é a data em `dd/MM/yyyy` quando válida, o próprio texto digitado quando inválido, ou `null` quando vazia.
 
 #### Scenario: Seleção de intervalo pelo calendário
 
@@ -56,13 +56,28 @@ O componente DEVE suportar o modo de intervalo (`range`), expondo o valor como `
 
 #### Scenario: Inversão das pontas
 
-- **WHEN** o usuário escolhe a data de fim anterior à data de início
+- **WHEN** o usuário escolhe a data de fim anterior à data de início, com ambas as pontas válidas
 - **THEN** as pontas são normalizadas para que `start` seja sempre a data mais antiga e `end` a mais recente
+
+#### Scenario: Ponta inválida
+
+- **WHEN** uma ponta contém texto inválido
+- **THEN** o valor carrega o texto cru daquela ponta, sem normalização de ordem (que exige ambas válidas)
 
 #### Scenario: Limpeza do intervalo
 
 - **WHEN** a ação de limpar é acionada no modo intervalo
-- **THEN** o valor do controle vai para `{ start: null, end: null }` e os dois campos são esvaziados
+- **THEN** o valor do controle vai para `{ start: null, end: null }`, os dois campos são esvaziados e o foco retorna ao campo que estava em uso (início, por padrão)
+
+#### Scenario: Limpar data de início
+
+- **WHEN** há data no início e o controle está ativo
+- **THEN** a ação de limpar do campo de início é exibida e, ao ser acionada, só a ponta `start` vai para `null` (a ponta `end` é preservada) e o foco retorna ao campo de início
+
+#### Scenario: Limpar data de fim
+
+- **WHEN** há data no fim e o controle está ativo
+- **THEN** a ação de limpar do campo de fim é exibida e, ao ser acionada, só a ponta `end` vai para `null` (a ponta `start` é preservada) e o foco retorna ao campo de fim
 
 #### Scenario: Escrita externa de intervalo
 
@@ -95,7 +110,7 @@ O componente DEVE exibir uma ação de limpar quando houver valor e o controle e
 #### Scenario: Limpar data única
 
 - **WHEN** há data preenchida e o controle está ativo
-- **THEN** a ação de limpar é exibida e, ao ser acionada, o valor vai para `null` e o controle volta a `pristine` e `untouched`
+- **THEN** a ação de limpar é exibida e, ao ser acionada, o valor vai para `null`, o controle volta a `pristine` e `untouched` e o foco retorna ao campo
 
 #### Scenario: Controle inativo
 
@@ -104,12 +119,12 @@ O componente DEVE exibir uma ação de limpar quando houver valor e o controle e
 
 ### Requirement: Limites de data
 
-O componente DEVE aceitar datas mínima e máxima opcionais, em `dd/MM/yyyy`, que restringem tanto a digitação válida quanto os dias selecionáveis no calendário.
+O componente DEVE aceitar datas mínima e máxima opcionais, em `dd/MM/yyyy`, que restringem os dias selecionáveis no calendário. Na digitação, o texto é sempre exposto como digitado (campo vazio é `null`) e cabe aos validadores do formulário acusar valores fora do limite.
 
 #### Scenario: Dia fora do limite
 
 - **WHEN** `min-date` é `01/01/2026` e o usuário tenta selecionar ou digitar `31/12/2025`
-- **THEN** o dia aparece desabilitado no calendário e a digitação resulta em valor `null` (com erro de validação do formulário)
+- **THEN** o dia aparece desabilitado no calendário; se digitado, o valor do controle é o texto cru `31/12/2025` e a validação do formulário acusa o erro
 
 #### Scenario: Sem limites
 
@@ -146,7 +161,7 @@ O componente DEVE renderizar o `label[app-label]` acima do campo e propagar as s
 #### Scenario: Exibição de erro
 
 - **WHEN** o controle está inválido, `touched`, `dirty` e `enabled-error` é verdadeiro
-- **THEN** o rótulo exibe a indicação de erro e o campo recebe o estilo de inválido
+- **THEN** o rótulo exibe a indicação de erro e o campo recebe o estilo de inválido, mas os selects de mês/ano do calendário mantêm o estilo normal
 
 #### Scenario: Marcação de toque
 

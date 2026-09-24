@@ -1,0 +1,148 @@
+<label app-label 
+    [for]="id"
+    [text]="label"
+    [loading]="loading"
+    (error)="emitError()"
+    (helper)="emitHelper()"
+    [enabled-error]="showError()"
+    [enabled-helper]="enabledHelper">
+</label>
+@if (mode === 'single') {
+<div class="form-element"
+    [class.action-calendar]="showCalendar()"
+    [class.action-clear]="showClear()">
+    <input #element
+        [value]="singleField.text"
+        (input)="singleField.handleInput($event)"
+        (blur)="emitBlur()"
+        (focus)="markField('single')"
+        (dateSelect)="singleField.handleSelect($event)"
+        ngbDatepicker
+        #singlePicker="ngbDatepicker"
+        container="body"
+        [startDate]="asDateInput(singleField.startDate())"
+        [minDate]="asDateInput(singleField.minDate())"
+        [maxDate]="asDateInput(singleField.maxDate())"
+        [disabled]="disabled || readonly || loading"
+        [readonly]="readonly || loading"
+        type="text"
+        inputmode="numeric"
+        autocomplete="off"
+        [class]="elementClass()"
+        [id]="id"
+        [placeholder]="placeholder" />
+    @if (showCalendar()) {
+    <button app-button
+        class="action-calendar"
+        theme="transparent"
+        type="button"
+        title="clique para abrir o calendário"
+        (click)="togglePicker(singlePicker)">
+        <i class="fa fa-calendar"></i>
+    </button>
+    }
+    @if (showClear()) {
+    <button app-button
+        class="action-clear"
+        title="clique para limpar o valor"
+        theme="transparent"
+        type="button"
+        (click)="clear()">
+        <i class="fa fa-times"></i>
+    </button>
+    }
+</div>
+} @else {
+<div class="form-element range">
+    <div class="range-field"
+        [class.action-calendar]="showCalendar()"
+        [class.action-clear]="showStartClear()">
+        <input #element
+            [value]="startField.text"
+            (input)="startField.handleInput($event)"
+            (blur)="emitBlur()"
+            (focus)="markField('start')"
+            (dateSelect)="startField.handleSelect($event)"
+            ngbDatepicker
+            #startPicker="ngbDatepicker"
+            container="body"
+            [startDate]="asDateInput(startField.startDate())"
+            [minDate]="asDateInput(startField.minDate())"
+            [maxDate]="asDateInput(startField.maxDate())"
+            [disabled]="disabled || readonly || loading"
+            [readonly]="readonly || loading"
+            type="text"
+            inputmode="numeric"
+            autocomplete="off"
+            [class]="elementClass()"
+            [id]="id"
+            [placeholder]="placeholder" />
+        @if (showCalendar()) {
+        <button app-button
+            class="action-calendar"
+            theme="transparent"
+            type="button"
+            title="clique para abrir o calendário de início"
+            (click)="togglePicker(startPicker)">
+            <i class="fa fa-calendar"></i>
+        </button>
+        }
+        @if (showStartClear()) {
+        <button app-button
+            class="action-clear"
+            theme="transparent"
+            type="button"
+            title="clique para limpar a data de início"
+            (click)="clearStart()">
+            <i class="fa fa-times"></i>
+        </button>
+        }
+    </div>
+    <span class="range-separator">até</span>
+    <div class="range-field"
+        [class.action-calendar]="showCalendar()"
+        [class.action-clear]="showEndClear()">
+        <input #endElement
+            [value]="endField.text"
+            (input)="endField.handleInput($event)"
+            (blur)="emitBlur()"
+            (focus)="markField('end')"
+            (dateSelect)="endField.handleSelect($event)"
+            ngbDatepicker
+            #endPicker="ngbDatepicker"
+            container="body"
+            [startDate]="asDateInput(endField.startDate())"
+            [minDate]="asDateInput(endField.minDate())"
+            [maxDate]="asDateInput(endField.maxDate())"
+            [disabled]="disabled || readonly || loading"
+            [readonly]="readonly || loading"
+            type="text"
+            inputmode="numeric"
+            autocomplete="off"
+            [class]="elementClass()"
+            [id]="endId()"
+            [placeholder]="placeholder" />
+        @if (showCalendar()) {
+        <button app-button
+            class="action-calendar"
+            theme="transparent"
+            type="button"
+            title="clique para abrir o calendário de fim"
+            (click)="togglePicker(endPicker)">
+            <i class="fa fa-calendar"></i>
+        </button>
+        }
+        @if (showEndClear()) {
+        <button app-button
+            class="action-clear"
+            theme="transparent"
+            type="button"
+            title="clique para limpar a data de fim"
+            (click)="clearEnd()">
+            <i class="fa fa-times"></i>
+        </button>
+        }
+    </div>
+</div>
+}
+<ng-content></ng-content>

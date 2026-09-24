@@ -2,7 +2,7 @@ import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { FormText, Button, FormCheckBox, FormRadio, FormEditor, FormSelect, FormSelectMultiple, ButtonDropdown } from '@app/shared/ui';
+import { FormText, Button, FormCheckBox, FormRadio, FormEditor, FormSelect, FormSelectMultiple, ButtonDropdown, FormDatepicker, DateRange } from '@app/shared/ui';
 import { FormTextarea } from '@app/shared/ui/form-textarea/form-textarea';
 import { CustomValidators } from '@app/shared/validators';
 
@@ -12,7 +12,7 @@ import { CustomValidators } from '@app/shared/validators';
   imports: [
     FormsModule, ReactiveFormsModule, FormText,
     FormTextarea, Button, FormCheckBox, FormRadio,
-    FormEditor, FormSelect, FormSelectMultiple, ButtonDropdown
+    FormEditor, FormSelect, FormSelectMultiple, ButtonDropdown, FormDatepicker
 ],
   templateUrl: './showcase-form-page.html',
   styleUrl: './showcase-form-page.scss',
@@ -73,6 +73,12 @@ export class ShowcaseFormPage implements OnInit {
         CustomValidators.date()
       ], updateOn: 'blur'
     }),
+    dataPicker: this.formBuilder.control<string|null>(null,{
+      validators: [
+        CustomValidators.date()
+      ], updateOn: 'blur'
+    }),
+    periodo: this.formBuilder.control<DateRange|null>(null),
     dataHora: this.formBuilder.control<string|null>(null,{
       validators: [
         CustomValidators.dateTime()
@@ -141,6 +147,8 @@ export class ShowcaseFormPage implements OnInit {
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe({
       next: () => {
+        console.log('dataPicker', this.form.value.dataPicker);
+        console.log('periodo', this.form.value.periodo);
         return;
         console.log('lista', this.form.value.lista);
         console.log('listaMultipla', this.form.value.listaMultipla);

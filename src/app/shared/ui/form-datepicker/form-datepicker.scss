@@ -1,0 +1,87 @@
+.form-element {
+    position: relative;
+
+    // Modo data única: espelha o form-text (botão de calendário sempre
+    // visível quando ativo, botão de limpar só quando há valor).
+    &.action-calendar input,
+    &.action-clear input {
+        padding-right: 2.5rem;
+    }
+
+    &.action-calendar.action-clear {
+        & input {
+            padding-right: 5rem;
+        }
+
+        & button.action-calendar {
+            right: 2.75rem;
+        }
+    }
+
+    &.action-calendar button.action-calendar,
+    &.action-clear button.action-clear {
+        display: inline-flex;
+    }
+
+    // Modo intervalo: dois campos lado a lado; cada ponta tem seus botões
+    // de calendário e limpar, com o mesmo comportamento do modo único.
+    &.range {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 0.5rem;
+        align-items: center;
+
+        & .range-field {
+            position: relative;
+
+            &.action-calendar input,
+            &.action-clear input {
+                padding-right: 2.5rem;
+            }
+
+            &.action-calendar.action-clear {
+                & input {
+                    padding-right: 5rem;
+                }
+
+                & button.action-calendar {
+                    right: 2.75rem;
+                }
+            }
+
+            &.action-calendar button.action-calendar,
+            &.action-clear button.action-clear {
+                display: inline-flex;
+            }
+        }
+
+        & .range-separator {
+            color: var(--bs-secondary-color);
+            font-size: 0.875rem;
+            white-space: nowrap;
+        }
+    }
+
+    & button {
+        position: absolute;
+        top: 50%;
+        right: 0.5rem;
+        transform: translateY(-50%);
+        z-index: 2;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        min-width: 1.75rem;
+        min-height: 1.75rem;
+        padding: 0;
+        line-height: 1;
+        &:focus {
+            border-color: var(--bs-primary);
+            box-shadow: 0 0 0 .15rem rgba(var(--bs-primary-rgb), 0.25);
+        }
+    }
+
+    &.range .range-field button {
+        right: 0.5rem;
+    }
+}

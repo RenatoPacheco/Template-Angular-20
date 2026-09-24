@@ -3,6 +3,8 @@ export * from './label/label';
 export * from './form-select/form-select';
 export * from './form-select-multiple/form-select-multiple';
 export * from './form-text/form-text';
+export * from './form-datepicker/form-datepicker';
+export * from './form-datepicker/form-datepicker-field';
 export * from './form-textarea/form-textarea';
 export * from './form-checkbox/form-checkbox';
 export * from './form-radio/form-radio';

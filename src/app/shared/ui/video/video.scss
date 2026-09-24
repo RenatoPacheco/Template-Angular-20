@@ -62,5 +62,11 @@
     .video-js .vjs-time-divider {
       display: flex;
     }
+
+    .video-js.vjs-subtitle-visibility-hidden .vjs-text-track-display,
+    .video-js.vjs-subtitle-visibility-fullscreen:not(.vjs-fullscreen) .vjs-text-track-display,
+    .video-js.vjs-subtitle-visibility-windowed.vjs-fullscreen .vjs-text-track-display {
+      display: none !important;
+    }
   }
 }

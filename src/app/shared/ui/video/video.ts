@@ -1,6 +1,6 @@
 import {
-  AfterViewInit, Component, ElementRef, OnDestroy,
-  effect, input, output, untracked, viewChild
+  AfterViewInit, Component, ElementRef, Input, OnDestroy,
+  effect, output, signal, untracked, viewChild
 } from '@angular/core';
 
 import videojs from 'video.js';
@@ -20,6 +20,13 @@ export interface VideoSource {
 }
 
 export type VideoPreload = 'auto' | 'metadata' | 'none';
+
+export type VideoState = 'ready' | 'playing' | 'paused' | 'ended' | 'error';
+
+export interface VideoSeekChange {
+  previousTime: number;
+  currentTime: number;
+}
 
 function transformOptionalNumber(value: number | string | null): number | null {
   if (value === null || value === '') {
@@ -54,7 +61,12 @@ function applyClockFormat(): void {
     return;
   }
 
-  videojs.setFormatTime((seconds: number) => formatClockTime(seconds));
+  const videoJsTime = (videojs as unknown as {
+    time: {
+      setFormatTime: (format: (seconds: number, guide: number) => string) => void;
+    };
+  }).time;
+  videoJsTime.setFormatTime((seconds: number) => formatClockTime(seconds));
   clockFormatApplied = true;
 }
 
@@ -66,32 +78,166 @@ function applyClockFormat(): void {
 })
 export class Video implements AfterViewInit, OnDestroy {
 
-  public src = input<string | null>(null);
-  public sources = input<VideoSource[] | null>(null);
-  public quality = input('auto');
-  public autoplay = input(false, { transform: transformBoolean });
-  public controls = input(true, { transform: transformBoolean });
-  public loop = input(false, { transform: transformBoolean });
-  public muted = input(false, { transform: transformBoolean });
-  public preload = input<VideoPreload>('metadata');
-  public poster = input<string | null>(null);
-  public playbackRate = input(1, { transform: transformNumber });
-  public playbackRates = input<number[]>([0.5, 0.75, 1, 1.25, 1.5, 2]);
-  public fluid = input(true, { transform: transformBoolean });
-  public width = input<number | null, number | string | null>(null, { transform: transformOptionalNumber });
-  public height = input<number | null, number | string | null>(null, { transform: transformOptionalNumber });
+  private _src = signal<string | null>(null);
+  @Input() public set src(value: string | null) {
+    if (value !== this.src) {
+      this._src.set(value);
+    }
+  }
+  public get src(): string | null {
+    return this._src();
+  }
+
+  private _sources = signal<VideoSource[] | null>(null);
+  @Input() public set sources(value: VideoSource[] | null) {
+    if (value !== this.sources) {
+      this._sources.set(value);
+    }
+  }
+  public get sources(): VideoSource[] | null {
+    return this._sources();
+  }
+
+  private _quality = signal('auto');
+  @Input() public set quality(value: string) {
+    if (value !== this.quality) {
+      this._quality.set(value);
+    }
+  }
+  public get quality(): string {
+    return this._quality();
+  }
+
+  private _autoplay = signal(false);
+  @Input({ transform: transformBoolean })
+  public set autoplay(value: boolean) {
+    if (value !== this.autoplay) {
+      this._autoplay.set(value);
+    }
+  }
+  public get autoplay(): boolean {
+    return this._autoplay();
+  }
+
+  private _controls = signal(true);
+  @Input({ transform: transformBoolean })
+  public set controls(value: boolean) {
+    if (value !== this.controls) {
+      this._controls.set(value);
+    }
+  }
+  public get controls(): boolean {
+    return this._controls();
+  }
+
+  private _loop = signal(false);
+  @Input({ transform: transformBoolean })
+  public set loop(value: boolean) {
+    if (value !== this.loop) {
+      this._loop.set(value);
+    }
+  }
+  public get loop(): boolean {
+    return this._loop();
+  }
+
+  private _muted = signal(false);
+  @Input({ transform: transformBoolean })
+  public set muted(value: boolean) {
+    if (value !== this.muted) {
+      this._muted.set(value);
+    }
+  }
+  public get muted(): boolean {
+    return this._muted();
+  }
+
+  private _preload = signal<VideoPreload>('metadata');
+  @Input() public set preload(value: VideoPreload) {
+    if (value !== this.preload) {
+      this._preload.set(value);
+    }
+  }
+  public get preload(): VideoPreload {
+    return this._preload();
+  }
+
+  private _poster = signal<string | null>(null);
+  @Input() public set poster(value: string | null) {
+    if (value !== this.poster) {
+      this._poster.set(value);
+    }
+  }
+  public get poster(): string | null {
+    return this._poster();
+  }
+
+  private _playbackRate = signal(1);
+  @Input({ transform: transformNumber })
+  public set playbackRate(value: number) {
+    if (value !== this.playbackRate) {
+      this._playbackRate.set(value);
+    }
+  }
+  public get playbackRate(): number {
+    return this._playbackRate();
+  }
+
+  private _playbackRates = signal<number[]>([0.5, 0.75, 1, 1.25, 1.5, 2]);
+  @Input() public set playbackRates(value: number[]) {
+    if (value !== this.playbackRates) {
+      this._playbackRates.set(value);
+    }
+  }
+  public get playbackRates(): number[] {
+    return this._playbackRates();
+  }
+
+  private _fluid = signal(true);
+  @Input({ transform: transformBoolean })
+  public set fluid(value: boolean) {
+    if (value !== this.fluid) {
+      this._fluid.set(value);
+    }
+  }
+  public get fluid(): boolean {
+    return this._fluid();
+  }
+
+  private _width = signal<number | null>(null);
+  @Input({ transform: transformOptionalNumber })
+  public set width(value: number | null) {
+    if (value !== this.width) {
+      this._width.set(value);
+    }
+  }
+  public get width(): number | null {
+    return this._width();
+  }
+
+  private _height = signal<number | null>(null);
+  @Input({ transform: transformOptionalNumber })
+  public set height(value: number | null) {
+    if (value !== this.height) {
+      this._height.set(value);
+    }
+  }
+  public get height(): number | null {
+    return this._height();
+  }
 
   public readonly ready = output<void>();
-  public readonly play = output<void>();
-  public readonly pause = output<void>();
   public readonly ended = output<void>();
   public readonly error = output<unknown>();
+  public readonly stateChange = output<VideoState>();
   public readonly qualityChange = output<string>();
   public readonly volumeChange = output<{ volume: number; muted: boolean }>();
   public readonly audioTrackChange = output<{ label: string; language: string } | null>();
   public readonly subtitleChange = output<{ label: string; language: string } | null>();
   public readonly subtitleTextChange = output<string>();
   public readonly playbackRateChange = output<number>();
+  public readonly skipped = output<VideoSeekChange>();
+  public readonly rewound = output<VideoSeekChange>();
 
   private readonly target = viewChild<ElementRef<HTMLVideoElement>>('target');
 
@@ -101,6 +247,8 @@ export class Video implements AfterViewInit, OnDestroy {
   private appliedHeight: number | null = null;
   private lastQualityInput = 'auto';
   private removeTrackListeners: (() => void) | null = null;
+  private lastPlaybackTime = 0;
+  private pendingSeekFrom: number | null = null;
 
   constructor() {
     effect(() => {
@@ -120,22 +268,22 @@ export class Video implements AfterViewInit, OnDestroy {
       return;
     }
 
-    const playbackRates = this.normalizePlaybackRates(this.playbackRates());
+    const playbackRates = this.normalizePlaybackRates(this.playbackRates);
     applyClockFormat();
     registerVideoQualitySelector();
 
     this.player = videojs(target, {
       language: 'pt-BR',
       languages: { 'pt-BR': videoJsPtBr },
-      autoplay: this.autoplay(),
-      controls: this.controls(),
-      loop: this.loop(),
-      muted: this.muted(),
-      preload: this.preload(),
-      poster: this.poster() ?? undefined,
-      fluid: this.fluid(),
-      width: this.width() ?? undefined,
-      height: this.height() ?? undefined,
+      autoplay: this.autoplay,
+      controls: this.controls,
+      loop: this.loop,
+      muted: this.muted,
+      preload: this.preload,
+      poster: this.poster ?? undefined,
+      fluid: this.fluid,
+      width: this.width ?? undefined,
+      height: this.height ?? undefined,
       playbackRates,
       sources: desiredSources,
       children: [
@@ -174,23 +322,35 @@ export class Video implements AfterViewInit, OnDestroy {
         ]
       }
     });
-    this.appliedWidth = this.width();
-    this.appliedHeight = this.height();
+    this.appliedWidth = this.width;
+    this.appliedHeight = this.height;
 
     this.currentSourceKey = this.sourceKey(desiredSources);
-    this.lastQualityInput = this.quality();
-    this.player.playbackRate(this.normalizePlaybackRate(this.playbackRate(), playbackRates));
+    this.lastQualityInput = this.quality;
+    this.player.playbackRate(this.normalizePlaybackRate(this.playbackRate, playbackRates));
+    this.lastPlaybackTime = this.player.currentTime() ?? 0;
 
     this.player.on('loadedmetadata', () => this.initializeQualitySelector());
     this.player.on('loadeddata', () => this.initializeQualitySelector());
 
     this.player.ready(() => {
       this.ready.emit();
+      this.stateChange.emit('ready');
     });
-    this.player.on('play', () => this.play.emit());
-    this.player.on('pause', () => this.pause.emit());
-    this.player.on('ended', () => this.ended.emit());
-    this.player.on('error', () => this.error.emit(this.player?.error() ?? { message: 'Erro de reproducao.' }));
+    this.player.on('play', () => {
+      this.stateChange.emit('playing');
+    });
+    this.player.on('pause', () => {
+      this.stateChange.emit('paused');
+    });
+    this.player.on('ended', () => {
+      this.ended.emit();
+      this.stateChange.emit('ended');
+    });
+    this.player.on('error', () => {
+      this.error.emit(this.player?.error() ?? { message: 'Erro de reproducao.' });
+      this.stateChange.emit('error');
+    });
     this.player.on('volumechange', () => {
       this.volumeChange.emit({
         volume: this.player?.volume() ?? 1,
@@ -198,6 +358,17 @@ export class Video implements AfterViewInit, OnDestroy {
       });
     });
     this.player.on('ratechange', () => this.playbackRateChange.emit(this.player?.playbackRate() ?? 1));
+    this.player.on('timeupdate', () => {
+      if (this.player && !this.player.seeking() && this.pendingSeekFrom === null) {
+        this.lastPlaybackTime = this.player.currentTime() ?? this.lastPlaybackTime;
+      }
+    });
+    this.player.on('seeking', () => {
+      if (this.pendingSeekFrom === null) {
+        this.pendingSeekFrom = this.lastPlaybackTime;
+      }
+    });
+    this.player.on('seeked', () => this.emitSeekDirection());
     this.removeTrackListeners = watchVideoTrackChanges(this.player, {
       audioTrackChange: (track) => this.audioTrackChange.emit(track),
       subtitleChange: (track) => this.subtitleChange.emit(track),
@@ -212,20 +383,28 @@ export class Video implements AfterViewInit, OnDestroy {
     this.player = null;
   }
 
+  public play(): Promise<void> | undefined {
+    return this.player?.play();
+  }
+
+  public pause(): void {
+    this.player?.pause();
+  }
+
   private syncPlayerState(): void {
     const desiredSources = this.resolveSources();
     const sourceKey = this.sourceKey(desiredSources);
-    const autoplay = this.autoplay();
-    const controls = this.controls();
-    const loop = this.loop();
-    const muted = this.muted();
-    const preload = this.preload();
-    const poster = this.poster();
-    const playbackRate = this.playbackRate();
-    const playbackRates = this.normalizePlaybackRates(this.playbackRates());
-    const width = this.width();
-    const height = this.height();
-    const quality = this.quality();
+    const autoplay = this.autoplay;
+    const controls = this.controls;
+    const loop = this.loop;
+    const muted = this.muted;
+    const preload = this.preload;
+    const poster = this.poster;
+    const playbackRate = this.playbackRate;
+    const playbackRates = this.normalizePlaybackRates(this.playbackRates);
+    const width = this.width;
+    const height = this.height;
+    const quality = this.quality;
 
     if (!this.player) {
       return;
@@ -269,15 +448,34 @@ export class Video implements AfterViewInit, OnDestroy {
       return;
     }
 
-    addVideoQualitySelector(this.player, this.quality(), (quality) => {
-      this.lastQualityInput = this.quality();
+    addVideoQualitySelector(this.player, this.quality, (quality) => {
+      this.lastQualityInput = this.quality;
       this.qualityChange.emit(quality);
     });
-    setVideoQuality(this.player, this.quality());
+    setVideoQuality(this.player, this.quality);
+  }
+
+  private emitSeekDirection(): void {
+    if (!this.player) {
+      return;
+    }
+
+    const previousTime = this.pendingSeekFrom ?? this.lastPlaybackTime;
+    const currentTime = this.player.currentTime() ?? previousTime;
+    const change = { previousTime, currentTime };
+
+    if (currentTime > previousTime) {
+      this.skipped.emit(change);
+    } else if (currentTime < previousTime) {
+      this.rewound.emit(change);
+    }
+
+    this.lastPlaybackTime = currentTime;
+    this.pendingSeekFrom = null;
   }
 
   private resolveSources(): VideoSource[] {
-    const sources = this.sources();
+    const sources = this.sources;
     if (sources?.length) {
       return sources.map((source) => ({
         src: source.src,
@@ -285,7 +483,7 @@ export class Video implements AfterViewInit, OnDestroy {
       }));
     }
 
-    const src = this.src();
+    const src = this.src;
     if (src) {
       return [{ src, type: this.resolveMimeType(src) }];
     }

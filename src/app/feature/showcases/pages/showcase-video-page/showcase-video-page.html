@@ -33,6 +33,9 @@
         (subtitleChange)="logSubtitleChange($event)"
         (subtitleTextChange)="logSubtitleTextChange($event)"
         (playbackRateChange)="logPlaybackRateChange($event)"
+        (stateChange)="logVideoStateChange($event)"
+        (skipped)="logVideoSkipped($event)"
+        (rewound)="logVideoRewound($event)"
         src="/video/hls.m3u8">
       </app-video> 
     </div>

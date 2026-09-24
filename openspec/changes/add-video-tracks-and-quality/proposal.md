@@ -11,6 +11,7 @@ O `app-video` ainda nao expoe selecao de faixas de audio/legenda que ja estao de
 - Mostrador/rotulos de nivel derivados dos metadados do manifest (altura/largura ou BANDWIDTH); com fallback para `Auto/Alta/Media/Baixa` quando o manifest nao expoe resolucao.
 - Showcase usa `public/video/hls.m3u8`, que ja declara multiplos niveis de qualidade, audios e legendas; sem criar faixas VTT paralelas.
 - Showcase registra no console mudancas de volume, qualidade, faixa de audio, legenda e velocidade.
+- O `app-video` expoe `stateChange` com o novo estado tipado (`VideoState`) em eventos de ciclo de vida do player e `skipped`/`rewound` com os tempos anterior e novo ao buscar no video; `play()` e `pause()` sao metodos de comando. **BREAKING**: removidos os outputs `play` e `pause`.
 - Interface, botoes, menus e textos de acessibilidade do player ficam em pt-BR.
 - Menu de legendas permite selecionar/desativar faixas, sem a opcao “Subtitle Settings”.
 - Seletor customizado baseado na API VHS `qualityLevels()` (sem dependencia npm nova).
@@ -28,5 +29,6 @@ O `app-video` ainda nao expoe selecao de faixas de audio/legenda que ja estao de
 ## Impact
 
 - Afetado: `src/app/shared/ui/video/video.ts`, novo `video-track-selector.ts` (eventos e leitura das faixas), `video-quality-selector.ts`, `video.scss`, `showcase-video-page` (usa manifest HLS local existente).
-- Sem breaking na API existente (input `quality` opcional).
+- **BREAKING**: consumidores que ouviam `(play)` ou `(pause)` devem usar `(stateChange)` para observar o estado ou chamar `play()`/`pause()` como comandos.
+- Demais inputs e outputs permanecem compativeis.
 - Comportamento `src` MP4 inalterado: sem manifest HLS, o seletor de qualidade nao aparece.

@@ -27,10 +27,35 @@ function transformOptionalNumber(value: number | string | null): number | null {
   return Math.round(parsed);
 }
 
+export function formatClockTime(totalSeconds: number): string {
+  if (!Number.isFinite(totalSeconds) || totalSeconds < 0) {
+    return '--:--';
+  }
+
+  const seconds = Math.floor(totalSeconds % 60);
+  const minutes = Math.floor(totalSeconds / 60) % 60;
+  const hours = Math.floor(totalSeconds / 3600);
+  const pad = (value: number): string => String(value).padStart(2, '0');
+
+  return (hours > 0 ? `${pad(hours)}:` : '') + `${pad(minutes)}:${pad(seconds)}`;
+}
+
+let clockFormatApplied = false;
+
+function applyClockFormat(): void {
+  if (clockFormatApplied) {
+    return;
+  }
+
+  videojs.setFormatTime((seconds: number) => formatClockTime(seconds));
+  clockFormatApplied = true;
+}
+
 @Component({
   selector: 'app-video',
   standalone: true,
-  template: '<video #target class="video-js vjs-big-play-centered" playsinline></video>'
+  template: '<video #target class="video-js vjs-big-play-centered" playsinline></video>',
+  styleUrl: './video.scss'
 })
 export class Video implements AfterViewInit, OnDestroy {
 
@@ -81,6 +106,8 @@ export class Video implements AfterViewInit, OnDestroy {
 
     const playbackRates = this.normalizePlaybackRates(this.playbackRates());
 
+    applyClockFormat();
+
     this.player = videojs(target, {
       autoplay: this.autoplay(),
       controls: this.controls(),
@@ -92,7 +119,25 @@ export class Video implements AfterViewInit, OnDestroy {
       width: this.width() ?? undefined,
       height: this.height() ?? undefined,
       playbackRates,
-      sources: desiredSources
+      sources: desiredSources,
+      controlBar: {
+        children: [
+          'playToggle',
+          'volumePanel',
+          'durationDisplay',
+          'timeDivider',
+          'currentTimeDisplay',
+          'progressControl',
+          'customControlSpacer',
+          'playbackRateMenuButton',
+          'chaptersButton',
+          'descriptionsButton',
+          'subsCapsButton',
+          'audioTrackButton',
+          'pictureInPictureToggle',
+          'fullscreenToggle'
+        ]
+      }
     });
     this.appliedWidth = this.width();
     this.appliedHeight = this.height();

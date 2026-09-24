@@ -1,0 +1,66 @@
+:host {
+  display: block;
+
+  // Os nos .vjs-* sao criados em runtime pelo video.js, sem os atributos
+  // de encapsulacao do Angular — por isso o ::ng-deep (escopado ao host).
+  ::ng-deep {
+    // Linha dupla: o wrap cria a linha 1 (progresso) + linha 2 (controles).
+    // Altura minima = 1.2em (progresso) + 3em (controles).
+    .video-js .vjs-control-bar {
+      flex-wrap: wrap;
+      height: auto;
+      min-height: 4.2em;
+    }
+
+    // Linha 1: barra de progresso ocupando toda a largura.
+    .video-js .vjs-progress-control {
+      order: -1;
+      flex: 1 1 100%;
+      min-width: 100%;
+      height: 1.2em;
+      padding-top: 0.8em;
+    }
+
+    // Barra um pouco mais grossa que o default (0.3em).
+    .video-js .vjs-progress-holder {
+      height: 0.5em;
+    }
+
+    // Bolinha do progresso centralizada verticalmente na barra
+    // (o default usa line-height fixo, que descentra ao engrossar).
+    .video-js .vjs-play-progress:before {
+      top: 50%;
+      transform: translateY(-50%);
+      line-height: 1;
+    }
+
+    // Cantos arredondados na barra e nos preenchimentos.
+    .video-js .vjs-progress-holder,
+    .video-js .vjs-progress-holder .vjs-load-progress,
+    .video-js .vjs-progress-holder .vjs-play-progress {
+      border-radius: 0.25em;
+    }
+
+    // Linha 2: altura explicita — o default (.vjs-control { height: 100% })
+    // colapsa quando a barra esta em height:auto.
+    .video-js .vjs-control-bar > *:not(.vjs-progress-control) {
+      height: 3em;
+    }
+
+    // Espacador flexivel: empurra o grupo direito para a direita.
+    .video-js .vjs-custom-control-spacer {
+      display: flex;
+      flex: 1 1 auto;
+    }
+
+    // Tempo total / atual sempre visiveis: a skin esconde
+    // .vjs-current-time, .vjs-duration e .vjs-time-divider por padrao e
+    // so revela com a classe vjs-normalise-time-controls, que a lib
+    // nunca adiciona sozinha (existe apenas no CSS).
+    .video-js .vjs-current-time,
+    .video-js .vjs-duration,
+    .video-js .vjs-time-divider {
+      display: flex;
+    }
+  }
+}

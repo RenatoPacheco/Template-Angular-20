@@ -18,12 +18,22 @@ O sistema SHALL renderizar a control bar do `app-video` em duas linhas: a primei
 
 ### Requirement: Grupo esquerdo da segunda linha
 
-O sistema SHALL posicionar no grupo esquerdo da segunda linha, nesta ordem: controle de play/pause, controle de volume e indicacao de tempo no formato `tempo atual / tempo total`.
+O sistema SHALL posicionar no grupo esquerdo da segunda linha, nesta ordem: controle de play/pause, controle de volume e indicacao de tempo no formato `tempo total / tempo atual`.
 
 #### Scenario: Composicao do grupo esquerdo
 
 - **WHEN** o player exibe a control bar
-- **THEN** a esquerda estao play/pause, volume e o tempo `atual / total` (ex.: `01:12 / 05:00`), e o tempo atual atualiza durante a reproducao.
+- **THEN** a esquerda estao play/pause, volume e o tempo `total / atual` (ex.: `45:00 / 09:41`), e o tempo atual atualiza durante a reproducao.
+
+#### Scenario: Unidades sempre com 2 digitos
+
+- **WHEN** qualquer tempo e exibido (atual, total ou tooltip de busca)
+- **THEN** minutos e segundos tem sempre 2 digitos (ex.: `04:03`, nunca `4:3` ou `1:21`).
+
+#### Scenario: Video com mais de uma hora
+
+- **WHEN** a duracao total e igual ou superior a 1 hora
+- **THEN** o tempo e exibido no formato `HH:MM:SS` com horas tambem em 2 digitos (ex.: `01:45:01`, nunca `1:8:22`).
 
 ### Requirement: Grupo direito da segunda linha
 

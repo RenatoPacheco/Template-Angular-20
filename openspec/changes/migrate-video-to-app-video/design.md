@@ -28,13 +28,16 @@ Estado atual (`src/app/shared/ui/video/video.ts`): seletor `video[app-video]`, `
    Racional: corrige NG0608 e garante dispose automatico com o componente. `syncPlayerState` le signals com `untracked` ao redor de chamadas do player para nao criar dependencias espurias. Alternativa (`afterNextRender` + `effect`): valida, mas construtor e mais simples e alinhado ao zoneless.
 
 3. **`src: string | null` + `sources: VideoSource[] | null` (um dos dois obrigatorio).**
-   Racional: cobre caso atual (mp4 unico) e evolucao (fallback webm/mp4, HLS). `getMimeType` atual estendido para `mp4/webm/m3u8`, default `video/mp4`; entradas `sources` ja trazem `type` explicito. Alternativa (content projection de `<source>`): rejeitada — leitura de DOM no init e mais fragil e dificil de tipar/testar.
+   Racional: cobre caso atual (mp4 unico) e evolucao (fallback webm/mp4, HLS). `resolveMimeType` atual estendido para `mp4/webm/m3u8`, default `video/mp4`; entradas `sources` ja trazem `type` explicito. Alternativa (content projection de `<source>`): rejeitada — leitura de DOM no init e mais fragil e dificil de tipar/testar.
 
 4. **Live: `src/sources`, `controls`, `autoplay`, `loop`, `muted`, `playbackRate`. Init-only: `playbackRates`, `fluid`, `aspectRatio`.**
    Racional: video.js so constroi o `playbackRateMenuButton` e layout fluido no init; fingir reatividade gera menu stale. `playbackRate` live via `player.playbackRate()` com normalizacao (`normalizePlaybackRate(s)` reaproveitada).
 
 5. **Transforms do repo + `input()` signals; `output()` para `ready/play/pause/ended/error`.**
    Racional: consistencia com `button`/`form-editor`; `error` e essencial porque hoje falha de stream e silenciosa. `ready` expoe o instante pos-`videojs()` para o showcase/testes.
+
+7. **`width`/`height` opcionais (px), live via `player.width()`/`player.height()`.**
+   Racional: video.js aceita `width`/`height` no init e setters depois; com `fluid: true` elas definem as dimensoes de partida e o player escala responsivamente — tamanho fixo real exige `fluid=false`. Ausente/null/invalido (<= 0, NaN) = sem interferencia. Transform dedicado preserva `null` (o `transformNumber` do repo retorna `0` em falha, o que ligaria tamanho zero).
 
 6. **Classe `video-js` apenas; revisar import do CSS.**
    Racional: `vjs-default-skin` nao existe na v8. Verificar `angular.json`/`styles.scss` para `video.js/dist/video-js.css`; sem isso o player parece "quebrado" mesmo funcional.

@@ -8,7 +8,7 @@ O componente atual `video[app-video]` (`src/app/shared/ui/video/video.ts`) combi
 
 - **BREAKING**: seletor muda de `video[app-video]` (atributo) para `app-video` (elemento). Uso antigo `<video app-video ...>` deixa de funcionar.
 - Novo `app-video` passa a ser dono do DOM: template proprio com `<video>` interno privado, video.js inicializado apenas sobre esse no interno.
-- API recomposta em duas camadas: camada fiel ao video.js (`src`/`sources`, `autoplay`, `controls`, `loop`, `muted`, `preload`, `poster`, `playbackRate`, `playbackRates`, `fluid`) + outputs de ciclo de vida (`ready`, `play`, `pause`, `ended`, `error`).
+- API recomposta em duas camadas: camada fiel ao video.js (`src`/`sources`, `autoplay`, `controls`, `loop`, `muted`, `preload`, `poster`, `playbackRate`, `playbackRates`, `fluid`, `width`, `height`) + outputs de ciclo de vida (`ready`, `play`, `pause`, `ended`, `error`).
 - Reatividade corrigida: sincronizacao via `effect` em injection context (construtor) ou `ngOnChanges`, com distincao entre opcoes live (atualizam player vivo) e init-only (exigem recria). Sem escrita de volta em atributos do host apos o init.
 - Convergencia de convecoes do repo: `transformBoolean` / `transformNumber` de `@app/shared/utils`, prefixo `app`, signals para reatividade zoneless.
 - Migracao do unico consumo conhecido: `showcase-video-page.html` para `<app-video>`.

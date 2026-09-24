@@ -100,6 +100,25 @@ O sistema SHALL emitir `ready` quando o player estiver pronto, `error` em falha 
 - **WHEN** o usuario da play, pausa e o video termina
 - **THEN** o sistema emite `play`, `pause` e `ended` respectivamente.
 
+### Requirement: Dimensoes configuraveis
+
+O sistema SHALL expor `width` e `height` (pixels) como inputs opcionais; quando ausentes, o dimensionamento segue `fluid`.
+
+#### Scenario: Tamanho fixo
+
+- **WHEN** `fluid` e `false` e `width`/`height` sao `640`/`360`
+- **THEN** o player renderiza com 640x360 px.
+
+#### Scenario: Atualizacao ao vivo
+
+- **WHEN** `width` ou `height` mudam apos o player pronto
+- **THEN** o player redimensiona sem recriar e sem recarregar a fonte.
+
+#### Scenario: Ausentes ou invalidos
+
+- **WHEN** `width`/`height` nao sao informados ou sao `0`, negativos ou nao numericos
+- **THEN** o sistema ignora esses valores e o dimensionamento segue `fluid`, sem erro.
+
 ### Requirement: Acessibilidade e layout
 
 O sistema SHALL renderizar com a classe `video-js` (sem a legada `vjs-default-skin`), manter comportamento `fluid`/responsivo configuravel e nao quebrar sem CSS global.

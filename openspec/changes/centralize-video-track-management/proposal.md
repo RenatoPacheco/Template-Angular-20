@@ -2,7 +2,7 @@
 
 ## Why
 
-O componente `Video` atualmente divide a gestão de faixas: observa eventos de áudio e legendas por meio de uma função utilitária e adiciona/remova faixas remotas diretamente no componente. Centralizar esse ciclo de vida em uma classe dedicada facilitará a evolução do player para novos tipos de faixa, começando por legendas, capítulos e metadata.
+O componente `Video` atualmente divide a gestão de faixas: observa eventos de áudio e legendas por meio de uma função utilitária e adiciona/remova faixas remotas diretamente no componente. Centralizar esse ciclo de vida e oferecer um utilitário reutilizável para dados WebVTT facilitará a evolução do player e a preparação de arquivos de faixas.
 
 ## What Changes
 
@@ -10,6 +10,7 @@ O componente `Video` atualmente divide a gestão de faixas: observa eventos de �
 - Manter o suporte atual a múltiplas faixas de legenda e delegar sua gestão à classe.
 - Permitir configurar faixas de capítulos por URL, sigla de idioma e título, usando a navegação de capítulos integrada ao player.
 - Permitir configurar faixas de metadata por URL, sigla de idioma e título, mantendo-as ocultas visualmente e emitindo os cues ativos para o consumidor do componente.
+- Criar a classe `VideoVtt` para interpretar texto WebVTT em cues normalizados, serializar cues em texto WebVTT e criar um `Blob` `text/vtt`.
 - Expor no showcase a configuração de faixas de legendas, capítulos e metadata, incluindo a observação dos cues, em uma seção exclusiva “Faixas do vídeo” separada das opções gerais do player.
 - Preservar os contratos existentes de seleção e eventos de legenda/áudio.
 
@@ -23,7 +24,7 @@ O componente `Video` atualmente divide a gestão de faixas: observa eventos de �
 
 ## Impact
 
-- `src/app/shared/ui/video/video-track.ts` e `video.ts`.
+- `src/app/shared/ui/video/video-track.ts`, `video-vtt.ts` e `video.ts`.
 - Tipos e entradas públicas do componente compartilhado `Video`.
 - Showcase de vídeo em `src/app/feature/showcases/pages/showcase-video-page/`.
 - API de faixas remotas, eventos de cues metadata e controles de capítulos do Video.js; nenhuma nova dependência prevista.

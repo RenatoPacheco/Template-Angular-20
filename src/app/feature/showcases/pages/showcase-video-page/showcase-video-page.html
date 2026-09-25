@@ -19,11 +19,14 @@
         [height]="settings.height"
         [subtitleVisibility]="settings.subtitleVisibility"
         [subtitleTracks]="settings.subtitleTracks"
+        [chapterTracks]="settings.chapterTracks"
+        [metadataTracks]="settings.metadataTracks"
         (qualityChange)="logQualityChange($event)"
         (volumeChange)="logVolumeChange($event)"
         (audioTrackChange)="logAudioTrackChange($event)"
         (subtitleChange)="logSubtitleChange($event)"
         (subtitleTextChange)="logSubtitleTextChange($event)"
+        (metadataCueChange)="logMetadataCueChange($event)"
         (playbackRateChange)="logPlaybackRateChange($event)"
         (stateChange)="logVideoStateChange($event)"
         (skipped)="logVideoSkipped($event)"
@@ -31,9 +34,10 @@
       </app-video>
     }
   </section>
-  <div class="col-6 alert alert-info text-center" role="alert">
-    {{ subtitleText() }} &nbsp;
-  </div>
+  <section class="mb-4" aria-label="Informações do player">
+    <div class="alert alert-secondary mb-4" role="status">Legenda ativa: <strong>{{ subtitleText() }}</strong></div>
+    <div class="alert alert-info mt-3 mb-4" role="status"><strong>{{ metadataCueSummary() }}</strong></div>
+  </section>
   <form [formGroup]="form" class="card shadow-sm">
     <div class="card-header">
       <h2 class="h5 mb-0">Controles do player</h2>
@@ -162,54 +166,6 @@
                 <option value="windowed">Somente em janela</option>
               </select>
             </div>
-            <div class="col-12">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="form-label mb-0">Faixas de legenda</span>
-                <button class="btn btn-sm btn-outline-primary" type="button" (click)="addSubtitleTrack()">
-                  Adicionar legenda
-                </button>
-              </div>
-              <div formArrayName="subtitleTracks" class="vstack gap-2">
-                @for (track of subtitleTrackRows; track $index; let index = $index) {
-                  <div class="row g-2 align-items-end" [formGroupName]="index">
-                    <div class="col-12 col-md-3">
-                      <label class="form-label" [for]="'video-subtitle-language-' + index">Sigla</label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        [id]="'video-subtitle-language-' + index"
-                        formControlName="srclang"
-                        placeholder="pt-BR">
-                    </div>
-                    <div class="col-12 col-md-4">
-                      <label class="form-label" [for]="'video-subtitle-url-' + index">URL</label>
-                      <input
-                        class="form-control"
-                        type="url"
-                        [id]="'video-subtitle-url-' + index"
-                        formControlName="src">
-                    </div>
-                    <div class="col-12 col-md-3">
-                      <label class="form-label" [for]="'video-subtitle-title-' + index">Título</label>
-                      <input
-                        class="form-control"
-                        type="text"
-                        [id]="'video-subtitle-title-' + index"
-                        formControlName="label">
-                    </div>
-                    <div class="col-12 col-md-2">
-                      <button
-                        class="btn btn-outline-danger w-100"
-                        type="button"
-                        (click)="removeSubtitleTrack(index)">
-                        Remover
-                      </button>
-                    </div>
-                  </div>
-                }
-              </div>
-              <small class="form-text">Informe uma URL de legenda acessível e compatível com faixas de texto do player.</small>
-            </div>
             <div class="col-6">
               <label class="form-label" for="video-width">Largura (px)</label>
               <input id="video-width" class="form-control" type="number" min="1" formControlName="width">
@@ -243,6 +199,101 @@
             <input id="video-fluid" class="form-check-input" type="checkbox" formControlName="fluid">
             <label class="form-check-label" for="video-fluid">Layout fluido (init-only)</label>
           </div>
+        </fieldset>
+
+        <fieldset class="col-12">
+          <legend class="h6">Faixas do vídeo</legend>
+          <p class="text-muted">Configure legendas, capítulos e faixas de metadata para o player.</p>
+
+          <section class="mb-4" aria-labelledby="video-subtitles-heading">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h3 id="video-subtitles-heading" class="h6 mb-0">Legendas</h3>
+              <button class="btn btn-sm btn-outline-primary" type="button" (click)="addSubtitleTrack()">
+                Adicionar legenda
+              </button>
+            </div>
+            <div formArrayName="subtitleTracks" class="vstack gap-2">
+              @for (track of subtitleTrackRows; track $index; let index = $index) {
+                <div class="row g-2 align-items-end" [formGroupName]="index">
+                  <div class="col-12 col-md-3">
+                    <label class="form-label" [for]="'video-subtitle-language-' + index">Sigla</label>
+                    <input class="form-control" type="text" [id]="'video-subtitle-language-' + index" formControlName="srclang" placeholder="pt-BR">
+                  </div>
+                  <div class="col-12 col-md-4">
+                    <label class="form-label" [for]="'video-subtitle-url-' + index">URL</label>
+                    <input class="form-control" type="url" [id]="'video-subtitle-url-' + index" formControlName="src">
+                  </div>
+                  <div class="col-12 col-md-3">
+                    <label class="form-label" [for]="'video-subtitle-title-' + index">Título</label>
+                    <input class="form-control" type="text" [id]="'video-subtitle-title-' + index" formControlName="label">
+                  </div>
+                  <div class="col-12 col-md-2">
+                    <button class="btn btn-outline-danger w-100" type="button" (click)="removeSubtitleTrack(index)">Remover</button>
+                  </div>
+                </div>
+              }
+            </div>
+          </section>
+
+          <section class="mb-4" aria-labelledby="video-chapters-heading">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h3 id="video-chapters-heading" class="h6 mb-0">Capítulos</h3>
+              <button class="btn btn-sm btn-outline-primary" type="button" (click)="addChapterTrack()">
+                Adicionar capítulo
+              </button>
+            </div>
+            <div formArrayName="chapterTracks" class="vstack gap-2">
+              @for (track of chapterTrackRows; track $index; let index = $index) {
+                <div class="row g-2 align-items-end" [formGroupName]="index">
+                  <div class="col-12 col-md-3">
+                    <label class="form-label" [for]="'video-chapter-language-' + index">Sigla</label>
+                    <input class="form-control" type="text" [id]="'video-chapter-language-' + index" formControlName="srclang" placeholder="pt-BR">
+                  </div>
+                  <div class="col-12 col-md-4">
+                    <label class="form-label" [for]="'video-chapter-url-' + index">URL</label>
+                    <input class="form-control" type="url" [id]="'video-chapter-url-' + index" formControlName="src">
+                  </div>
+                  <div class="col-12 col-md-3">
+                    <label class="form-label" [for]="'video-chapter-title-' + index">Título</label>
+                    <input class="form-control" type="text" [id]="'video-chapter-title-' + index" formControlName="label">
+                  </div>
+                  <div class="col-12 col-md-2">
+                    <button class="btn btn-outline-danger w-100" type="button" (click)="removeChapterTrack(index)">Remover</button>
+                  </div>
+                </div>
+              }
+            </div>
+          </section>
+
+          <section class="mb-3" aria-labelledby="video-metadata-heading">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h3 id="video-metadata-heading" class="h6 mb-0">Metadata</h3>
+              <button class="btn btn-sm btn-outline-primary" type="button" (click)="addMetadataTrack()">
+                Adicionar metadata
+              </button>
+            </div>
+            <div formArrayName="metadataTracks" class="vstack gap-2">
+              @for (track of metadataTrackRows; track $index; let index = $index) {
+                <div class="row g-2 align-items-end" [formGroupName]="index">
+                  <div class="col-12 col-md-3">
+                    <label class="form-label" [for]="'video-metadata-language-' + index">Sigla</label>
+                    <input class="form-control" type="text" [id]="'video-metadata-language-' + index" formControlName="srclang" placeholder="und">
+                  </div>
+                  <div class="col-12 col-md-4">
+                    <label class="form-label" [for]="'video-metadata-url-' + index">URL</label>
+                    <input class="form-control" type="url" [id]="'video-metadata-url-' + index" formControlName="src">
+                  </div>
+                  <div class="col-12 col-md-3">
+                    <label class="form-label" [for]="'video-metadata-title-' + index">Título</label>
+                    <input class="form-control" type="text" [id]="'video-metadata-title-' + index" formControlName="label">
+                  </div>
+                  <div class="col-12 col-md-2">
+                    <button class="btn btn-outline-danger w-100" type="button" (click)="removeMetadataTrack(index)">Remover</button>
+                  </div>
+                </div>
+              }
+            </div>
+          </section>
         </fieldset>
       </div>
     </div>

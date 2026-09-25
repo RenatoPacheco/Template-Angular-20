@@ -1,0 +1,31 @@
+WEBVTT
+
+00:00:30.000 --> 00:00:35.000
+{"type":"highlight","id":1,"title":"Ponto importante da introdução"}
+
+00:01:20.000 --> 00:01:25.000
+{"type":"link","id":2,"title":"Material complementar","url":"https://example.com/material"}
+
+00:02:30.000 --> 00:02:35.000
+{"type":"note","id":3,"title":"Conceito importante","text":"Este conceito será utilizado novamente mais adiante."}
+
+00:03:15.000 --> 00:03:20.000
+{"type":"exercise","id":4,"title":"Exercício 1"}
+
+00:04:40.000 --> 00:04:45.000
+{"type":"highlight","id":5,"title":"Observe este detalhe"}
+
+00:05:30.000 --> 00:05:35.000
+{"type":"exercise","id":6,"title":"Exercício 2"}
+
+00:06:20.000 --> 00:06:25.000
+{"type":"link","id":7,"title":"Saiba mais","url":"https://example.com/conteudo"}
+
+00:07:45.000 --> 00:07:50.000
+{"type":"note","id":8,"title":"Lembre-se deste ponto"}
+
+00:08:30.000 --> 00:08:35.000
+{"type":"highlight","id":9,"title":"Resumo importante"}
+
+00:09:20.000 --> 00:09:25.000
+{"type":"exercise","id":10,"title":"Exercício final"}

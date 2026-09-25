@@ -1,5 +1,5 @@
 import {
-  AfterViewInit, Component, ElementRef, Input, OnDestroy,
+  AfterViewInit, Component, ElementRef, Input, OnDestroy, WritableSignal,
   effect, output, signal, untracked, viewChild
 } from '@angular/core';
 
@@ -11,18 +11,19 @@ import {
   registerVideoQualitySelector,
   setVideoQuality
 } from './video-quality-selector';
-import { watchVideoTrackChanges } from './video-track-selector';
+import {
+  VideoMetadataCueChange,
+  VideoSubtitleTrack,
+  VideoTextTrack,
+  VideoTrack
+} from './video-track';
 import { videoJsPtBr } from './video-pt-br';
+
+export type { VideoMetadataCueChange, VideoSubtitleTrack, VideoTextTrack } from './video-track';
 
 export interface VideoSource {
   src: string;
   type?: string;
-}
-
-export interface VideoSubtitleTrack {
-  src: string;
-  srclang: string;
-  label: string;
 }
 
 export type VideoPreload = 'auto' | 'metadata' | 'none';
@@ -246,21 +247,26 @@ export class Video implements AfterViewInit, OnDestroy {
 
   private _subtitleTracks = signal<VideoSubtitleTrack[]>([]);
   @Input() public set subtitleTracks(value: VideoSubtitleTrack[] | null) {
-    const currentTracks = this.subtitleTracks;
-    const nextTracks = value ?? [];
-    const unchanged = currentTracks.length === nextTracks.length
-      && currentTracks.every((track, index) => {
-        const nextTrack = nextTracks[index];
-        return track.src === nextTrack.src
-          && track.srclang === nextTrack.srclang
-          && track.label === nextTrack.label;
-      });
-    if (!unchanged) {
-      this._subtitleTracks.set(nextTracks);
-    }
+    this.setTextTracks(this._subtitleTracks, value);
   }
   public get subtitleTracks(): VideoSubtitleTrack[] {
     return this._subtitleTracks();
+  }
+
+  private _chapterTracks = signal<VideoTextTrack[]>([]);
+  @Input() public set chapterTracks(value: VideoTextTrack[] | null) {
+    this.setTextTracks(this._chapterTracks, value);
+  }
+  public get chapterTracks(): VideoTextTrack[] {
+    return this._chapterTracks();
+  }
+
+  private _metadataTracks = signal<VideoTextTrack[]>([]);
+  @Input() public set metadataTracks(value: VideoTextTrack[] | null) {
+    this.setTextTracks(this._metadataTracks, value);
+  }
+  public get metadataTracks(): VideoTextTrack[] {
+    return this._metadataTracks();
   }
 
   public readonly ready = output<void>();
@@ -272,6 +278,7 @@ export class Video implements AfterViewInit, OnDestroy {
   public readonly audioTrackChange = output<{ label: string; language: string } | null>();
   public readonly subtitleChange = output<{ label: string; language: string } | null>();
   public readonly subtitleTextChange = output<string>();
+  public readonly metadataCueChange = output<VideoMetadataCueChange>();
   public readonly playbackRateChange = output<number>();
   public readonly skipped = output<VideoSeekChange>();
   public readonly rewound = output<VideoSeekChange>();
@@ -284,9 +291,10 @@ export class Video implements AfterViewInit, OnDestroy {
   private appliedHeight: number | null = null;
   private appliedSubtitleVisibility: VideoSubtitleVisibility | null = null;
   private lastQualityInput = 'auto';
-  private removeTrackListeners: (() => void) | null = null;
-  private managedSubtitleTracks: TextTrack[] = [];
-  private playerReady = false;
+  private trackManager: VideoTrack | null = null;
+  private syncedSubtitleTracks: VideoSubtitleTrack[] | null = null;
+  private syncedChapterTracks: VideoTextTrack[] | null = null;
+  private syncedMetadataTracks: VideoTextTrack[] | null = null;
   private lastPlaybackTime = 0;
   private pendingSeekFrom: number | null = null;
 
@@ -362,6 +370,7 @@ export class Video implements AfterViewInit, OnDestroy {
         ]
       }
     });
+
     this.appliedWidth = this.width;
     this.appliedHeight = this.height;
     this.applySubtitleVisibility(this.subtitleVisibility);
@@ -375,8 +384,13 @@ export class Video implements AfterViewInit, OnDestroy {
     this.player.on('loadeddata', () => this.initializeQualitySelector());
 
     this.player.ready(() => {
-      this.playerReady = true;
-      this.syncSubtitleTracks();
+      this.trackManager = new VideoTrack(this.player!, {
+        audioTrackChange: (track) => this.audioTrackChange.emit(track),
+        subtitleChange: (track) => this.subtitleChange.emit(track),
+        subtitleTextChange: (text) => this.subtitleTextChange.emit(text),
+        metadataCueChange: (change) => this.metadataCueChange.emit(change)
+      });
+      this.syncTrackInputs();
       this.ready.emit();
       this.stateChange.emit('ready');
     });
@@ -412,18 +426,11 @@ export class Video implements AfterViewInit, OnDestroy {
       }
     });
     this.player.on('seeked', () => this.emitSeekDirection());
-    this.removeTrackListeners = watchVideoTrackChanges(this.player, {
-      audioTrackChange: (track) => this.audioTrackChange.emit(track),
-      subtitleChange: (track) => this.subtitleChange.emit(track),
-      subtitleTextChange: (text) => this.subtitleTextChange.emit(text)
-    });
   }
 
   public ngOnDestroy(): void {
-    this.removeTrackListeners?.();
-    this.removeTrackListeners = null;
-    this.playerReady = false;
-    this.managedSubtitleTracks = [];
+    this.trackManager?.destroy();
+    this.trackManager = null;
     this.player?.dispose();
     this.player = null;
   }
@@ -452,6 +459,8 @@ export class Video implements AfterViewInit, OnDestroy {
     const quality = this.quality;
     const subtitleVisibility = this.subtitleVisibility;
     const subtitleTracks = this.subtitleTracks;
+    const chapterTracks = this.chapterTracks;
+    const metadataTracks = this.metadataTracks;
 
     if (!this.player) {
       return;
@@ -479,7 +488,16 @@ export class Video implements AfterViewInit, OnDestroy {
       }
 
       if (subtitleTracks !== this.syncedSubtitleTracks) {
-        this.syncSubtitleTracks();
+        this.trackManager?.setTracks('subtitles', subtitleTracks);
+        this.syncedSubtitleTracks = subtitleTracks;
+      }
+      if (chapterTracks !== this.syncedChapterTracks) {
+        this.trackManager?.setTracks('chapters', chapterTracks);
+        this.syncedChapterTracks = chapterTracks;
+      }
+      if (metadataTracks !== this.syncedMetadataTracks) {
+        this.trackManager?.setTracks('metadata', metadataTracks);
+        this.syncedMetadataTracks = metadataTracks;
       }
 
       if (quality !== this.lastQualityInput) {
@@ -498,38 +516,35 @@ export class Video implements AfterViewInit, OnDestroy {
     });
   }
 
-  private syncedSubtitleTracks: VideoSubtitleTrack[] | null = null;
-
-  private syncSubtitleTracks(): void {
-    if (!this.player || !this.playerReady) {
+  private syncTrackInputs(): void {
+    if (!this.trackManager) {
       return;
     }
 
-    for (const track of this.managedSubtitleTracks) {
-      this.player.removeRemoteTextTrack(track);
-    }
-    this.managedSubtitleTracks = [];
-
-    for (const track of this.subtitleTracks) {
-      const src = track.src.trim();
-      const srclang = track.srclang.trim();
-      const label = track.label.trim();
-      if (!src || !srclang || !label) {
-        continue;
-      }
-
-      const remoteTrack = this.player.addRemoteTextTrack({
-        kind: 'subtitles',
-        src,
-        srclang,
-        label
-      }, false) as unknown as { track?: TextTrack } | undefined;
-      if (remoteTrack?.track) {
-        this.managedSubtitleTracks.push(remoteTrack.track);
-      }
-    }
-
+    this.trackManager.setTracks('subtitles', this.subtitleTracks);
+    this.trackManager.setTracks('chapters', this.chapterTracks);
+    this.trackManager.setTracks('metadata', this.metadataTracks);
     this.syncedSubtitleTracks = this.subtitleTracks;
+    this.syncedChapterTracks = this.chapterTracks;
+    this.syncedMetadataTracks = this.metadataTracks;
+  }
+
+  private setTextTracks(
+    target: WritableSignal<VideoTextTrack[]>,
+    value: VideoTextTrack[] | null
+  ): void {
+    const nextTracks = value ?? [];
+    const currentTracks = target();
+    const unchanged = currentTracks.length === nextTracks.length
+      && currentTracks.every((track, index) => {
+        const nextTrack = nextTracks[index];
+        return track.src === nextTrack.src
+          && track.srclang === nextTrack.srclang
+          && track.label === nextTrack.label;
+      });
+    if (!unchanged) {
+      target.set(nextTracks);
+    }
   }
 
   private initializeQualitySelector(): void {

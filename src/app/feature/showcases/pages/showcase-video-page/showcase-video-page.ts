@@ -8,7 +8,9 @@ import {
   VideoSeekChange,
   VideoSource,
   VideoState,
+  VideoMetadataCueChange,
   VideoSubtitleTrack,
+  VideoTextTrack,
   VideoSubtitleVisibility
 } from '@app/shared/ui';
 
@@ -31,6 +33,8 @@ interface ShowcaseVideoSettings {
   height: number | null;
   subtitleVisibility: VideoSubtitleVisibility;
   subtitleTracks: VideoSubtitleTrack[];
+  chapterTracks: VideoTextTrack[];
+  metadataTracks: VideoTextTrack[];
 }
 
 @Component({
@@ -60,7 +64,15 @@ export class ShowcaseVideoPage {
     muted: this.formBuilder.nonNullable.control(false),
     preload: this.formBuilder.nonNullable.control<VideoPreload>('metadata'),
     poster: this.formBuilder.nonNullable.control('', { updateOn: 'blur' }),
-    subtitleTracks: this.formBuilder.array([this.createSubtitleRow()]),
+    subtitleTracks: this.formBuilder.array([
+      this.createTrackRow('/video/subtitles.vtt', 'pt-BR', 'Legendas')
+    ]),
+    chapterTracks: this.formBuilder.array([
+      this.createTrackRow('/video/chapters.vtt', 'pt-BR', 'Capítulos')
+    ]),
+    metadataTracks: this.formBuilder.array([
+      this.createTrackRow('/video/metadata.vtt', 'pt-BR', 'Metadata')
+    ]),
     playbackRate: this.formBuilder.nonNullable.control(1),
     playbackRates: this.formBuilder.array(
       [0.5, 0.75, 1, 1.25, 1.5, 2].map((rate) => this.formBuilder.nonNullable.control(rate))
@@ -106,11 +118,14 @@ export class ShowcaseVideoPage {
           srclang: track.srclang.trim(),
           label: track.label.trim()
         }))
-        .filter((track) => track.src.length > 0 && track.srclang.length > 0 && track.label.length > 0)
+        .filter((track) => track.src.length > 0 && track.srclang.length > 0 && track.label.length > 0),
+      chapterTracks: this.normalizeTrackList(values.chapterTracks),
+      metadataTracks: this.normalizeTrackList(values.metadataTracks)
     };
   });
 
   protected subtitleText = signal('');
+  protected metadataCueSummary = signal('Nenhum cue de metadata recebido.');
 
   protected get sourceRows() {
     return this.form.controls.sources.controls;
@@ -122,6 +137,14 @@ export class ShowcaseVideoPage {
 
   protected get subtitleTrackRows() {
     return this.form.controls.subtitleTracks.controls;
+  }
+
+  protected get chapterTrackRows() {
+    return this.form.controls.chapterTracks.controls;
+  }
+
+  protected get metadataTrackRows() {
+    return this.form.controls.metadataTracks.controls;
   }
 
   private createSourceRow(src = '', type = '') {
@@ -139,12 +162,46 @@ export class ShowcaseVideoPage {
     });
   }
 
+  private createTrackRow(src = '', srclang = '', label = '') {
+    return this.formBuilder.nonNullable.group({
+      srclang: this.formBuilder.nonNullable.control(srclang, { updateOn: 'blur' }),
+      src: this.formBuilder.nonNullable.control(src, { updateOn: 'blur' }),
+      label: this.formBuilder.nonNullable.control(label, { updateOn: 'blur' })
+    });
+  }
+
+  private normalizeTrackList(tracks: VideoTextTrack[]): VideoTextTrack[] {
+    return tracks
+      .map((track) => ({
+        src: track.src.trim(),
+        srclang: track.srclang.trim(),
+        label: track.label.trim()
+      }))
+      .filter((track) => track.src.length > 0 && track.srclang.length > 0 && track.label.length > 0);
+  }
+
   protected addSubtitleTrack(): void {
     this.form.controls.subtitleTracks.push(this.createSubtitleRow());
   }
 
   protected removeSubtitleTrack(index: number): void {
     this.form.controls.subtitleTracks.removeAt(index);
+  }
+
+  protected addChapterTrack(): void {
+    this.form.controls.chapterTracks.push(this.createTrackRow());
+  }
+
+  protected removeChapterTrack(index: number): void {
+    this.form.controls.chapterTracks.removeAt(index);
+  }
+
+  protected addMetadataTrack(): void {
+    this.form.controls.metadataTracks.push(this.createTrackRow());
+  }
+
+  protected removeMetadataTrack(index: number): void {
+    this.form.controls.metadataTracks.removeAt(index);
   }
 
   protected addSource(): void {
@@ -204,6 +261,13 @@ export class ShowcaseVideoPage {
       text = text.charAt(0).toUpperCase() + text.slice(1);
     }
     this.subtitleText.set(text);
+  }
+
+  protected logMetadataCueChange(change: VideoMetadataCueChange): void {
+    this.metadataCueSummary.set(
+      `${change.label} (${change.language}): ${change.cues.length} cue(s) ativo(s)`
+    );
+    console.log('[Video] Cues de metadata:', change);
   }
 
   protected logPlaybackRateChange(rate: number): void {

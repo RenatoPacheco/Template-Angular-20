@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, viewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, inject, signal, viewChild } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 
@@ -8,6 +8,7 @@ import {
   VideoSeekChange,
   VideoSource,
   VideoState,
+  VideoSubtitleTrack,
   VideoSubtitleVisibility
 } from '@app/shared/ui';
 
@@ -29,6 +30,7 @@ interface ShowcaseVideoSettings {
   width: number | null;
   height: number | null;
   subtitleVisibility: VideoSubtitleVisibility;
+  subtitleTracks: VideoSubtitleTrack[];
 }
 
 @Component({
@@ -40,9 +42,10 @@ interface ShowcaseVideoSettings {
 })
 export class ShowcaseVideoPage {
   private readonly formBuilder = inject(FormBuilder);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private readonly playerComponent = viewChild(Video);
 
-  protected readonly playerGeneration = signal(0);
+  protected readonly playerMounted = signal(true);
 
   protected readonly form = this.formBuilder.group({
     sourceMode: this.formBuilder.nonNullable.control<VideoSourceMode>('src'),
@@ -57,6 +60,7 @@ export class ShowcaseVideoPage {
     muted: this.formBuilder.nonNullable.control(false),
     preload: this.formBuilder.nonNullable.control<VideoPreload>('metadata'),
     poster: this.formBuilder.nonNullable.control('', { updateOn: 'blur' }),
+    subtitleTracks: this.formBuilder.array([this.createSubtitleRow()]),
     playbackRate: this.formBuilder.nonNullable.control(1),
     playbackRates: this.formBuilder.array(
       [0.5, 0.75, 1, 1.25, 1.5, 2].map((rate) => this.formBuilder.nonNullable.control(rate))
@@ -68,7 +72,6 @@ export class ShowcaseVideoPage {
   });
 
   private readonly formRevision = toSignal(this.form.valueChanges, { initialValue: null });
-  protected readonly playerInstances = computed(() => [this.playerGeneration()]);
   protected readonly playerSettings = computed<ShowcaseVideoSettings>(() => {
     this.formRevision();
     const values = this.form.getRawValue();
@@ -96,9 +99,18 @@ export class ShowcaseVideoPage {
       fluid: values.fluid,
       width: values.width,
       height: values.height,
-      subtitleVisibility: values.subtitleVisibility
+      subtitleVisibility: values.subtitleVisibility,
+      subtitleTracks: values.subtitleTracks
+        .map((track) => ({
+          src: track.src.trim(),
+          srclang: track.srclang.trim(),
+          label: track.label.trim()
+        }))
+        .filter((track) => track.src.length > 0 && track.srclang.length > 0 && track.label.length > 0)
     };
   });
+
+  protected subtitleText = signal('');
 
   protected get sourceRows() {
     return this.form.controls.sources.controls;
@@ -108,11 +120,31 @@ export class ShowcaseVideoPage {
     return this.form.controls.playbackRates.controls;
   }
 
+  protected get subtitleTrackRows() {
+    return this.form.controls.subtitleTracks.controls;
+  }
+
   private createSourceRow(src = '', type = '') {
     return this.formBuilder.nonNullable.group({
       src: this.formBuilder.nonNullable.control(src, { updateOn: 'blur' }),
       type: this.formBuilder.nonNullable.control(type, { updateOn: 'blur' })
     });
+  }
+
+  private createSubtitleRow() {
+    return this.formBuilder.nonNullable.group({
+      srclang: this.formBuilder.nonNullable.control('', { updateOn: 'blur' }),
+      src: this.formBuilder.nonNullable.control('', { updateOn: 'blur' }),
+      label: this.formBuilder.nonNullable.control('', { updateOn: 'blur' })
+    });
+  }
+
+  protected addSubtitleTrack(): void {
+    this.form.controls.subtitleTracks.push(this.createSubtitleRow());
+  }
+
+  protected removeSubtitleTrack(index: number): void {
+    this.form.controls.subtitleTracks.removeAt(index);
   }
 
   protected addSource(): void {
@@ -142,7 +174,9 @@ export class ShowcaseVideoPage {
   }
 
   protected reinitializePlayer(): void {
-    this.playerGeneration.update((generation) => generation + 1);
+    this.playerMounted.set(false);
+    this.changeDetectorRef.detectChanges();
+    this.playerMounted.set(true);
   }
 
   protected logQualityChange(quality: string): void {
@@ -164,6 +198,12 @@ export class ShowcaseVideoPage {
 
   protected logSubtitleTextChange(text: string): void {
     console.log('[Video] Texto da legenda atualizado:', text);
+    text = text?.trim().replace(/\s+/g, ' ') ?? '';
+    text = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()\?\\]/g, '');
+    if (text.length > 0) {
+      text = text.charAt(0).toUpperCase() + text.slice(1);
+    }
+    this.subtitleText.set(text);
   }
 
   protected logPlaybackRateChange(rate: number): void {

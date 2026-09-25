@@ -1,6 +1,6 @@
 <div class="container py-4">
   <section class="mb-4" aria-label="Player HLS de demonstração">
-    @for (generation of playerInstances(); track generation) {
+    @if (playerMounted()) {
       @let settings = playerSettings();
       <app-video
         [src]="settings.src"
@@ -18,6 +18,7 @@
         [width]="settings.width"
         [height]="settings.height"
         [subtitleVisibility]="settings.subtitleVisibility"
+        [subtitleTracks]="settings.subtitleTracks"
         (qualityChange)="logQualityChange($event)"
         (volumeChange)="logVolumeChange($event)"
         (audioTrackChange)="logAudioTrackChange($event)"
@@ -30,7 +31,9 @@
       </app-video>
     }
   </section>
-
+  <div class="col-6 alert alert-info text-center" role="alert">
+    {{ subtitleText() }} &nbsp;
+  </div>
   <form [formGroup]="form" class="card shadow-sm">
     <div class="card-header">
       <h2 class="h5 mb-0">Controles do player</h2>
@@ -158,6 +161,54 @@
                 <option value="hidden">Oculta</option>
                 <option value="windowed">Somente em janela</option>
               </select>
+            </div>
+            <div class="col-12">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="form-label mb-0">Faixas de legenda</span>
+                <button class="btn btn-sm btn-outline-primary" type="button" (click)="addSubtitleTrack()">
+                  Adicionar legenda
+                </button>
+              </div>
+              <div formArrayName="subtitleTracks" class="vstack gap-2">
+                @for (track of subtitleTrackRows; track $index; let index = $index) {
+                  <div class="row g-2 align-items-end" [formGroupName]="index">
+                    <div class="col-12 col-md-3">
+                      <label class="form-label" [for]="'video-subtitle-language-' + index">Sigla</label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        [id]="'video-subtitle-language-' + index"
+                        formControlName="srclang"
+                        placeholder="pt-BR">
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <label class="form-label" [for]="'video-subtitle-url-' + index">URL</label>
+                      <input
+                        class="form-control"
+                        type="url"
+                        [id]="'video-subtitle-url-' + index"
+                        formControlName="src">
+                    </div>
+                    <div class="col-12 col-md-3">
+                      <label class="form-label" [for]="'video-subtitle-title-' + index">Título</label>
+                      <input
+                        class="form-control"
+                        type="text"
+                        [id]="'video-subtitle-title-' + index"
+                        formControlName="label">
+                    </div>
+                    <div class="col-12 col-md-2">
+                      <button
+                        class="btn btn-outline-danger w-100"
+                        type="button"
+                        (click)="removeSubtitleTrack(index)">
+                        Remover
+                      </button>
+                    </div>
+                  </div>
+                }
+              </div>
+              <small class="form-text">Informe uma URL de legenda acessível e compatível com faixas de texto do player.</small>
             </div>
             <div class="col-6">
               <label class="form-label" for="video-width">Largura (px)</label>

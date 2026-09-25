@@ -19,6 +19,12 @@ export interface VideoSource {
   type?: string;
 }
 
+export interface VideoSubtitleTrack {
+  src: string;
+  srclang: string;
+  label: string;
+}
+
 export type VideoPreload = 'auto' | 'metadata' | 'none';
 
 export type VideoState = 'ready' | 'playing' | 'paused' | 'ended' | 'error';
@@ -238,6 +244,25 @@ export class Video implements AfterViewInit, OnDestroy {
     return this._subtitleVisibility();
   }
 
+  private _subtitleTracks = signal<VideoSubtitleTrack[]>([]);
+  @Input() public set subtitleTracks(value: VideoSubtitleTrack[] | null) {
+    const currentTracks = this.subtitleTracks;
+    const nextTracks = value ?? [];
+    const unchanged = currentTracks.length === nextTracks.length
+      && currentTracks.every((track, index) => {
+        const nextTrack = nextTracks[index];
+        return track.src === nextTrack.src
+          && track.srclang === nextTrack.srclang
+          && track.label === nextTrack.label;
+      });
+    if (!unchanged) {
+      this._subtitleTracks.set(nextTracks);
+    }
+  }
+  public get subtitleTracks(): VideoSubtitleTrack[] {
+    return this._subtitleTracks();
+  }
+
   public readonly ready = output<void>();
   public readonly ended = output<void>();
   public readonly error = output<unknown>();
@@ -260,6 +285,8 @@ export class Video implements AfterViewInit, OnDestroy {
   private appliedSubtitleVisibility: VideoSubtitleVisibility | null = null;
   private lastQualityInput = 'auto';
   private removeTrackListeners: (() => void) | null = null;
+  private managedSubtitleTracks: TextTrack[] = [];
+  private playerReady = false;
   private lastPlaybackTime = 0;
   private pendingSeekFrom: number | null = null;
 
@@ -348,6 +375,8 @@ export class Video implements AfterViewInit, OnDestroy {
     this.player.on('loadeddata', () => this.initializeQualitySelector());
 
     this.player.ready(() => {
+      this.playerReady = true;
+      this.syncSubtitleTracks();
       this.ready.emit();
       this.stateChange.emit('ready');
     });
@@ -393,6 +422,8 @@ export class Video implements AfterViewInit, OnDestroy {
   public ngOnDestroy(): void {
     this.removeTrackListeners?.();
     this.removeTrackListeners = null;
+    this.playerReady = false;
+    this.managedSubtitleTracks = [];
     this.player?.dispose();
     this.player = null;
   }
@@ -420,6 +451,7 @@ export class Video implements AfterViewInit, OnDestroy {
     const height = this.height;
     const quality = this.quality;
     const subtitleVisibility = this.subtitleVisibility;
+    const subtitleTracks = this.subtitleTracks;
 
     if (!this.player) {
       return;
@@ -446,6 +478,10 @@ export class Video implements AfterViewInit, OnDestroy {
         this.applySubtitleVisibility(subtitleVisibility);
       }
 
+      if (subtitleTracks !== this.syncedSubtitleTracks) {
+        this.syncSubtitleTracks();
+      }
+
       if (quality !== this.lastQualityInput) {
         setVideoQuality(this.player!, quality);
         this.lastQualityInput = quality;
@@ -460,6 +496,40 @@ export class Video implements AfterViewInit, OnDestroy {
         this.appliedHeight = height;
       }
     });
+  }
+
+  private syncedSubtitleTracks: VideoSubtitleTrack[] | null = null;
+
+  private syncSubtitleTracks(): void {
+    if (!this.player || !this.playerReady) {
+      return;
+    }
+
+    for (const track of this.managedSubtitleTracks) {
+      this.player.removeRemoteTextTrack(track);
+    }
+    this.managedSubtitleTracks = [];
+
+    for (const track of this.subtitleTracks) {
+      const src = track.src.trim();
+      const srclang = track.srclang.trim();
+      const label = track.label.trim();
+      if (!src || !srclang || !label) {
+        continue;
+      }
+
+      const remoteTrack = this.player.addRemoteTextTrack({
+        kind: 'subtitles',
+        src,
+        srclang,
+        label
+      }, false) as unknown as { track?: TextTrack } | undefined;
+      if (remoteTrack?.track) {
+        this.managedSubtitleTracks.push(remoteTrack.track);
+      }
+    }
+
+    this.syncedSubtitleTracks = this.subtitleTracks;
   }
 
   private initializeQualitySelector(): void {

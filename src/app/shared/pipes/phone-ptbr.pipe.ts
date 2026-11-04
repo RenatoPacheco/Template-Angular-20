@@ -36,15 +36,16 @@ export class PhonePtBrPipe implements PipeTransform {
     const total = result.length;
 
     if (total <= 2) {
-      if (totalBase >= 5) {
+      
+      if (totalBase >= 5 && total == 2) {
         return `(${result}) `;
       }
 
-      if (totalBase >= 4) {
+      if (totalBase >= 4 && total == 2) {
         return `(${result})`;
       }
 
-      return `(${result}`;
+      return total > 0 ? `(${result}` : result;
     }
 
     if (total <= 6) {

@@ -39,7 +39,7 @@ export class DatePipe implements PipeTransform {
     const total = result.length;
 
     if (total <= 2) {
-      return totalBase > 2 ? `${result}/` : result;
+      return totalBase > 2 && total == 2 ? `${result}/` : result;
     }
     
     if (total <= 4) {

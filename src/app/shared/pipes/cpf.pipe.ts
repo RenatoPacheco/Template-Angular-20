@@ -30,7 +30,7 @@ export class CpfPipe implements PipeTransform {
     const total = result.length;
 
     if (total <= 3) {
-      return totalBase > 3 ? `${result}.` : result;
+      return totalBase > 3 && total == 3 ? `${result}.` : result;
     }
     
     if (total <= 6) {

@@ -10,20 +10,20 @@
 @if (isActive() && useCompleteConfig()) {
 <ckeditor
     [readOnly]="readonly || loading" [disabled]="disabled"
-    [config]="completeConfig()" [(ngModel)]="value" (blur)="emitBlur()" (focus)="emitBlur()" 
+    [config]="completeConfig()" [ngModel]="value" (ngModelChange)="commitValue($event)" (blur)="emitBlur()" (focus)="emitBlur()" 
     (ready)="emitReady($event)" (change)="emitEditorChange($event)" [id]="id">
 </ckeditor>
 }
 @if (isActive() && useBasicConfig()) {
 <ckeditor
     [readOnly]="readonly || loading" [disabled]="disabled" 
-    [config]="basicConfig()" [(ngModel)]="value" (blur)="emitBlur()" (focus)="emitBlur()"
+    [config]="basicConfig()" [ngModel]="value" (ngModelChange)="commitValue($event)" (blur)="emitBlur()" (focus)="emitBlur()"
     (ready)="emitReady($event)" (change)="emitEditorChange($event)">
 </ckeditor>
 }
 @if (!isActive()) {
 <ckeditor [readOnly]="true" [disabled]="disabled" 
-    [config]="disabledConfig()" [(ngModel)]="value" (blur)="emitBlur()" (focus)="emitBlur()" 
+    [config]="disabledConfig()" [ngModel]="value" (ngModelChange)="commitValue($event)" (blur)="emitBlur()" (focus)="emitBlur()" 
     (ready)="emitReady($event)" (change)="emitEditorChange($event)" [id]="id">
 </ckeditor>
 }

@@ -28,9 +28,7 @@ export class FormEditor extends FormElementBase<string> implements OnDestroy {
     super();
   }
 
-  public override ngOnInit(): void {
-    super.ngOnInit();
-
+  public ngOnInit(): void {
     this.mobile = this.servResize.mobile;
     this.servResize.eventMobile
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -76,18 +74,13 @@ export class FormEditor extends FormElementBase<string> implements OnDestroy {
     return this._mobile();
   }
 
-  public override set value(value: string|null) {
+  protected override normalizeValue(value: string|null): string|null {
     if (this.paragraph === false && value) {
       value = value.replace(/<\s*p(\s*|\s+[^>]+)>/gi, '<br />');
       value = value.replace(/<\s*\/p\s*>/gi, '');
       value = value.replace(/^\s*<br\s*\/?\s*>\s*/gi, '');
     }
-    super.value = value;
-  }
-  // Como sobrescreve o set, é necessário sobrescrever 
-  // o get para manter o efeito do signal
-  public override get value(): string|null {
-    return super.value;
+    return value;
   }
 
   protected readonly _paragraph = signal(true);

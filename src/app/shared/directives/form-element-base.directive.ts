@@ -1,30 +1,24 @@
-import { computed, DestroyRef, Directive, ElementRef, inject, Input, OnInit, output, signal, untracked, ViewChild } from "@angular/core";
+import { AfterContentInit, computed, DestroyRef, Directive, inject, Input, output, signal } from "@angular/core";
 import { AbstractControl, ControlValueAccessor, NgControl, ValidationErrors } from "@angular/forms";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { Guid } from "guid-typescript";
 
 import { transformBoolean } from "@app/shared/utils";
 import { ValidatorService } from "@app/shared/services";
 import { ToastService } from "@app/core";
 
-type FormElement =
-  | HTMLInputElement
-  | HTMLTextAreaElement
-  | HTMLSelectElement;
-
 @Directive()
 export abstract class FormElementBase<T> 
-  implements ControlValueAccessor, OnInit {
+  implements ControlValueAccessor, AfterContentInit {
   
   constructor() {
-    if (this.ngControl) {
-      this.ngControl.valueAccessor = this;
-    }
+    this.ngControl.valueAccessor = this;
   }
 
-  public ngOnInit(): void {
+  public ngAfterContentInit(): void {
     this.statusUpdate();
-    
-    this.ngControl?.control?.events
+
+    this.control?.events
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe({
       next: () => {
@@ -34,14 +28,11 @@ export abstract class FormElementBase<T>
   }
   
   protected readonly destroyRef = inject(DestroyRef);
-  protected readonly ngControl = inject(NgControl, { self: true, optional: true });
+  protected readonly ngControl = inject(NgControl, { self: true });
 
   protected readonly validator = inject(ValidatorService);
   protected readonly toast = inject(ToastService);
   protected errorId: string|null = null;
-
-  @ViewChild('element', {static: true})
-  protected element!: ElementRef<FormElement>|null;
 
   public readonly helper = output<void>();
   public readonly error = output<{
@@ -57,7 +48,7 @@ export abstract class FormElementBase<T>
   public onTouched: () => void = () => {}
 
   public writeValue(value: T|null): void {
-    this.value = value;
+    this._value.set(this.normalizeValue(value));
   }
 
   public registerOnChange(fn: (value: T|null) => void): void {
@@ -69,7 +60,7 @@ export abstract class FormElementBase<T>
   }
 
   public setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
+    this._disabled.set(isDisabled);
   }
   
   //endregion
@@ -96,34 +87,16 @@ export abstract class FormElementBase<T>
   }
 
   protected readonly _value = signal<T|null>(null);
-  @Input() public set value(value: T|null) {      
-    if (this.value !== value) {
-      this._value.set(value);
-      this.onChange(value);
-    }
-  }
   public get value(): T|null {
     return this._value();
   }
 
   protected readonly _disabled = signal(false);
-  @Input({ transform: transformBoolean })
-  public set disabled(value: boolean) {
-    if (value !== this.disabled) {
-      if (this.disabled) {
-        this.control?.enable();
-      } else {
-        this.control?.disable();
-      }
-      this._disabled.set(value);
-    }
-  }
   public get disabled(): boolean { 
-    const _disabled = this._disabled();
-    return this.control?.disabled ?? _disabled;
+    return this._disabled();
   }
 
-  protected readonly _id = signal(`${crypto.randomUUID()}`);
+  protected readonly _id = signal(Guid.create().toString());
   @Input() public set id(value: string) {
     if (value !== this.id) {
       this._id.set(value);
@@ -230,29 +203,7 @@ export abstract class FormElementBase<T>
   });
 
   public hasValue = computed(() => {
-    const value = this._value();
-
-    if (typeof value === 'boolean') {
-      return true;
-    }
-
-    if (typeof value === 'number') {
-      return true;
-    }
-
-    if (!value) {
-      return false;
-    }
-
-    if (Array.isArray(value)) {
-      return value.length > 0;
-    }
-
-    if (typeof value === 'object') {
-      return Object.keys(value).length > 0;
-    }
-
-    return true;
+    return !this.isEmpty(this._value());
   });
 
   public notHasValue = computed(() => {
@@ -268,21 +219,53 @@ export abstract class FormElementBase<T>
   });
 
   public clear(value: T|null = null): void {
-     const control = this.ngControl?.control;
+    const control = this.control;
 
-    if (control) {
-      control.setValue(value);
-      control.markAsPristine();
-      control.markAsUntouched();
-    } else {
-      this.value = value;
-    }
+    control?.setValue(value);
+    control?.markAsPristine();
+    control?.markAsUntouched();
 
-    this.element?.nativeElement.focus();
+    this.focusTarget()?.focus();
   };
 
+  protected focusTarget(): HTMLElement | null {
+    return null;
+  }
+
+  protected normalizeValue(value: T|null): T|null {
+    return value;
+  }
+
+  protected isEmpty(value: T|null): boolean {
+    if (typeof value === 'boolean' || typeof value === 'number') {
+      return false;
+    }
+
+    if (!value) {
+      return true;
+    }
+
+    if (Array.isArray(value)) {
+      return value.length === 0;
+    }
+
+    if (typeof value === 'object') {
+      return Object.keys(value).length === 0;
+    }
+
+    return false;
+  }
+
+  protected commitValue(value: T|null): void {
+    const normalized = this.normalizeValue(value);
+    if (normalized !== this._value()) {
+      this._value.set(normalized);
+      this.onChange(normalized);
+    }
+  }
+
   protected emitError(): void {
-    const errors = this.ngControl?.control?.errors;
+    const errors = this.control?.errors;
     if (errors) {
       var messages = this.validator.getMessages(errors);
       this.toast.remove(this.errorId);
@@ -302,17 +285,12 @@ export abstract class FormElementBase<T>
     this.helper.emit(); 
   }
 
-  protected emitChange(event: Event): void { 
-    const value = (event.target as FormElement).value; 
-    this.value = value as T|null; 
-  } 
-
   protected emitBlur(): void { 
     this.onTouched(); 
   }
 
   protected get control(): AbstractControl | null {
-    return this.ngControl?.control || null;
+    return this.ngControl.control;
   }
 
   protected statusUpdate():void {

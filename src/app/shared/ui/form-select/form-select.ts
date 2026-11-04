@@ -158,7 +158,7 @@ export class FormSelect<T> extends FormElementBase<T> {
   });
 
   protected selectionChange(value: T|null): void {
-    this.value = value ?? null;
+    this.commitValue(value ?? null);
   }
 
   public override clear(value: T|null = null): void {

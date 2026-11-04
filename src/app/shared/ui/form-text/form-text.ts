@@ -1,5 +1,4 @@
-import { Component, computed, Input, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, computed, ElementRef, Input, signal, ViewChild } from '@angular/core';
 
 import { transformBoolean } from '@app/shared/utils';
 import { CnpjTransform, CpfTransform, DateTimeTransform, DateTransform, 
@@ -28,7 +27,7 @@ type InputTransform = 'cpf' | 'cnpj' | 'date' | 'dateTime' | 'timeSpan' | 'phone
   selector: 'app-form-text',
   templateUrl: './form-text.html',
   styleUrl: './form-text.scss',
-  imports: [ Label, FormsModule, Button ],
+  imports: [ Label, Button ],
   host: {
     '[class]': 'hostClass()'
   }
@@ -37,6 +36,13 @@ export class FormText extends FormElementBase<string>  {
   
   constructor() {
     super();
+  }
+
+  @ViewChild('element', {static: true})
+  protected element!: ElementRef<HTMLInputElement>;
+
+  protected override focusTarget(): HTMLElement | null {
+    return this.element?.nativeElement ?? null;
   }
 
   protected readonly _transform = signal<InputTransform|null>(null);
@@ -148,7 +154,7 @@ export class FormText extends FormElementBase<string>  {
     return `form-control form-control-${_size}`;
   });
 
-  protected override emitChange(event: Event): void {
+  protected emitChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     let value = input?.value ?? '';
 
@@ -175,6 +181,6 @@ export class FormText extends FormElementBase<string>  {
       }
     }
 
-    super.emitChange(event);
+    this.commitValue(input.value);
   }
 }

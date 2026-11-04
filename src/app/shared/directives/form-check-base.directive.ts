@@ -1,45 +1,31 @@
-import { Directive, Input, signal, untracked } from "@angular/core";
+import { computed, Directive, Input, signal } from "@angular/core";
 
 import { transformBoolean } from "@app/shared/utils";
 
 import { FormElementBase } from "./form-element-base.directive";
 
 @Directive()
-export abstract class FormCheckBase extends FormElementBase<any>  {
+export abstract class FormCheckBase<T = string> extends FormElementBase<T> {
 
   constructor()  {
     super();
   }
 
-  //region ControlValueAccessor
-
-  public override writeValue(value: any|null): void {
-    this.checked = value === this.value;
-  }
-
-  //endregion
-
-  public override set value(value: any|null) {
-    if (value !== this.value) {
-      this._value.set(value);
+  protected readonly _optionValue = signal<T|null>(null);
+  @Input({ alias: 'value' })
+  public set optionValue(value: T|null) {
+    if (value !== this.optionValue) {
+      this._optionValue.set(value);
     }
   }
-  // Como sobrescreve o set, é necessário sobrescrever 
-  // o get para manter o efeito do signal
-  public override get value(): string|null {
-    return super.value;
+  public get optionValue(): T|null {
+    return this._optionValue();
   }
 
-  protected _checked = signal(false);
-  @Input({ transform: transformBoolean })
-  public set checked(value: boolean) {
-    if (value !== this.checked) {
-      this._checked.set(value);
-    }
-  }
-  public get checked(): boolean {
-    return this._checked();
-  }
+  public readonly checked = computed(() => {
+    const value = this._value();
+    return value != null && value === this._optionValue();
+  });
 
   protected readonly _switch = signal(false);
   @Input({ transform: transformBoolean })
@@ -64,9 +50,9 @@ export abstract class FormCheckBase extends FormElementBase<any>  {
   }
 
   protected emitToggle(event: Event): void {
-      const checked = (event.target as HTMLInputElement).checked;
-      this.checked = checked;
-      this.onChange(checked ? this.value : null);
-      this.onTouched();
+    const input = event.target as HTMLInputElement;
+    this.commitValue(input.checked ? this._optionValue() : null);
+    input.checked = this.checked();
+    this.onTouched();
   }
 }

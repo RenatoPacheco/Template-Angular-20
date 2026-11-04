@@ -48,18 +48,8 @@ export class FormSelectMultiple<T>
    * a seleção seria descartada silenciosamente. A projeção filtrada fica em
    * `selectedValues()`.
    */
-  public override set value(value: T[]|null) {
-    const next = Array.isArray(value) ? value : [];
-    const current = this._value() || [];
-    const equal = current.length === next.length
-      && current.every((item, index) => item === next[index]);
-
-    if (!equal) {
-      super.value = next;
-    }
-  }
-  public override get value(): T[]|null {
-    return super.value;
+  protected override normalizeValue(value: T[]|null): T[]|null {
+    return Array.isArray(value) ? value : [];
   }
 
   protected readonly _cleanable = signal(false);
@@ -213,7 +203,7 @@ export class FormSelectMultiple<T>
   });
 
   protected selectionChange(value: T[]|null): void {
-    this.value = value;
+    this.commitValue(value);
   }
 
   public override clear(value: T[]|null = []): void {

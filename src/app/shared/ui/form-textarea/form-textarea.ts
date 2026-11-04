@@ -1,4 +1,4 @@
-import { Component, computed, Input, signal, untracked } from '@angular/core';
+import { Component, computed, ElementRef, Input, signal, untracked, ViewChild } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { transformNumber } from '@app/shared/utils';
@@ -21,6 +21,17 @@ export class FormTextarea extends FormElementBase<string>  {
   
   constructor() {
     super();
+  }
+
+  @ViewChild('element', {static: true})
+  protected element!: ElementRef<HTMLTextAreaElement>;
+
+  protected override focusTarget(): HTMLElement | null {
+    return this.element?.nativeElement ?? null;
+  }
+
+  protected emitChange(event: Event): void {
+    this.commitValue((event.target as HTMLTextAreaElement).value);
   }
   
   protected readonly _placeholder = signal('');

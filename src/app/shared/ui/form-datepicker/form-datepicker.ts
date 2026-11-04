@@ -202,13 +202,13 @@ export class FormDatepicker extends FormElementBase<string | DateRange> {
       this.startField.writeText(range.start ?? null);
       this.endField.writeText(range.end ?? null);
       this.normalizeRangeOrder();
-      this.emitRangeValue();
+      super.writeValue(this.rangeFromFields());
       return;
     }
 
     const text = typeof value === 'string' ? value : null;
     this.singleField.writeText(text);
-    this.value = text || null;
+    super.writeValue(text || null);
   }
 
   public override clear(): void {
@@ -266,7 +266,7 @@ export class FormDatepicker extends FormElementBase<string | DateRange> {
   }
 
   private emitSingleValue(): void {
-    this.value = this.singleField.text || null;
+    this.commitValue(this.singleField.text || null);
   }
 
   private onRangeFieldChange(): void {
@@ -288,16 +288,18 @@ export class FormDatepicker extends FormElementBase<string | DateRange> {
     this.endField.setState(endText, start);
   }
 
+  private rangeFromFields(): DateRange {
+    return { start: this.startField.text || null, end: this.endField.text || null };
+  }
+
   private emitRangeValue(): void {
-    const startText = this.startField.text;
-    const endText = this.endField.text;
-    this.value = { start: startText || null, end: endText || null };
+    this.commitValue(this.rangeFromFields());
   }
 
   private resetInternal(): void {
     this.singleField.reset();
     this.startField.reset();
     this.endField.reset();
-    this.value = this._mode() === 'range' ? { ...EMPTY_RANGE } : null;
+    this.commitValue(this._mode() === 'range' ? { ...EMPTY_RANGE } : null);
   }
 }

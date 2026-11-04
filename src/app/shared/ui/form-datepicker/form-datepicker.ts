@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, Input, signal, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, computed, ElementRef, Input, signal, ViewChild } from '@angular/core';
 import {
   NgbDatepickerI18n,
   NgbDatepickerModule,
@@ -46,7 +46,7 @@ const EMPTY_RANGE: DateRange = { start: null, end: null };
     '[class]': 'hostClass()'
   }
 })
-export class FormDatepicker extends FormElementBase<string | DateRange> {
+export class FormDatepicker extends FormElementBase<string | DateRange> implements AfterViewChecked {
 
   constructor() {
     super();
@@ -249,11 +249,53 @@ export class FormDatepicker extends FormElementBase<string | DateRange> {
   @ViewChild('endElement', { static: false })
   protected endElement?: ElementRef<HTMLInputElement>;
 
+  @ViewChild('singlePicker', { static: false })
+  protected singlePicker?: NgbInputDatepicker;
+
+  @ViewChild('startPicker', { static: false })
+  protected startPicker?: NgbInputDatepicker;
+
+  @ViewChild('endPicker', { static: false })
+  protected endPicker?: NgbInputDatepicker;
+
+  private readonly syncedPickers = new Map<DatepickerField, { picker: NgbInputDatepicker; text: string }>();
+
+  public ngAfterViewChecked(): void {
+    this.syncPicker(this.singlePicker, this.singleField);
+    this.syncPicker(this.startPicker, this.startField);
+    this.syncPicker(this.endPicker, this.endField);
+  }
+
+  // A seleção interna do ng-bootstrap precisa acompanhar o texto do campo,
+  // inclusive em escritas programáticas que não passam pelo evento `input`.
+  // `manualDateChange` só atualiza a seleção (não reescreve o texto), então a
+  // digitação parcial do usuário não é apagada.
+  private syncPicker(picker: NgbInputDatepicker | undefined, field: DatepickerField): void {
+    if (!picker) {
+      return;
+    }
+
+    const last = this.syncedPickers.get(field);
+    if (last?.picker === picker && last.text === field.text) {
+      return;
+    }
+
+    picker.manualDateChange(field.struct ? field.text : '');
+    this.syncedPickers.set(field, { picker, text: field.text });
+  }
+
   protected readonly _focusedField = signal<FocusedField>('single');
 
   protected markField(field: FocusedField): void {
     if (field !== this._focusedField()) {
       this._focusedField.set(field);
+    }
+  }
+
+  protected openWithKeyboard(event: KeyboardEvent, picker: NgbInputDatepicker): void {
+    if (event.altKey && event.key === 'ArrowDown' && this.isActive() && !picker.isOpen()) {
+      event.preventDefault();
+      picker.open();
     }
   }
 

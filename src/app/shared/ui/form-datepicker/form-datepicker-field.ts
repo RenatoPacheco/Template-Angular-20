@@ -3,7 +3,7 @@ import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
 import { DateTransform } from '@app/shared/directives';
 
-import { formatDateStruct, isStructWithinLimits, parseDateString } from './form-datepicker-parser';
+import { formatDateStruct, parseDateString } from './form-datepicker-parser';
 
 export interface DatepickerFieldOptions {
   /** Limite inferior vigente para este campo (global + cruzado). */
@@ -21,19 +21,31 @@ export interface DatepickerFieldOptions {
 /**
  * Estado e comportamento de um campo de data (`single`, `start` ou `end`).
  *
- * O texto digitado pertence ao campo (`text`); o struct interno SÓ avança
- * em datas válidas dentro dos limites, então texto inválido nunca apaga o
- * destaque do calendário nem é apagado por ele. O valor exposto ao
- * formulário é sempre o texto cru (vazio é `null`) — a conversão fica a
+ * O texto digitado pertence ao campo (`text`). O struct reflete o texto atual:
+ * é a data quando o texto é uma data válida (mesmo fora de `min`/`max`) e
+ * `null` quando o texto é vazio, incompleto ou inválido. Ele alimenta a
+ * seleção do calendário e os limites cruzados do intervalo. O valor exposto
+ * ao formulário é sempre o texto cru (vazio é `null`) — a conversão fica a
  * cargo de quem instancia (via `onChange`).
  */
 export class DatepickerField {
   private readonly _text = signal('');
   private readonly _struct = signal<NgbDateStruct | null>(null);
+  private readonly _view = signal<{ year: number; month: number } | null>(null);
 
   public readonly startDate = computed(() => this._struct());
   public readonly minDate = computed(() => this._options.min());
   public readonly maxDate = computed(() => this._options.max());
+
+  /** Mês em que o calendário deve abrir quando não há data selecionada. */
+  public readonly openingDate = computed<NgbDateStruct | null>(() => {
+    const struct = this._struct();
+    if (struct) {
+      return struct;
+    }
+    const view = this._view();
+    return view ? { year: view.year, month: view.month, day: 1 } : null;
+  });
 
   constructor(private readonly _options: DatepickerFieldOptions) {}
 
@@ -54,17 +66,7 @@ export class DatepickerField {
     DateTransform.apply(input);
     const text = input.value;
     this._text.set(text);
-
-    if (text === '') {
-      this._struct.set(null);
-    } else {
-      const parsed = parseDateString(text);
-
-      if (parsed && isStructWithinLimits(parsed, this._options.min(), this._options.max())) {
-        this._struct.set(parsed);
-      }
-    }
-
+    this._struct.set(parseDateString(text));
     this._options.onChange();
   }
 
@@ -78,6 +80,11 @@ export class DatepickerField {
     this._text.set(formatDateStruct(struct) ?? '');
     this._options.onChange();
     this._options.onTouch();
+  }
+
+  /** Mês exibido pelo calendário após navegação do usuário. */
+  public setView(view: { year: number; month: number }): void {
+    this._view.set({ year: view.year, month: view.month });
   }
 
   /** Escrita externa: texto cru + struct derivado (pode ser `null`). */

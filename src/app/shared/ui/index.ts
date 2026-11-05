@@ -12,3 +12,4 @@ export * from './form-editor';
 export * from './video/video';
 export * from './video/video-vtt';
 export * from './button-dropdown/button-dropdown';
+export * from './floating-bar/floating-bar';

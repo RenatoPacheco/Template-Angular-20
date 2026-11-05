@@ -1,0 +1,11 @@
+.btn-group-mr {
+  & > button, & > .btn, & > [role="button"] {
+    margin-right: 0.5em;
+  }
+}
+
+.btn-group-ml {
+  & > button, & > .btn, & > [role="button"] {
+    margin-left: 0.5em;
+  }
+}

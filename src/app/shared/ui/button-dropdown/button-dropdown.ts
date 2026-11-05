@@ -12,7 +12,8 @@ import { Button, ButtonActionType, ButtonSizeType, ButtonThemeType } from "../bu
   templateUrl: './button-dropdown.html',
   styleUrl: './button-dropdown.scss',
   host: {
-    '[class]': 'hostClass()'
+    '[class]': 'hostClass()',
+    'role': 'button'
   },
   imports: [
     NgbDropdown, NgbDropdownToggle, 

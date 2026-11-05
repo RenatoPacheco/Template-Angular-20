@@ -1,0 +1,17 @@
+<div #placeholder class="barra-placeholder"
+  [style.height.px]="flutuante() ? altura() : null">
+  <div class="barra-fundo"
+    [class.barra-fundo-flutuante]="flutuante()"
+    [class.barra-fundo-limitado]="flutuante() && mode === 'host'"
+    [style.left.px]="flutuante() && mode === 'host' ? esquerda() : null"
+    [style.width.px]="flutuante() && mode === 'host' ? largura() : null"
+    [style.height.px]="flutuante() ? altura() + espacamentoVertical : null">
+    <div #conteudo class="barra-conteudo"
+      [class.barra-conteudo-flutuante]="flutuante()"
+      [class.barra-conteudo-flutuante-limitado]="flutuante() && mode === 'host'"
+      [style.left.px]="flutuante() && mode !== 'host' ? esquerda() : null"
+      [style.width.px]="flutuante() && mode !== 'host' ? largura() : null">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>

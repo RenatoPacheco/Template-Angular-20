@@ -39,14 +39,18 @@ export class FormEditor extends FormElementBase<string> implements OnDestroy {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
+          this.historyEntryPending = false;
           this.maximize(false);
         }
       });
   }
   
   public ngOnDestroy(): void {
+    this.historyEntryPending = false;
     this.maximize(false);
   }
+
+  private historyEntryPending = false;
 
   private readonly servResize = inject(ResizeService);
   private readonly servPlataformLocation = inject(PlataformLocationService);
@@ -193,7 +197,25 @@ export class FormEditor extends FormElementBase<string> implements OnDestroy {
   });
 
   protected emitReady(event: CKEditor4.EventInfo): void {
-    this.editors.push(event.editor);
+    const editor = event.editor;
+    this.editors.push(editor);
+    editor.on('destroy', () => {
+      const index = this.editors.indexOf(editor);
+      if (index !== -1) {
+        this.editors.splice(index, 1);
+      }
+    });
+    editor.on('maximize', (evt: CKEditor4.EventInfo) => this.emitMaximizeChange(evt.data as unknown as number));
+  }
+
+  protected emitMaximizeChange(state: number): void {
+    if (state === 1 && !this.historyEntryPending) {
+      history.pushState(history.state, '', location.href);
+      this.historyEntryPending = true;
+    } else if (state === 2 && this.historyEntryPending) {
+      this.historyEntryPending = false;
+      history.back();
+    }
   }
 
   protected emitEditorChange(event: CKEditor4.EventInfo): void {
@@ -207,7 +229,7 @@ export class FormEditor extends FormElementBase<string> implements OnDestroy {
   }
 
   protected maximize(value: boolean): void {
-    for (const editor of this.editors) {
+    for (const editor of [...this.editors]) {
       try {
         if (editor.getCommand('maximize').state  === 1 && !value) {
           editor.execCommand('maximize');
@@ -215,8 +237,8 @@ export class FormEditor extends FormElementBase<string> implements OnDestroy {
           editor.execCommand('maximize');
         }
       } catch (e) {
-        window.location.reload();
-        break;
+        console.error('Falha ao maximizar o editor', e);
+        this.editors.splice(this.editors.indexOf(editor), 1);
       }
     }
   }

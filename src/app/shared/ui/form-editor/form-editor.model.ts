@@ -134,14 +134,14 @@ export const FormEditorParagraphOff: FormEditorConfig = {
 }
 
 export const FormEditorComplte: FormEditorConfig = {
-    extraPlugins: ['custon-save', 'indent-paragraph']
+    extraPlugins: ['custon-save', 'indent-paragraph', 'custon-clear']
 };
 
 export const FormEditorBasic: FormEditorConfig = {
-    extraPlugins: ['custon-save', 'indent-paragraph'],
+    extraPlugins: ['custon-save', 'indent-paragraph', 'custon-clear'],
     toolbar: [
       { name: 'inline-zero', items: [
-        'custon-save', 'Styles'
+        'custon-save', 'custon-clear', 'Styles'
       ]},
       { name: 'inline-one', items: [
         'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', 'SpecialChar'

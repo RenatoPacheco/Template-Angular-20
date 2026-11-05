@@ -292,3 +292,40 @@ describe('FormEditor valor vazio', () => {
     expect(host.control.pristine).toBeTrue();
   });
 });
+
+@Component({
+  imports: [ ReactiveFormsModule, FormEditor ],
+  template: `<app-form-editor label="Texto" readonly [formControl]="control" />`
+})
+class HostEditorReadonly {
+  control = new FormControl<string | null>('abc');
+}
+
+describe('FormEditor ação limpar', () => {
+
+  it('ação custon-clear limpa o valor e deixa o campo pristine', () => {
+    const { editor, host } = createHost();
+    host.control.setValue('abc');
+
+    editor['emitEditorChange']({ data: 'custon-clear' } as never);
+
+    expect(host.control.value).toBeNull();
+    expect(host.control.pristine).toBeTrue();
+  });
+
+  it('com loading ativo, a ação custon-clear não altera o valor', () => {
+    const { editor, host } = createHost(HostEditorLoading);
+
+    editor['emitEditorChange']({ data: 'custon-clear' } as never);
+
+    expect(host.control.value).toBe('abc');
+  });
+
+  it('com readonly, a ação custon-clear não altera o valor', () => {
+    const { editor, host } = createHost(HostEditorReadonly);
+
+    editor['emitEditorChange']({ data: 'custon-clear' } as never);
+
+    expect(host.control.value).toBe('abc');
+  });
+});

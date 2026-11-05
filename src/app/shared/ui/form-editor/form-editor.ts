@@ -225,6 +225,12 @@ export class FormEditor extends FormElementBase<string> implements OnDestroy {
 
   protected emitEditorChange(event: CKEditor4.EventInfo): void {
     const data = event.data?.toString();
+    if (data === 'custon-clear') {
+      if (this.isActive() && !this.loading) {
+        this.clear();
+      }
+      return;
+    }
     if (data === 'custon-save' || data === 'resize') {
       this.maximize(false);
     }

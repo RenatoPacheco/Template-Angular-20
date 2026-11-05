@@ -9,8 +9,8 @@
 </label>
 <div class="form-element"
     [class.action-clear]="hasValue()"
-    [class.action-show]="showSecret()"
-    [class.action-hide]="hideSecret()">
+    [class.action-show]="secretMode() === 'masked'"
+    [class.action-hide]="secretMode() === 'revealed'">
     <input #element
         [value]="value"
         (blur)="emitBlur()"
@@ -22,7 +22,7 @@
         [class]="elementClass()" 
         [id]="id"
         [placeholder]="placeholder" />
-    @if (isActive()) {
+    @if (showActions()) {
     <button app-button
         class="action-hide"
         theme="transparent"

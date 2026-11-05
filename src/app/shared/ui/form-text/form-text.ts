@@ -45,6 +45,17 @@ export class FormText extends FormElementBase<string>  {
     return this.element?.nativeElement ?? null;
   }
 
+  protected override normalizeValue(value: string|null): string|null {
+    return value === '' ? null : value;
+  }
+
+  public override writeValue(value: string|null): void {
+    super.writeValue(value);
+    if (value === '') {
+      this.control?.setValue(null, { emitModelToViewChange: false });
+    }
+  }
+
   protected readonly _transform = signal<InputTransform|null>(null);
   @Input() public set transform(value: InputTransform|null) {
     if (value !== this.transform) {
@@ -96,58 +107,38 @@ export class FormText extends FormElementBase<string>  {
     return this._controlSecret();
   }
 
-  protected readonly _secretHasBeenReversed = signal(false);
+  protected readonly _secretRevealed = signal(false);
   protected emitToggleSecret(): void {
-    var currentValue = this._secretHasBeenReversed();
-    this._secretHasBeenReversed.set(!currentValue);
+    this._secretRevealed.update(revealed => !revealed);
     this.element?.nativeElement.focus()
   }
 
-  protected showSecret = computed(() => {
-    const _type = this._type();
-    const _controlSecret = this._controlSecret();
-    const _secretHasBeenReversed = this._secretHasBeenReversed();
-    
-    let result = _controlSecret && _type === 'password' 
-    ? true : false;
+  public override clear(value: string|null = null): void {
+    this._secretRevealed.set(false);
+    super.clear(value);
+  }
 
-    return _secretHasBeenReversed ? !result : result;
-  });
-
-  protected hideSecret = computed(() => {
-    const _type = this._type();
-    const _controlSecret = this._controlSecret();
-    const _secretHasBeenReversed = this._secretHasBeenReversed();
-    
-    let result = _controlSecret && _type !== 'password' 
-    ? true : false;
-
-    return _secretHasBeenReversed ? !result : result;
+  protected secretMode = computed<'none' | 'masked' | 'revealed'>(() => {
+    if (!this._controlSecret()) {
+      return 'none';
+    }
+    return this._secretRevealed() ? 'revealed' : 'masked';
   });
 
   protected typeComputed = computed(() => {
-    let _type = this._type();
-    const isPasswordType = _type === 'password';
-    const _controlSecret = this._controlSecret();
-    const _reverseSecret = this._secretHasBeenReversed();
-
-    if (_controlSecret && _reverseSecret) {
-      _type = isPasswordType ? 'text' : 'password';
-    } else {
-      switch (_type) {
-        case 'search':
-          _type = 'text';
-          break;
-      }
+    if (this.secretMode() === 'masked') {
+      return 'password';
     }
-
-    return _type;
+    const _type = this._type();
+    return _type === 'search' ? 'text' : _type;
   });
 
   protected hostClass = computed(() => {
     const _class = this._class();
     return `form-group mb-3 ${_class}`;
   });
+
+  protected showActions = computed(() => this.isActive() && !this.loading);
 
   protected elementClass = computed(() => {
     const _size = this._size();

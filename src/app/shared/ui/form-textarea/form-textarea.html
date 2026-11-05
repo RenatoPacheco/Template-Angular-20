@@ -20,7 +20,7 @@
         [rows]="rows"
         [placeholder]="placeholder">
     </textarea>
-    @if (isActive()) {
+    @if (showActions()) {
     <button app-button
         class="action-clear"
         title="clique para limpar o valor"

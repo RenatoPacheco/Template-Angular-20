@@ -1,6 +1,5 @@
 import { Component, computed, ElementRef, Input, signal, untracked, ViewChild } from '@angular/core';
 
-import { FormsModule } from '@angular/forms';
 import { transformNumber } from '@app/shared/utils';
 
 import { Button } from '../button/button';
@@ -10,7 +9,7 @@ import { FormElementBase } from '@app/shared/directives';
 @Component({
   standalone: true,
   selector: 'app-form-textarea',
-  imports: [ Label, FormsModule, Button ],
+  imports: [ Label, Button ],
   templateUrl: './form-textarea.html',
   styleUrl: './form-textarea.scss',
   host: {
@@ -30,6 +29,17 @@ export class FormTextarea extends FormElementBase<string>  {
     return this.element?.nativeElement ?? null;
   }
 
+  protected override normalizeValue(value: string|null): string|null {
+    return value === '' ? null : value;
+  }
+
+  public override writeValue(value: string|null): void {
+    super.writeValue(value);
+    if (value === '') {
+      this.control?.setValue(null, { emitModelToViewChange: false });
+    }
+  }
+
   protected emitChange(event: Event): void {
     this.commitValue((event.target as HTMLTextAreaElement).value);
   }
@@ -45,7 +55,7 @@ export class FormTextarea extends FormElementBase<string>  {
     return this._placeholder();
   }
 
-  public _rows = signal(5);
+  protected _rows = signal(5);
   @Input({ transform: transformNumber })
   public set rows(value: number) {
     if (value !== this.rows) {
@@ -60,6 +70,8 @@ export class FormTextarea extends FormElementBase<string>  {
     const _class = this._class();
     return `form-group mb-3 ${_class}`;
   });
+
+  protected showActions = computed(() => this.isActive() && !this.loading);
 
   protected elementClass = computed(() => {
     const _size = this._size();

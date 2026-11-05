@@ -2,7 +2,7 @@ import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { FormText, Button, FormCheckBox, FormRadio, FormEditor, FormSelect, FormSelectMultiple, ButtonDropdown, FormDatepicker, DateRange, FloatingBar } from '@app/shared/ui';
+import { FormText, Button, FormCheckBox, FormRadio, FormEditor, FormSelect, FormSelectMultiple, ButtonDropdown, FormDatepicker, DateRange, FloatingBar, Label } from '@app/shared/ui';
 import { FormTextarea } from '@app/shared/ui/form-textarea/form-textarea';
 import { CustomValidators } from '@app/shared/validators';
 
@@ -10,7 +10,7 @@ import { CustomValidators } from '@app/shared/validators';
   standalone: true,
   selector: 'app-showcase-form-page',
   imports: [
-    FormsModule, ReactiveFormsModule, FormText,
+    FormsModule, ReactiveFormsModule, FormText, Label,
     FormTextarea, Button, FormCheckBox, FormRadio, FloatingBar,
     FormEditor, FormSelect, FormSelectMultiple, ButtonDropdown, FormDatepicker
 ],

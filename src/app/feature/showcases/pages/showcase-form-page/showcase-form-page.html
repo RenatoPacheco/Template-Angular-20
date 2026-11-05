@@ -109,16 +109,20 @@
                 [options]="itens" cleanable="true">
             </app-form-select-multiple>
         </div>
-        <div class="form-row" formArrayName="checkbox">
-            @for (opcao of opcoes; track opcao.id; let i = $index) {
-            <app-form-checkbox 
-            [formControlName]="i"
-            inline="true" [value]="opcao.id">
-                {{opcao.descricao}}
-            </app-form-checkbox> 
-            }
-        </div>
-        <div class="form-row">
+        <fieldset class="form-row">
+                <legend app-label>Checkboxes</legend>        
+                <div formArrayName="checkbox">
+                    @for (opcao of opcoes; track opcao.id; let i = $index) {
+                    <app-form-checkbox 
+                    [formControlName]="i"
+                    inline="true" [value]="opcao.id">
+                        {{opcao.descricao}}
+                    </app-form-checkbox> 
+                    }                    
+                </div>
+            </fieldset>
+        <fieldset class="form-row">
+            <legend app-label>Radio Buttons</legend>
             @for (opcao of opcoes; track opcao.id; let i = $index) {
             <app-form-radio 
             formControlName="radio"
@@ -127,9 +131,8 @@
                 {{opcao.descricao}}
             </app-form-radio> 
             }
-        </div>
-        <app-floating-bar class="form-row mb-3">
-            
+        </fieldset>
+        <app-floating-bar class="form-row mb-3">  
             <div class="btn-group-mr">
                 <button app-button action="submit" type="submit"></button>
                 <button app-button action="cancel" type="button"></button>

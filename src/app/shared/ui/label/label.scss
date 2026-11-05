@@ -8,6 +8,14 @@
     &.is-valid {
         color: var(--bs-form-valid-border-color);
     }
+
+    float: none;
+    width: auto;
+    padding: 0;
+    margin-bottom: .5rem;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
 }
 .help {
     padding-left: 0.25rem;

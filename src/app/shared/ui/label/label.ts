@@ -3,13 +3,13 @@ import { transformBoolean } from '@app/shared/utils';
 
 @Component({
   standalone: true,
-  selector: 'label[app-label]',
+  selector: 'label[app-label], legend[app-label]',
   templateUrl: './label.html',
   styleUrl: './label.scss',
   imports: [],
   host: {
     '[class]': 'hostClass()',
-    '[for]': 'hostFor()',
+    '[attr.for]': 'hostFor()',
     '[title]': 'hostTitle()'
   }
 })

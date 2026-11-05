@@ -8,7 +8,7 @@ CKEDITOR.plugins.add('custon-save', {
             }
         });
 
-        editor.ui.addButton('Save', {
+        editor.ui.addButton('custon-save', {
             label: 'Salvar',
             command: 'custonSave',
             toolbar: 'clipboard,0'

@@ -57,16 +57,7 @@ export class FormEditor extends FormElementBase<string> implements OnDestroy {
   
   public readonly save = output<string|null>();
   private readonly editors: any[] = [];
-
-  protected _template = signal<'complete' | 'basic'>('complete');
-  protected set template(value: 'complete' | 'basic') {
-    if (value !== this.template) {
-      this._template.set(value);
-    }
-  }
-  protected get template(): 'complete' | 'basic' {
-    return this._template();
-  }
+  private activeEditor: CKEditor4.Editor | null = null;
 
   protected _mobile = signal<boolean>(false);
   protected set mobile(value: boolean) {
@@ -79,12 +70,22 @@ export class FormEditor extends FormElementBase<string> implements OnDestroy {
   }
 
   protected override normalizeValue(value: string|null): string|null {
+    if (value === '') {
+      return null;
+    }
     if (this.paragraph === false && value) {
       value = value.replace(/<\s*p(\s*|\s+[^>]+)>/gi, '<br />');
       value = value.replace(/<\s*\/p\s*>/gi, '');
       value = value.replace(/^\s*<br\s*\/?\s*>\s*/gi, '');
     }
     return value;
+  }
+
+  public override writeValue(value: string|null): void {
+    super.writeValue(value);
+    if (value === '') {
+      this.control?.setValue(null, { emitModelToViewChange: false });
+    }
   }
 
   protected readonly _paragraph = signal(true);
@@ -184,28 +185,32 @@ export class FormEditor extends FormElementBase<string> implements OnDestroy {
     return result;
   });
 
-  protected useBasicConfig = computed(() => {
-    const _template = this._template() == 'basic';
-    const _mobile = this.isMobile();
-    return _template || _mobile;
-  });
 
-  protected useCompleteConfig = computed(() => {
-    const _template = this._template() == 'complete';
-    const _mobile = this.isMobile();
-    return _template && !_mobile;
-  });
 
   protected emitReady(event: CKEditor4.EventInfo): void {
     const editor = event.editor;
     this.editors.push(editor);
+    this.activeEditor = editor;
     editor.on('destroy', () => {
       const index = this.editors.indexOf(editor);
       if (index !== -1) {
         this.editors.splice(index, 1);
       }
+      if (this.activeEditor === editor) {
+        this.activeEditor = null;
+      }
     });
     editor.on('maximize', (evt: CKEditor4.EventInfo) => this.emitMaximizeChange(evt.data as unknown as number));
+  }
+
+  protected emitLabelClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement | null;
+    if (target?.closest('i[role]')) {
+      return;
+    }
+    if (this.isActive()) {
+      this.activeEditor?.['focus']();
+    }
   }
 
   protected emitMaximizeChange(state: number): void {

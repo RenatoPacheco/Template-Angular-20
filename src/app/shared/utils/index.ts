@@ -2,6 +2,7 @@
 export * from './array.utils';
 export * from './document.utils';
 export * from './file.utils';
+export * from './form-error.utils';
 export * from './form-data.utils';
 export * from './html.utils';
 export * from './http-params.utils';

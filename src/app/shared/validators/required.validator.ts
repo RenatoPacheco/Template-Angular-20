@@ -15,7 +15,7 @@ export function requiredValidator(): ValidatorFn {
       return { required: true };
     }
 
-    if (Array.isArray(value) && value.length === 0) {
+    if (Array.isArray(value) && value.filter(v => v !== null && v !== undefined).length === 0) {
       return { required: true };
     }
 

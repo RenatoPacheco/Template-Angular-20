@@ -36,7 +36,7 @@ export abstract class FormElementBase<T>
 
   public readonly helper = output<void>();
   public readonly error = output<{
-    id: string,
+    id: string|null,
     messages: string[],
     label: string,
     errors: ValidationErrors|null
@@ -264,7 +264,17 @@ export abstract class FormElementBase<T>
     }
   }
 
-  protected emitError(): void {
+  protected emitError(event?: {
+    id: string|null,
+    messages: string[],
+    label: string,
+    errors: ValidationErrors|null
+  }): void {
+    if (event) {
+      this.error.emit(event);
+      return;
+    }
+
     const errors = this.control?.errors;
     if (errors) {
       var messages = this.validator.getMessages(errors);

@@ -2,7 +2,8 @@
     [for]="id"
     [text]="label"
     [loading]="loading"
-    (error)="emitError()"
+    [control]="control"
+    (error)="emitError($event)"
     (helper)="emitHelper()"
     [enabled-error]="showError()"
     [enabled-helper]="enabledHelper">

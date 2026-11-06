@@ -2,8 +2,9 @@
     [for]="id"
     [text]="label"
     [loading]="loading"
+    [control]="control"
     (click)="emitLabelClick($event)"
-    (error)="emitError()"
+    (error)="emitError($event)"
     (helper)="emitHelper()"
     [enabled-error]="showError()"
     [enabled-helper]="enabledHelper">

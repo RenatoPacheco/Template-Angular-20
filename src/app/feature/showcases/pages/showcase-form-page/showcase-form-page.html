@@ -110,7 +110,9 @@
             </app-form-select-multiple>
         </div>
         <fieldset class="form-row">
-                <legend app-label>Checkboxes</legend>        
+                <legend app-label 
+                    [control]="form.controls.checkbox"
+                    enabled-error="true">Checkboxes</legend>        
                 <div formArrayName="checkbox">
                     @for (opcao of opcoes; track opcao.id; let i = $index) {
                     <app-form-checkbox 
@@ -122,7 +124,9 @@
                 </div>
             </fieldset>
         <fieldset class="form-row">
-            <legend app-label>Radio Buttons</legend>
+            <legend app-label
+                    [control]="form.controls.radio"
+                    enabled-error="true">Radio Buttons</legend>
             @for (opcao of opcoes; track opcao.id; let i = $index) {
             <app-form-radio 
             formControlName="radio"

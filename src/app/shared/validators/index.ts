@@ -8,6 +8,7 @@ import { passwordValidator } from './password.validator';
 import { timeSpanValidator } from './timespan.validator';
 import { dateTimeValidator } from './datetime.validator';
 import { phonePtBrValidator } from './phone-ptbr.validator';
+import { requiredValidator } from './required.validator';
 
 
 export class CustomValidators {
@@ -17,6 +18,7 @@ export class CustomValidators {
   public static readonly alias = aliasValidator;
   public static readonly password = passwordValidator;
   public static readonly timeSpan = timeSpanValidator;
+  public static readonly required = requiredValidator;
 
   public static phonePtBr(param?: {
     format?: 'formatted' | 'numbers' | 'both',

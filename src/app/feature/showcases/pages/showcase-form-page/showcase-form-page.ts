@@ -118,8 +118,17 @@ export class ShowcaseFormPage implements OnInit {
         Validators.minLength(300)
       ], updateOn: 'blur'
     }),
-    checkbox: this.formBuilder.array<FormControl<string|null>>([]),
-    radio: this.formBuilder.control<string|null>(null),
+    checkbox: this.formBuilder.array<FormControl<string|null>>([], {
+      validators: [
+        CustomValidators.required()
+      ], updateOn: 'blur'
+    }),
+    radio: this.formBuilder.control<string|null>(null, {
+      validators: [
+        CustomValidators.required(),
+        Validators.minLength(5)
+      ], updateOn: 'blur'
+    }),
   });
 
   ngOnInit(): void {
@@ -147,9 +156,11 @@ export class ShowcaseFormPage implements OnInit {
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe({
       next: () => {
+        console.log('checkbox', this.form.value.checkbox);
+        console.log('radio', this.form.value.radio);
+        return;
         console.log('dataPicker', this.form.value.dataPicker);
         console.log('periodo', this.form.value.periodo);
-        return;
         console.log('lista', this.form.value.lista);
         console.log('listaMultipla', this.form.value.listaMultipla);
         console.log('chechbox', this.form.value.checkbox?.filter(x => x !== null));

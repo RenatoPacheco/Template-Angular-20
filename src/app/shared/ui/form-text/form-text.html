@@ -1,8 +1,9 @@
 <label app-label 
     [for]="id"
     [text]="label"
+    [control]="control"
     [loading]="loading"
-    (error)="emitError()"
+    (error)="emitError($event)"
     (helper)="emitHelper()"
     [enabled-error]="showError()"
     [enabled-helper]="enabledHelper">
